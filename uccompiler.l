@@ -1,19 +1,19 @@
 /*Jorge Marques 2014199355*/
 %{
 char flag = 'N';
-int col = 0;
-int line = 0;
+int col = 1;
+int line = 1;
 %}
 /*states*/
 %X COMMENT
-%X CHARLITSTATE
+%X CHRLITST
 /*end states*/
 /*aux*/
 ENTER       \n
 TAB         \\t
-BAR         \\
-ASPA        \"
-ASPAS       \'
+BAR         "\\"
+ASPA        "\""
+ASPAS       "\'"
 OCTO        \\[0-7]{1,3}
 ESCAPE      {ENTER}|{TAB}|{BAR}|{ASPA}|{ASPAS}|{OCTO}
 EXPO        ("+"|"-")?(e|E)[0-9]+
@@ -57,12 +57,20 @@ SEMI        ";"
 RESERVED    (\[|\]|"++"|"--")
 ID          [A-Za-z\_][A-Za-z\_0-9]*
 INTLIT      [0-9]+
-CHRLIT      \'([^\n\']|{ESCAPE})\'
+CHRLIT      ([^\n\']|{ESCAPE})\'
 REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 %%
 \/\/.*              {col += yyleng;}
 \/\*                {BEGIN COMMENT; col += yyleng;}
-\*\/                {BEGIN 0; col += yyleng;}
+<COMMENT>\*\/       {BEGIN 0; col += yyleng;}
+<COMMENT>.          {col += yyleng;}
+<COMMENT>\n         {col = 1; line++;}
+<COMMENT><<EOF>>    {printf("Line %d, col %d: unterminated comment\n", line, col); BEGIN 0;}
+\'                  {BEGIN CHRLITST; col += yyleng;}
+<CHRLITST>\'        {BEGIN 0; col += yyleng;}
+<CHRLITST><<EOF>>   {printf("Line %d, col %d: unterminated char constant\n", line, col); BEGIN 0;}
+<CHRLITST>{CHRLIT} 	{if(flag == 'Y') printf("CHRLIT('%s)\n", yytext); col += yyleng; BEGIN 0;}
+<CHRLITST>.*\'		{printf("Line %d, col %d: invalid char constant ('%s)\n", line, col, yytext); BEGIN 0;}
 {CHAR}              {if(flag == 'Y') printf("CHAR\n"); col += yyleng;}
 {ELSE}              {if(flag == 'Y') printf("ELSE\n"); col += yyleng;}
 {WHILE}             {if(flag == 'Y') printf("WHILE\n"); col += yyleng;}
@@ -99,12 +107,10 @@ REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 {RESERVED}          {if(flag == 'Y') printf("RESERVED\n"); col += yyleng;}
 {ID}                {if(flag == 'Y') printf("ID(%s)\n", yytext); col += yyleng;}
 {INTLIT}            {if(flag == 'Y') printf("INTLIT(%s)\n", yytext); col += yyleng;}
-{CHRLIT}            {if(flag == 'Y') printf("CHRLIT(%s)\n", yytext); col += yyleng;}
 {REALLIT}           {if(flag == 'Y') printf("REALLIT(%s)\n", yytext); col += yyleng;}
-<COMMENT><<EOF>>    {printf("Line %d, col %d: unterminated comment\n", line, col); BEGIN 0;}
 [ ]                 {col += yyleng;}
 .                   {printf("Line %d, col %d: illegal character(%c)\n", line, col, *yytext);}
-\n                  {col = 0; line++;}
+\n                  {col = 1; line++;}
 %%
 int main(int argc, char** argv)
 {

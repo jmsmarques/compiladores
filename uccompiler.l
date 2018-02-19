@@ -1,4 +1,7 @@
 /*Jorge Marques 2014199355*/
+%{
+char flag = 'N';
+%}
 /*aux*/
 ENTER       \n
 TAB         \\t
@@ -48,54 +51,58 @@ SEMI        ";"
 RESERVED    (\[|\]|"++"|"--")
 ID          [A-Za-z\_][A-Za-z\_0-9]*
 INTLIT      [0-9]+
-CHRLIT      \'([^\n\' ]|{ESCAPE})\'
+CHRLIT      \'([^\n\']|{ESCAPE})\'
 REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 %%
 \/\/.*              ;
 \/\*(.|\n)*\/       ;
-{CHAR}              {printf("CHAR\n");}
-{ELSE}              {printf("ELSE\n");}
-{WHILE}             {printf("WHILE\n");}
-{IF}                {printf("IF\n");}
-{INT}               {printf("INT\n");}
-{SHORT}             {printf("SHORT\n");}
-{DOUBLE}            {printf("DOUBLE\n");}
-{RETURN}            {printf("RETURN\n");}
-{VOID}              {printf("VOID\n");}
-{BITWISEAND}        {printf("BITWISEAND\n");}
-{BITWISEOR}         {printf("BITWISEOR\n");}
-{BITWISEXOR}        {printf("BITWISEXOR\n");}
-{AND}               {printf("AND\n");}
-{ASSIGN}            {printf("ASSIGN\n");}
-{MUL}               {printf("MUL\n");}
-{COMMA}             {printf("COMMA\n");}
-{DIV}               {printf("DIV\n");}
-{EQ}                {printf("EQ\n");}
-{GE}                {printf("GE\n");}
-{GT}                {printf("GT\n");}
-{LBRACE}            {printf("LBRACE\n");}
-{LE}                {printf("LE\n");}
-{LPAR}              {printf("LPAR\n");}
-{LT}                {printf("LT\n");}
-{MINUS}             {printf("MINUS\n");}
-{MOD}               {printf("MOD\n");}
-{NE}                {printf("NE\n");}
-{NOT}               {printf("NOT\n");}
-{OR}                {printf("OR\n");}
-{PLUS}              {printf("PLUS\n");}
-{RBRACE}            {printf("RBRACE\n");}
-{RPAR}              {printf("RPAR\n");}
-{SEMI}              {printf("SEMI\n");}
-{RESERVED}          {printf("RESERVED\n");}
-{ID}                {printf("ID(%s)\n", yytext);}
-{INTLIT}            {printf("INTLIT(%s)\n", yytext);}
-{CHRLIT}            {printf("CHRLIT(%s)\n", yytext);}
-{REALLIT}           {printf("REALLIT(%s)\n", yytext);}
+{CHAR}              {if(flag == 'Y') printf("CHAR\n");}
+{ELSE}              {if(flag == 'Y') printf("ELSE\n");}
+{WHILE}             {if(flag == 'Y') printf("WHILE\n");}
+{IF}                {if(flag == 'Y') printf("IF\n");}
+{INT}               {if(flag == 'Y') printf("INT\n");}
+{SHORT}             {if(flag == 'Y') printf("SHORT\n");}
+{DOUBLE}            {if(flag == 'Y') printf("DOUBLE\n");}
+{RETURN}            {if(flag == 'Y') printf("RETURN\n");}
+{VOID}              {if(flag == 'Y') printf("VOID\n");}
+{BITWISEAND}        {if(flag == 'Y') printf("BITWISEAND\n");}
+{BITWISEOR}         {if(flag == 'Y') printf("BITWISEOR\n");}
+{BITWISEXOR}        {if(flag == 'Y') printf("BITWISEXOR\n");}
+{AND}               {if(flag == 'Y') printf("AND\n");}
+{ASSIGN}            {if(flag == 'Y') printf("ASSIGN\n");}
+{MUL}               {if(flag == 'Y') printf("MUL\n");}
+{COMMA}             {if(flag == 'Y') printf("COMMA\n");}
+{DIV}               {if(flag == 'Y') printf("DIV\n");}
+{EQ}                {if(flag == 'Y') printf("EQ\n");}
+{GE}                {if(flag == 'Y') printf("GE\n");}
+{GT}                {if(flag == 'Y') printf("GT\n");}
+{LBRACE}            {if(flag == 'Y') printf("LBRACE\n");}
+{LE}                {if(flag == 'Y') printf("LE\n");}
+{LPAR}              {if(flag == 'Y') printf("LPAR\n");}
+{LT}                {if(flag == 'Y') printf("LT\n");}
+{MINUS}             {if(flag == 'Y') printf("MINUS\n");}
+{MOD}               {if(flag == 'Y') printf("MOD\n");}
+{NE}                {if(flag == 'Y') printf("NE\n");}
+{NOT}               {if(flag == 'Y') printf("NOT\n");}
+{OR}                {if(flag == 'Y') printf("OR\n");}
+{PLUS}              {if(flag == 'Y') printf("PLUS\n");}
+{RBRACE}            {if(flag == 'Y') printf("RBRACE\n");}
+{RPAR}              {if(flag == 'Y') printf("RPAR\n");}
+{SEMI}              {if(flag == 'Y') printf("SEMI\n");}
+{RESERVED}          {if(flag == 'Y') printf("RESERVED\n");}
+{ID}                {if(flag == 'Y') printf("ID(%s)\n", yytext);}
+{INTLIT}            {if(flag == 'Y') printf("INTLIT(%s)\n", yytext);}
+{CHRLIT}            {if(flag == 'Y') printf("CHRLIT(%s)\n", yytext);}
+{REALLIT}           {if(flag == 'Y') printf("REALLIT(%s)\n", yytext);}
 .                   ;
 \n                  ;
 %%
-int main()
+int main(int argc, char** argv)
 {
+    if(argv[1][0] == '-' && argv[1][1] == 'l') {
+        flag = 'Y';
+    }
+    
     yylex();
     return 0;
 }

@@ -9,11 +9,11 @@ int line = 1;
 %X CHRLITST
 /*end states*/
 /*aux*/
-ENTER       \n
-TAB         \\t
-BAR         "\\"
-ASPA        "\""
-ASPAS       "\'"
+ENTER       \\n
+TAB         "\t"
+BAR         \\\\
+ASPA        \\\"
+ASPAS       \\\'
 OCTO        \\[0-7]{1,3}
 ESCAPE      {ENTER}|{TAB}|{BAR}|{ASPA}|{ASPAS}|{OCTO}
 EXPO        ("+"|"-")?(e|E)[0-9]+
@@ -67,10 +67,9 @@ REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 <COMMENT>\n         {col = 1; line++;}
 <COMMENT><<EOF>>    {printf("Line %d, col %d: unterminated comment\n", line, col); BEGIN 0;}
 \'                  {BEGIN CHRLITST; col += yyleng;}
-<CHRLITST>\'        {BEGIN 0; col += yyleng;}
 <CHRLITST><<EOF>>   {printf("Line %d, col %d: unterminated char constant\n", line, col); BEGIN 0;}
-<CHRLITST>{CHRLIT} 	{if(flag == 'Y') printf("CHRLIT('%s)\n", yytext); col += yyleng; BEGIN 0;}
-<CHRLITST>.*\'		{printf("Line %d, col %d: invalid char constant ('%s)\n", line, col, yytext); BEGIN 0;}
+<CHRLITST>{CHRLIT} 	{if(flag == 'Y') printf("CHRLIT('%s) %d\n", yytext, yyleng); col += yyleng; BEGIN 0;}
+<CHRLITST>.*(\n)?\'    {printf("Line %d, col %d: invalid char constant ('%s)\n", line, col, yytext); BEGIN 0;}
 {CHAR}              {if(flag == 'Y') printf("CHAR\n"); col += yyleng;}
 {ELSE}              {if(flag == 'Y') printf("ELSE\n"); col += yyleng;}
 {WHILE}             {if(flag == 'Y') printf("WHILE\n"); col += yyleng;}
@@ -109,7 +108,7 @@ REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 {INTLIT}            {if(flag == 'Y') printf("INTLIT(%s)\n", yytext); col += yyleng;}
 {REALLIT}           {if(flag == 'Y') printf("REALLIT(%s)\n", yytext); col += yyleng;}
 [ ]                 {col += yyleng;}
-.                   {printf("Line %d, col %d: illegal character(%c)\n", line, col, *yytext);}
+.                   {printf("Line %d, col %d: illegal character(%c)\n", line, col, *yytext); col += yyleng;}
 \n                  {col = 1; line++;}
 %%
 int main(int argc, char** argv)

@@ -69,7 +69,8 @@ REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 \'                  {BEGIN CHRLITST; col += yyleng;}
 <CHRLITST><<EOF>>   {printf("Line %d, col %d: unterminated char constant\n", line, col); BEGIN 0;}
 <CHRLITST>{CHRLIT} 	{if(flag == 'Y') printf("CHRLIT('%s)\n", yytext); col += yyleng; BEGIN 0;}
-<CHRLITST>[^\']*\'  {printf("Line %d, col %d: invalid char constant ('%s)\n", line, col, yytext); BEGIN 0;}
+<CHRLITST>[^\'\n]*\n {printf("Line %d, col %d: unterminated char constant\n", line, col); BEGIN 0;}
+<CHRLITST>[^\'\n]*\' {printf("Line %d, col %d: invalid char constant ('%s)\n", line, col, yytext); BEGIN 0;}
 {CHAR}              {if(flag == 'Y') printf("CHAR\n"); col += yyleng;}
 {ELSE}              {if(flag == 'Y') printf("ELSE\n"); col += yyleng;}
 {WHILE}             {if(flag == 'Y') printf("WHILE\n"); col += yyleng;}

@@ -54,7 +54,7 @@ PLUS        "+"
 RBRACE      "}"
 RPAR        ")"
 SEMI        ";"
-RESERVED    (\[|\]|"++"|"--")
+RESERVED    (\[|\]|"++"|"--"|_Bool|_Complex|_Imaginary|auto|break|case|const|continue|default|do|enum|extern|float|for|goto|inline|long|register|restrict|signed|sizeof|static|struct|switch|typedef|union|unsigned|volatile)
 ID          [A-Za-z\_][A-Za-z\_0-9]*
 INTLIT      [0-9]+
 CHRLIT      ([^\n\']|{ESCAPE})\'
@@ -69,7 +69,7 @@ REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 \'                  {BEGIN CHRLITST; col += yyleng;}
 <CHRLITST><<EOF>>   {printf("Line %d, col %d: unterminated char constant\n", line, col); BEGIN 0;}
 <CHRLITST>{CHRLIT} 	{if(flag == 'Y') printf("CHRLIT('%s) %d\n", yytext, yyleng); col += yyleng; BEGIN 0;}
-<CHRLITST>.*(\n)?\'    {printf("Line %d, col %d: invalid char constant ('%s)\n", line, col, yytext); BEGIN 0;}
+<CHRLITST>[^\']\'    {printf("Line %d, col %d: invalid char constant ('%s)\n", line, col, yytext); BEGIN 0;}
 {CHAR}              {if(flag == 'Y') printf("CHAR\n"); col += yyleng;}
 {ELSE}              {if(flag == 'Y') printf("ELSE\n"); col += yyleng;}
 {WHILE}             {if(flag == 'Y') printf("WHILE\n"); col += yyleng;}
@@ -107,14 +107,16 @@ REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 {ID}                {if(flag == 'Y') printf("ID(%s)\n", yytext); col += yyleng;}
 {INTLIT}            {if(flag == 'Y') printf("INTLIT(%s)\n", yytext); col += yyleng;}
 {REALLIT}           {if(flag == 'Y') printf("REALLIT(%s)\n", yytext); col += yyleng;}
-[ ]                 {col += yyleng;}
+[ ]|"\r"            {col += yyleng;}
 .                   {printf("Line %d, col %d: illegal character(%c)\n", line, col, *yytext); col += yyleng;}
 \n                  {col = 1; line++;}
 %%
 int main(int argc, char** argv)
 {
-    if(argv[1][0] == '-' && argv[1][1] == 'l') {
-        flag = 'Y';
+    if(argc > 1) {
+        if(argv[1][0] == '-' && argv[1][1] == 'l') {
+            flag = 'Y';
+        }
     }
     
     yylex();

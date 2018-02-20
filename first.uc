@@ -1,9 +1,49 @@
-int main ( void ) {
-    char i = 'A';
-    while ( i <= 'Z') {
-        putchar (i);
-        i = i + 1;
-    }
-    return 0;
+char
+else
+while
+if
+int
+short
+double
+return
+void
+&
+|
+^
+&&
+=
+*
+,
+/
+==
+>=
+>
+{
+<=
+(
+<
+-
+%
+!=
+!
+||
++
 }
-'\n'
+)
+;
+[
+]
+++
+--
+a29674
+A_467935
+_463kfsg
+F_5o36
+a
+I
+z
+Z
+__/*jhgh*//*
+//porque
+kregj
+//*/

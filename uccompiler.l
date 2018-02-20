@@ -12,13 +12,13 @@ int aux_col = 1;
 /*end states*/
 /*aux*/
 ENTER       \\n
-TAB         "\t"
+TAB         \\t
 BAR         \\\\
 ASPA        \\\"
 ASPAS       \\\'
 OCTO        \\[0-7]{1,3}
 ESCAPE      {ENTER}|{TAB}|{BAR}|{ASPA}|{ASPAS}|{OCTO}
-EXPO        ("+"|"-")?(e|E)[0-9]+
+EXPO        (e|E)("+"|"-")?[0-9]+
 REALLITA    [0-9]+"."[0-9]*{EXPO}?
 REALLITB    "."[0-9]+{EXPO}?
 REALLITC    [0-9]+{EXPO}
@@ -56,9 +56,9 @@ PLUS        "+"
 RBRACE      "}"
 RPAR        ")"
 SEMI        ";"
-RESERVED    (\[|\]|"++"|"--"|_Bool|_Complex|_Imaginary|auto|break|case|const|continue|default|do|enum|extern|float|for|goto|inline|long|register|restrict|signed|sizeof|static|struct|switch|typedef|union|unsigned|volatile)
-ID          [A-Za-z\_][A-Za-z\_0-9]*
+RESERVED    (\[|\]|"++"|"--"|"auto"|"struct"|"break"|"long"|"switch"|"case"|"enum"|"register"|"typedef"|"extern"|"union"|"const"|"float"|"short"|"unsigned"|"continue"|"for"|"signed"|"default"|"goto"|"sizeof"|"volatile"|"do"|"static"|"_Bool"|"_Imaginary"|"restrict"|"_Complex"|"inline")
 INTLIT      [0-9]+
+ID          [A-Za-z\_][A-Za-z\_0-9]*
 CHRLIT      ([^\n\']|{ESCAPE})
 REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 %%
@@ -69,7 +69,7 @@ REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 <COMMENT>\n                 {col = 1; line++;}
 <COMMENT><<EOF>>            {printf("Line %d, col %d: unterminated comment\n", aux_line, aux_col); BEGIN 0;}
 \'                          {BEGIN CHRLITST; aux_line = line; aux_col = col; col += yyleng;}
-<CHRLITST><<EOF>>           {col = 0; printf("Line %d, col %d: unterminated char constant\n", line, col); BEGIN 0;}
+<CHRLITST><<EOF>>           {col = 1; printf("Line %d, col %d: unterminated char constant\n", line, col); BEGIN 0;}
 <CHRLITST>{CHRLIT}\' 	    {if(flag == 'Y') printf("CHRLIT('%s)\n", yytext); col += yyleng; BEGIN 0;}
 <CHRLITST>{CHRLIT}\n        {printf("Line %d, col %d: unterminated char constant\n", aux_line, aux_col); BEGIN 0; col = 0; line++;}
 <CHRLITST>[^\'\n]*\n        {printf("Line %d, col %d: unterminated char constant\n", aux_line, aux_col); BEGIN 0; col = 0; line++;}
@@ -108,11 +108,11 @@ REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 {RBRACE}                    {if(flag == 'Y') printf("RBRACE\n"); col += yyleng;}
 {RPAR}                      {if(flag == 'Y') printf("RPAR\n"); col += yyleng;}
 {SEMI}                      {if(flag == 'Y') printf("SEMI\n"); col += yyleng;}
-{RESERVED}                  {if(flag == 'Y') printf("RESERVED\n"); col += yyleng;}
+{RESERVED}                  {if(flag == 'Y') printf("RESERVED(%s)\n", yytext); col += yyleng;}
 {ID}                        {if(flag == 'Y') printf("ID(%s)\n", yytext); col += yyleng;}
 {INTLIT}                    {if(flag == 'Y') printf("INTLIT(%s)\n", yytext); col += yyleng;}
 {REALLIT}                   {if(flag == 'Y') printf("REALLIT(%s)\n", yytext); col += yyleng;}
-[ ]|"\r"                    {col += yyleng;}
+[ ]|"\r"|"\t"|"\r\n"        {col += yyleng;}
 .                           {printf("Line %d, col %d: illegal character(%c)\n", line, col, *yytext); col += yyleng;}
 \n                          {col = 1; line++;}
 %%

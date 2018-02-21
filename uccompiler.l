@@ -1,4 +1,6 @@
 /*Jorge Marques 2014199355*/
+/*Fábio Antunes 2014206491*/
+/*Grupo Mooshak: jms*/
 %{
 char flag = 'N';
 int col = 1;
@@ -8,7 +10,6 @@ int aux_col = 1;
 %}
 /*states*/
 %X COMMENT
-%X CHRLITST
 /*end states*/
 /*aux*/
 ENTER       \\n
@@ -68,13 +69,9 @@ REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 <COMMENT>.                  {col += yyleng;}
 <COMMENT>\n                 {col = 1; line++;}
 <COMMENT><<EOF>>            {printf("Line %d, col %d: unterminated comment\n", aux_line, aux_col); BEGIN 0;}
-\'                          {BEGIN CHRLITST; aux_line = line; aux_col = col; col += yyleng;}
-<CHRLITST><<EOF>>           {col = 1; printf("Line %d, col %d: unterminated char constant\n", line, col); BEGIN 0;}
-<CHRLITST>{CHRLIT}\' 	    {if(flag == 'Y') printf("CHRLIT('%s)\n", yytext); col += yyleng; BEGIN 0;}
-<CHRLITST>{CHRLIT}\n        {printf("Line %d, col %d: unterminated char constant\n", aux_line, aux_col); BEGIN 0; col = 0; line++;}
-<CHRLITST>[^\'\n]*\n        {printf("Line %d, col %d: unterminated char constant\n", aux_line, aux_col); BEGIN 0; col = 0; line++;}
-<CHRLITST>[^\'\n]*\'        {printf("Line %d, col %d: invalid char constant ('%s)\n", aux_line, aux_col, yytext); BEGIN 0;}
-<CHRLITST>.                 {col += yyleng;}
+\'{CHRLIT}\' 	            {if(flag == 'Y') printf("CHRLIT(%s)\n", yytext); col += yyleng;}
+\'{CHRLIT}*                 {printf("Line %d, col %d: unterminated char constant\n", line, col); col += yyleng;}
+\'{CHRLIT}*\'               {printf("Line %d, col %d: invalid char constant (%s)\n", line, col, yytext); col += yyleng;}
 {CHAR}                      {if(flag == 'Y') printf("CHAR\n"); col += yyleng;}
 {ELSE}                      {if(flag == 'Y') printf("ELSE\n"); col += yyleng;}
 {WHILE}                     {if(flag == 'Y') printf("WHILE\n"); col += yyleng;}
@@ -113,7 +110,7 @@ REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 {INTLIT}                    {if(flag == 'Y') printf("INTLIT(%s)\n", yytext); col += yyleng;}
 {REALLIT}                   {if(flag == 'Y') printf("REALLIT(%s)\n", yytext); col += yyleng;}
 [ ]|"\r"|"\t"|"\r\n"        {col += yyleng;}
-.                           {printf("Line %d, col %d: illegal character(%c)\n", line, col, *yytext); col += yyleng;}
+.                           {printf("Line %d, col %d: illegal character (%c)\n", line, col, *yytext); col += yyleng;}
 \n                          {col = 1; line++;}
 %%
 int main(int argc, char** argv)

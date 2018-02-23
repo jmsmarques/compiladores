@@ -110,8 +110,8 @@ REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 \'([^\n\'\\]|\\.)*\'        {printf("Line %d, col %d: invalid char constant (%s)\n", line, col, yytext); col += yyleng;}
 \'([^\n\'\\]|\\.)*(\\)?     {printf("Line %d, col %d: unterminated char constant\n", line, col); col += yyleng;}
 [ ]|"\t"                    {col += yyleng;}
-.                           {printf("Line %d, col %d: illegal character (%c)\n", line, col, *yytext); col += yyleng;}
 \n|"\r\n"|"\r"              {col = 1; line++;}
+.                           {printf("Line %d, col %d: illegal character (%c)\n", line, col, *yytext); col += yyleng;}
 %%
 int main(int argc, char** argv)
 {

@@ -60,7 +60,7 @@ SEMI        ";"
 RESERVED    (\[|\]|"++"|"--"|"auto"|"struct"|"break"|"long"|"switch"|"case"|"enum"|"register"|"typedef"|"extern"|"union"|"const"|"float"|"short"|"unsigned"|"continue"|"for"|"signed"|"default"|"goto"|"sizeof"|"volatile"|"do"|"static"|"_Bool"|"_Imaginary"|"restrict"|"_Complex"|"inline")
 INTLIT      [0-9]+
 ID          [A-Za-z\_][A-Za-z\_0-9]*
-CHRLIT      ([^\n\']|{ESCAPE})
+CHRLIT      ([^\n\'\\]|{ESCAPE})
 REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 %%
 \/\/.*                      {col += yyleng;}
@@ -69,9 +69,6 @@ REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 <COMMENT>.                  {col += yyleng;}
 <COMMENT>\n                 {col = 1; line++;}
 <COMMENT><<EOF>>            {printf("Line %d, col %d: unterminated comment\n", aux_line, aux_col); BEGIN 0;}
-\'{CHRLIT}\' 	            {if(flag == 'Y') printf("CHRLIT(%s)\n", yytext); col += yyleng;}
-\'{CHRLIT}*                 {printf("Line %d, col %d: unterminated char constant\n", line, col); col += yyleng;}
-\'{CHRLIT}*\'               {printf("Line %d, col %d: invalid char constant (%s)\n", line, col, yytext); col += yyleng;}
 {CHAR}                      {if(flag == 'Y') printf("CHAR\n"); col += yyleng;}
 {ELSE}                      {if(flag == 'Y') printf("ELSE\n"); col += yyleng;}
 {WHILE}                     {if(flag == 'Y') printf("WHILE\n"); col += yyleng;}
@@ -109,9 +106,12 @@ REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 {ID}                        {if(flag == 'Y') printf("ID(%s)\n", yytext); col += yyleng;}
 {INTLIT}                    {if(flag == 'Y') printf("INTLIT(%s)\n", yytext); col += yyleng;}
 {REALLIT}                   {if(flag == 'Y') printf("REALLIT(%s)\n", yytext); col += yyleng;}
-[ ]|"\r"|"\t"|"\r\n"        {col += yyleng;}
+\'{CHRLIT}\' 	            {if(flag == 'Y') printf("CHRLIT(%s)\n", yytext); col += yyleng;}
+\'([^\n\'\\]|\\.)*\'        {printf("Line %d, col %d: invalid char constant (%s)\n", line, col, yytext); col += yyleng;}
+\'([^\n\'\\]|\\.)*(\\)?     {printf("Line %d, col %d: unterminated char constant\n", line, col); col += yyleng;}
+[ ]|"\t"                    {col += yyleng;}
 .                           {printf("Line %d, col %d: illegal character (%c)\n", line, col, *yytext); col += yyleng;}
-\n                          {col = 1; line++;}
+\n|"\r\n"|"\r"              {col = 1; line++;}
 %%
 int main(int argc, char** argv)
 {

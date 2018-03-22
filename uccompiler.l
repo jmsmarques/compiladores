@@ -128,3 +128,7 @@ int main(int argc, char** argv)
 int yywrap() {
     return 1;
 }
+
+void yyerror (char *s) {
+    printf("Line %d, col %d: %s: %s\n", line, col, s, yytext);
+}

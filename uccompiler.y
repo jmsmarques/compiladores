@@ -14,7 +14,7 @@
 %token RETURN
 %token VOID
 %token BITWISEAND
-%token BITEWISEOR
+%token BITWISEOR
 %token BITWISEXOR
 %token AND
 %token ASSIGN
@@ -131,7 +131,7 @@ Expr: Expr PLUS Expr
 Expr: Expr OR Expr
     | Expr AND Expr
     | Expr BITWISEAND Expr
-    | Expr BITEWISEOR Expr
+    | Expr BITWISEOR Expr
     | Expr BITWISEXOR Expr
     ;
 

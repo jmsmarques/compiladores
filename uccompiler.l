@@ -2,6 +2,8 @@
 /*Fábio Antunes 2014206491*/
 /*Grupo Mooshak: jms*/
 %{
+#include "y.tab.h"
+
 char flag = 'N';
 int col = 1;
 int line = 1;

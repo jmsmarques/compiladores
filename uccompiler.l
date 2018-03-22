@@ -69,9 +69,9 @@ REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 <COMMENT>.                  {col += yyleng;}
 <COMMENT>\n                 {col = 1; line++;}
 <COMMENT><<EOF>>            {printf("Line %d, col %d: unterminated comment\n", aux_line, aux_col); BEGIN 0;}
-{CHAR}                      {if(flag == 'Y') printf("CHAR\n"); col += yyleng;}
-{ELSE}                      {if(flag == 'Y') printf("ELSE\n"); col += yyleng;}
-{WHILE}                     {if(flag == 'Y') printf("WHILE\n"); col += yyleng;}
+{CHAR}                      {if(flag == 'Y') printf("CHAR\n"); col += yyleng; return CHAR;}
+{ELSE}                      {if(flag == 'Y') printf("ELSE\n"); col += yyleng; return ELSE;}
+{WHILE}                     {if(flag == 'Y') printf("WHILE\n"); col += yyleng; return WHILE;}
 {IF}                        {if(flag == 'Y') printf("IF\n"); col += yyleng;}
 {INT}                       {if(flag == 'Y') printf("INT\n"); col += yyleng;}
 {SHORT}                     {if(flag == 'Y') printf("SHORT\n"); col += yyleng;}

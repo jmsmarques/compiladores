@@ -4,6 +4,46 @@
     void yyerror (char *s);
 %}
 
+%token CHAR
+%token ELSE
+%token WHILE
+%token IF
+%token INT
+%token SHORT
+%token DOUBLE
+%token RETURN
+%token VOID
+%token BITWISEAND
+%token BITEWISEOR
+%token BITWISEXOR
+%token AND
+%token ASSIGN
+%token MUL
+%token COMMA
+%token DIV
+%token EQ
+%token GE
+%token GT
+%token LBRACE
+%token LE
+%token LPAR
+%token LT
+%token MINUS
+%token MOD
+%token NE
+%token NOT
+%token OR
+%token PLUS
+%token RBRACE
+%token RPAR
+%token SEMI
+%token ID
+%token INTLIT
+%token REALLIT
+%token CHRLIT
+
+%left COMMA
+
 %%
 FunctionsAndDeclarations: FunctionDefinition
     | FunctionDeclaration

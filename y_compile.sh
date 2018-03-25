@@ -1,3 +1,3 @@
 lex uccompiler.l
-yacc -d uccompiler.y
+yacc -d -v uccompiler.y
 cc -o uccompiler y.tab.c lex.yy.c

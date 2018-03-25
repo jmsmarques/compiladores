@@ -2,8 +2,6 @@
     #include <stdio.h>
     int yylex(void);
     void yyerror (char *s);
-
-    
 %}
 
 %token CHAR
@@ -45,14 +43,14 @@
 %token CHRLIT
 
 %right EQ
-%left COMMA
 %left BITWISEAND BITWISEOR BITWISEXOR
 %left OR AND
 %left ASSIGN GE GT LE LT NE
 %left PLUS MINUS NOT
 %left MUL DIV MOD
 %left LPAR RPAR
-%nonassoc RETURN ELSE
+%left COMMA
+%nonassoc ELSE
 
 %%
 program: FunctionsAndDeclarations
@@ -61,7 +59,9 @@ program: FunctionsAndDeclarations
 FunctionsAndDeclarations: FunctionDefinition 
     | FunctionDeclaration 
     | Declaration
-    | FunctionsAndDeclarations FunctionsAndDeclarations
+    | FunctionDefinition FunctionsAndDeclarations
+    | FunctionDeclaration FunctionsAndDeclarations
+    | Declaration FunctionsAndDeclarations
     ;
 
 FunctionDefinition: TypeSpec FunctionDeclarator FunctionBody
@@ -117,12 +117,11 @@ Statement: SEMI
     | Expr SEMI
     ;
 
-MultStatement: MultStatement MultStatement
-    | Statement
+MultStatement: Statement MultStatement
+    | 
     ;
 
-Statement: LBRACE RBRACE
-    | LBRACE MultStatement RBRACE
+Statement: LBRACE MultStatement RBRACE
     ;
 
 Statement: IF LPAR Expr RPAR Statement
@@ -171,7 +170,7 @@ Expr: PLUS Expr
     | NOT Expr
     ;
 
-CommaExpr: CommaExpr COMMA Expr
+CommaExpr: COMMA Expr CommaExpr
     |
     ;
 

@@ -2,6 +2,8 @@
     #include <stdio.h>
     int yylex(void);
     void yyerror (char *s);
+
+    
 %}
 
 %token CHAR
@@ -42,9 +44,20 @@
 %token REALLIT
 %token CHRLIT
 
+%right EQ
 %left COMMA
+%left BITWISEAND BITWISEOR BITWISEXOR
+%left OR AND
+%left ASSIGN GE GT LE LT NE
+%left PLUS MINUS NOT
+%left MUL DIV MOD
+%left LPAR RPAR
+%nonassoc RETURN ELSE
 
 %%
+program: FunctionsAndDeclarations
+    ;
+
 FunctionsAndDeclarations: FunctionDefinition 
     | FunctionDeclaration 
     | Declaration
@@ -86,6 +99,9 @@ Declaration: TypeSpec Declarator SEMI
     | TypeSpec Declarator CommaDeclarator SEMI
     ;
 
+Declaration: error SEMI
+    ;
+
 TypeSpec: CHAR
     | INT
     | VOID
@@ -101,9 +117,12 @@ Statement: SEMI
     | Expr SEMI
     ;
 
-Statement: LBRACE Statement RBRACE
-    |
-    | Statement Statement
+MultStatement: MultStatement MultStatement
+    | Statement
+    ;
+
+Statement: LBRACE RBRACE
+    | LBRACE MultStatement RBRACE
     ;
 
 Statement: IF LPAR Expr RPAR Statement
@@ -115,6 +134,10 @@ Statement: WHILE LPAR Expr RPAR Statement
 
 Statement: RETURN Expr SEMI
     | RETURN SEMI
+    ;
+
+Statement: error SEMI
+    | LBRACE error RBRACE
     ;
 
 Expr: Expr ASSIGN Expr
@@ -149,7 +172,7 @@ Expr: PLUS Expr
     ;
 
 CommaExpr: CommaExpr COMMA Expr
-    | COMMA Expr
+    |
     ;
 
 Expr: ID LPAR RPAR
@@ -161,5 +184,9 @@ Expr: ID
     | CHRLIT
     | REALLIT
     | LPAR Expr RPAR
+    ;
+
+Expr: ID LPAR error RPAR
+    | LPAR error RPAR
     ;
 %%

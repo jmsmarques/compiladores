@@ -42,11 +42,11 @@
 %token REALLIT
 %token CHRLIT
 
-%right EQ
+%right ASSIGN NOT
 %left BITWISEAND BITWISEOR BITWISEXOR
 %left OR AND
-%left ASSIGN GE GT LE LT NE
-%left PLUS MINUS NOT
+%left EQ GE GT LE LT NE
+%left PLUS MINUS
 %left MUL DIV MOD
 %left LPAR RPAR
 %left COMMA

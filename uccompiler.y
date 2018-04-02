@@ -57,12 +57,12 @@
 program: FunctionsAndDeclarations
     ;
 
-FunctionsAndDeclarations: FunctionDefinition 
-    | FunctionDeclaration 
-    | Declaration
-    | FunctionDefinition FunctionsAndDeclarations
-    | FunctionDeclaration FunctionsAndDeclarations
-    | Declaration FunctionsAndDeclarations
+FunctionsAndDeclarations: FunctionDefinition {}
+    | FunctionDeclaration {}
+    | Declaration {}
+    | FunctionDefinition FunctionsAndDeclarations {}
+    | FunctionDeclaration FunctionsAndDeclarations {}
+    | Declaration FunctionsAndDeclarations {}
     ;
 
 FunctionDefinition: TypeSpec FunctionDeclarator FunctionBody
@@ -76,9 +76,6 @@ DeclarationsAndStatements: Statement DeclarationsAndStatements
     | Declaration DeclarationsAndStatements
     | Statement
     | Declaration
-    ;
-
-DeclarationsAndStatements: error SEMI
     ;
 
 FunctionDeclaration: TypeSpec FunctionDeclarator SEMI
@@ -104,14 +101,14 @@ Declaration: TypeSpec Declarator SEMI
     ;
 
 
-TypeSpec: CHAR
+TypeSpec: CHAR {}
     | INT
     | VOID
-    | SHORT
+    | SHORT {}
     | DOUBLE
     ;
 
-Declarator: ID 
+Declarator: ID {}
     | ID ASSIGN Expr
     ;
 
@@ -131,13 +128,15 @@ Statement: IF LPAR Expr RPAR Statement
     ;
 
 Statement: WHILE LPAR Expr RPAR Statement
+    | WHILE LPAR error RPAR
     ;
 
 Statement: RETURN Expr SEMI
     | RETURN SEMI
     ;
 
-Statement: LBRACE error RBRACE
+Statement: LBRACE error RBRACE {printf("error statement\n");}
+    | error SEMI
     ;
 
 Expr: Expr ASSIGN Expr
@@ -186,7 +185,7 @@ Expr: ID
     | LPAR Expr RPAR
     ;
 
-Expr: ID LPAR error RPAR
-    | LPAR error RPAR
+Expr: ID LPAR error RPAR {printf("error expr 1\n");}
+    | LPAR error RPAR {printf("error expr 2\n");}
     ;
 %%

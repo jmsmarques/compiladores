@@ -1,3 +1,6 @@
+int a;
+char b d;
+
 int main(void) {
     char i = 'A';
     while(i <= 'Z') {

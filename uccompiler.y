@@ -54,6 +54,7 @@
 
 %%
 program: FunctionsAndDeclarations
+    |
     ;
 
 FunctionsAndDeclarations: FunctionDefinition 
@@ -75,6 +76,9 @@ DeclarationsAndStatements: Statement DeclarationsAndStatements
     | Declaration DeclarationsAndStatements
     | Statement
     | Declaration
+    ;
+
+DeclarationsAndStatements: error SEMI
     ;
 
 FunctionDeclaration: TypeSpec FunctionDeclarator SEMI
@@ -99,8 +103,6 @@ Declaration: TypeSpec Declarator SEMI
     | TypeSpec Declarator CommaDeclarator SEMI
     ;
 
-Declaration: error SEMI
-    ;
 
 TypeSpec: CHAR
     | INT
@@ -135,8 +137,7 @@ Statement: RETURN Expr SEMI
     | RETURN SEMI
     ;
 
-Statement: error SEMI
-    | LBRACE error RBRACE
+Statement: LBRACE error RBRACE
     ;
 
 Expr: Expr ASSIGN Expr
@@ -171,11 +172,11 @@ Expr: PLUS Expr
     ;
 
 CommaExpr: COMMA Expr CommaExpr
-    |
+    | RPAR
     ;
 
 Expr: ID LPAR RPAR
-    | ID LPAR Expr CommaExpr RPAR
+    | ID LPAR Expr CommaExpr 
     ;
 
 Expr: ID

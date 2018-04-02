@@ -1,3 +1,3 @@
 #!/bin/sh
 
-zip -r uccompiler.zip uccompiler.l
+zip -r uccompiler.zip uccompiler.l uccompiler.y

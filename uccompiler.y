@@ -41,6 +41,7 @@
 %token INTLIT
 %token REALLIT
 %token CHRLIT
+%token RESERVED
 
 %right ASSIGN NOT
 %left BITWISEAND BITWISEOR BITWISEXOR
@@ -54,7 +55,6 @@
 
 %%
 program: FunctionsAndDeclarations
-    |
     ;
 
 FunctionsAndDeclarations: FunctionDefinition 

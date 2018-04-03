@@ -134,7 +134,7 @@ Statement: SEMI
     | WHILE IfExpr ErrorStatement
     | RETURN Expr SEMI
     | RETURN SEMI
-    | LBRACE error RBRACE {printf("error statement\n");}
+    | LBRACE error RBRACE 
     ;
 
 IfExpr: LPAR Expr RPAR
@@ -169,7 +169,7 @@ Expr: Expr ASSIGN Expr
     | CHRLIT
     | REALLIT
     | LPAR Expr RPAR
-    | ID LPAR error RPAR {printf("error expr 1\n");}
-    | LPAR error RPAR {printf("error expr 2\n");}
+    | ID LPAR error RPAR 
+    | LPAR error RPAR 
     ;
 %%

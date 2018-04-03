@@ -1,8 +1,5 @@
 %{
-    #include <stdio.h>
-    #include "structs.h"
-    int yylex(void);
-    void yyerror (char *s);
+    #include "structs.h"  
 %}
 
 %token CHAR

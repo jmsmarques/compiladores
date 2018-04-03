@@ -43,14 +43,19 @@
 %token CHRLIT
 %token RESERVED
 
-%right ASSIGN NOT
-%left BITWISEAND BITWISEOR BITWISEXOR
-%left OR AND
-%left EQ GE GT LE LT NE
+%right ASSIGN
+%left COMMA
+%left OR
+%left AND
+%left BITWISEOR
+%left BITWISEXOR
+%left BITWISEAND
+%left EQ NE
+%left GE GT LE LT
 %left PLUS MINUS
 %left MUL DIV MOD
-%left LPAR RPAR
-%left COMMA
+%right NOT
+%nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
 
 %%
@@ -98,6 +103,7 @@ CommaDeclarator: CommaDeclarator COMMA Declarator
 
 Declaration: TypeSpec Declarator SEMI
     | TypeSpec Declarator CommaDeclarator SEMI
+    | error SEMI
     ;
 
 
@@ -112,80 +118,58 @@ Declarator: ID {}
     | ID ASSIGN Expr
     ;
 
-Statement: SEMI
-    | Expr SEMI
-    ;
-
-MultStatement: Statement MultStatement
+MultStatement: ErrorStatement MultStatement
     | 
     ;
 
-Statement: LBRACE MultStatement RBRACE
-    ;
-
-Statement: IF LPAR Expr RPAR Statement
-    | IF LPAR Expr RPAR Statement ELSE Statement
-    ;
-
-Statement: WHILE LPAR Expr RPAR Statement
-    | WHILE LPAR error RPAR
-    ;
-
-Statement: RETURN Expr SEMI
-    | RETURN SEMI
-    ;
-
-Statement: LBRACE error RBRACE {printf("error statement\n");}
+ErrorStatement: Statement
     | error SEMI
+    ;
+
+Statement: SEMI
+    | Expr SEMI 
+    | LBRACE MultStatement RBRACE
+    | IF IfExpr ErrorStatement %prec LOWER_THAN_ELSE
+    | IF IfExpr ErrorStatement ELSE ErrorStatement
+    | WHILE IfExpr ErrorStatement
+    | RETURN Expr SEMI
+    | RETURN SEMI
+    | LBRACE error RBRACE {printf("error statement\n");}
+    ;
+
+IfExpr: LPAR Expr RPAR
+    | error RPAR
     ;
 
 Expr: Expr ASSIGN Expr
     | Expr COMMA Expr
-    ;
-
-Expr: Expr PLUS Expr
+    | Expr PLUS Expr
     | Expr MINUS Expr
     | Expr MUL Expr
     | Expr DIV Expr
     | Expr MOD Expr
-    ;
-
-Expr: Expr OR Expr
+    | Expr OR Expr
     | Expr AND Expr
     | Expr BITWISEAND Expr
     | Expr BITWISEOR Expr
     | Expr BITWISEXOR Expr
-    ;
-
-Expr: Expr EQ Expr
+    | Expr EQ Expr
     | Expr NE Expr 
     | Expr LE Expr
     | Expr GE Expr 
     | Expr LT Expr
     | Expr GT Expr
-    ;
-
-Expr: PLUS Expr
+    | PLUS Expr
     | MINUS Expr
     | NOT Expr
-    ;
-
-CommaExpr: COMMA Expr CommaExpr
-    | RPAR
-    ;
-
-Expr: ID LPAR RPAR
-    | ID LPAR Expr CommaExpr 
-    ;
-
-Expr: ID
+    | ID LPAR RPAR
+    | ID LPAR Expr RPAR 
+    | ID
     | INTLIT
     | CHRLIT
     | REALLIT
     | LPAR Expr RPAR
-    ;
-
-Expr: ID LPAR error RPAR {printf("error expr 1\n");}
+    | ID LPAR error RPAR {printf("error expr 1\n");}
     | LPAR error RPAR {printf("error expr 2\n");}
     ;
 %%

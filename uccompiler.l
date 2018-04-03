@@ -105,10 +105,10 @@ REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 {RPAR}                      {if(flag == 'Y') printf("RPAR\n");  col += yyleng; if(flag != 'Y') return RPAR;}
 {SEMI}                      {if(flag == 'Y') printf("SEMI\n");  col += yyleng; if(flag != 'Y') return SEMI;}
 {RESERVED}                  {if(flag == 'Y') printf("RESERVED(%s)\n", yytext); col += yyleng; return RESERVED;}
-{ID}                        {if(flag == 'Y') printf("ID(%s)\n", yytext);  col += yyleng; if(flag != 'Y') return ID;}
-{INTLIT}                    {if(flag == 'Y') printf("INTLIT(%s)\n", yytext);  col += yyleng; if(flag != 'Y') return INTLIT;}
-{REALLIT}                   {if(flag == 'Y') printf("REALLIT(%s)\n", yytext);  col += yyleng; if(flag != 'Y') return REALLIT;}
-\'{CHRLIT}\' 	            {if(flag == 'Y') printf("CHRLIT(%s)\n", yytext);  col += yyleng; if(flag != 'Y') return CHRLIT;}
+{ID}                        {if(flag == 'Y') printf("ID(%s)\n", yytext);  col += yyleng; if(flag != 'Y') yylval.id = (char*)strdup(yytext); if(flag != 'Y') return ID;}
+{INTLIT}                    {if(flag == 'Y') printf("INTLIT(%s)\n", yytext);  col += yyleng; if(flag != 'Y') yylval.id = (char*)strdup(yytext); if(flag != 'Y') return INTLIT;}
+{REALLIT}                   {if(flag == 'Y') printf("REALLIT(%s)\n", yytext);  col += yyleng; if(flag != 'Y') yylval.id = (char*)strdup(yytext); if(flag != 'Y') return REALLIT;}
+\'{CHRLIT}\' 	            {if(flag == 'Y') printf("CHRLIT(%s)\n", yytext);  col += yyleng; if(flag != 'Y') yylval.id = (char*)strdup(yytext); if(flag != 'Y') return CHRLIT;}
 \'([^\n\'\\]|\\.)*\'        {printf("Line %d, col %d: invalid char constant (%s)\n", line, col, yytext); col += yyleng;}
 \'([^\n\'\\]|\\.)*(\\)?     {printf("Line %d, col %d: unterminated char constant\n", line, col); col += yyleng;}
 [ ]|"\t"                    {col += yyleng;}

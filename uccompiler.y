@@ -118,27 +118,24 @@ Declarator: ID {}
     | ID ASSIGN Expr
     ;
 
-MultStatement: ErrorStatement MultStatement
-    | 
+MultStatement: ErrorStatement MultStatement 
+    | ErrorStatement
     ;
 
 ErrorStatement: Statement
-    | error SEMI
+    | error SEMI 
     ;
 
 Statement: SEMI
     | Expr SEMI 
-    | LBRACE MultStatement RBRACE
-    | IF IfExpr ErrorStatement %prec LOWER_THAN_ELSE
-    | IF IfExpr ErrorStatement ELSE ErrorStatement
-    | WHILE IfExpr ErrorStatement
+    | LBRACE RBRACE
+    | LBRACE MultStatement RBRACE 
+    | IF LPAR Expr RPAR ErrorStatement %prec LOWER_THAN_ELSE
+    | IF LPAR Expr RPAR ErrorStatement ELSE ErrorStatement
+    | WHILE LPAR Expr RPAR ErrorStatement
     | RETURN Expr SEMI
     | RETURN SEMI
     | LBRACE error RBRACE 
-    ;
-
-IfExpr: LPAR Expr RPAR
-    | error RPAR
     ;
 
 Expr: Expr ASSIGN Expr
@@ -150,7 +147,7 @@ Expr: Expr ASSIGN Expr
     | Expr MOD Expr
     | Expr OR Expr
     | Expr AND Expr
-    | Expr BITWISEAND Expr
+    | Expr BITWISEAND Expr 
     | Expr BITWISEOR Expr
     | Expr BITWISEXOR Expr
     | Expr EQ Expr

@@ -1,6 +1,6 @@
 int main(void) {
     char i = 'A';
-    while(i <= 'Z') {
+    while (i <= 'Z') {
         putchar(i);
         i = i + 1;
     }
@@ -13,8 +13,18 @@ int main(void) {
 
     char v = 1 = 2;
 
-    char p = f(1, 2, 5, 5)
+    void p = f(1, 2, 5, 5);
     int h = g();
     char l  = x;
+
+    ;
+    if{i=1};
+    if(&1);
+    if({1});
+    if(1=);
+    if(!1);
     return 0;
+}
+void main(void) {
+    return;
 }

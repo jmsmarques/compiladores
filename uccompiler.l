@@ -123,6 +123,9 @@ int main(int argc, char** argv)
             yylex();
             return 0;
         }
+        else if(argv[1][0] == '-' && argv[1][1] == 't') {
+            flag = 'T';
+        }
     }
     
     yyparse();

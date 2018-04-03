@@ -14,3 +14,24 @@ void addChild(node father, node son) {
 void addSibling(node sibling1, node sibling2) {
     sibling1->sibling = sibling2;
 }
+
+void printTree(node root) {
+    if(root == NULL) {
+        return;
+    }
+    else {
+        printf("%s\n", root->tag);
+    }
+    printTree(root->child);
+    printTree(root->sibling);
+    free(root);
+}
+
+void freeTree(node root) {
+    if(root == NULL) {
+        return;
+    }
+    freeTree(root->child);
+    freeTree(root->sibling);
+    free(root);
+}

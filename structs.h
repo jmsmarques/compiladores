@@ -14,5 +14,6 @@ void yyerror (char *s);
 node createNode(char* tagValue);
 void addChild(node father, node son);
 void addSibling(node sibling1, node sibling2);
-
+void printTree(node root);
+void freeTree(node root);
 extern char flag;

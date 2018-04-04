@@ -1,5 +1,7 @@
 %{
     #include "structs.h"  
+
+    node root;
 %}
 
 %token CHAR
@@ -43,7 +45,26 @@
 
 %union {
     char* id;
+    struct _tree_node* no;
 }
+
+%type <no> program
+%type <no> FunctionsAndDeclarations
+%type <no> FunctionDefinition
+%type <no> FunctionBody
+%type <no> DeclarationsAndStatements
+%type <no> FunctionDeclaration
+%type <no> FunctionDeclarator
+%type <no> ParameterList
+%type <no> ParameterDeclaration
+%type <no> CommaDeclarator
+%type <no> Declaration
+%type <no> TypeSpec
+%type <no> Declarator
+%type <no> MultStatement
+%type <no> ErrorStatement
+%type <no> Statement
+%type <no> Expr
 
 %right ASSIGN
 %left COMMA
@@ -61,10 +82,10 @@
 %nonassoc ELSE
 
 %%
-program: FunctionsAndDeclarations                               {}
+program: FunctionsAndDeclarations                               {if(flag == 'T') root = createNode("Program"); if(flag == 'T') addChild(root, $1); if(flag == 'T') $$ = root; if(flag == 'T') printTree(root, 0);}
     ;
 
-FunctionsAndDeclarations: FunctionDefinition                    {}
+FunctionsAndDeclarations: FunctionDefinition                    {if(flag == 'T')}
     | FunctionDeclaration                                       {}
     | Declaration                                               {}
     | FunctionDefinition FunctionsAndDeclarations               {}

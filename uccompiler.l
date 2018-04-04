@@ -127,7 +127,6 @@ int main(int argc, char** argv)
             flag = 'T';
         }
     }
-    
     yyparse();
     return 0;
 }

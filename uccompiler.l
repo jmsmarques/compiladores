@@ -121,13 +121,18 @@ int main(int argc, char** argv)
         if(argv[1][0] == '-' && argv[1][1] == 'l') {
             flag = 'Y';
             yylex();
-            return 0;
+            
         }
         else if(argv[1][0] == '-' && argv[1][1] == 't') {
             flag = 'T';
+            yyparse();
+            yylex_destroy();
         }
     }
-    yyparse();
+    else {
+        yyparse();
+        yylex_destroy();
+    }
     return 0;
 }
 

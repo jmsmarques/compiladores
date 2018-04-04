@@ -22,8 +22,18 @@ void addChild(node father, node son) {
     father->child = son;
 }
 
+void addNullChild(node father) {
+    node aux;
+    aux = (node) malloc(sizeof(tree_node));
+    aux->tag = (char*) malloc(5*sizeof(char));
+    strcpy(aux->tag, "NULL");
+    aux->child = NULL;
+    aux->sibling = NULL;
+
+    father->child = aux;
+}
+
 void addSibling(node sibling1, node sibling2) {
-   // printf("%s %s\n", sibling1->tag, sibling2->tag);
     while(sibling1->sibling != NULL) {
         sibling1 = sibling1->sibling;
     }
@@ -48,7 +58,9 @@ void printTree(node root, int level) {
     free(root->tag);
     free(root->child);
     free(root->sibling);
-    free(root);
+    if(level == 0) {
+        free(root);
+    }
 }
 
 void freeTree(node root) {
@@ -61,5 +73,4 @@ void freeTree(node root) {
     free(root->tag);
     free(root->child);
     free(root->sibling);
-    free(root);
 }

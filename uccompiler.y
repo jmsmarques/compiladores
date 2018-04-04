@@ -130,11 +130,11 @@ Declaration: TypeSpec Declarator SEMI                           {if(flag == 'T')
     | error SEMI                                                {print_flag = 'N'; freeTree($$);}
     ;
 
-TypeSpec: CHAR                                                  {if(flag = 'T'){ $$ = createNode("Char");};}
-    | INT                                                       {if(flag = 'T'){ $$ = createNode("Int");};}
-    | VOID                                                      {if(flag = 'T'){ $$ = createNode("Void");};}
-    | SHORT                                                     {if(flag = 'T'){ $$ = createNode("Short");};}
-    | DOUBLE                                                    {if(flag = 'T'){ $$ = createNode("Double");};}
+TypeSpec: CHAR                                                  {if(flag == 'T'){ $$ = createNode("Char");};}
+    | INT                                                       {if(flag == 'T'){ $$ = createNode("Int");};}
+    | VOID                                                      {if(flag == 'T'){ $$ = createNode("Void");};}
+    | SHORT                                                     {if(flag == 'T'){ $$ = createNode("Short");};}
+    | DOUBLE                                                    {if(flag == 'T'){ $$ = createNode("Double");};}
     ;
 
 Declarator: ID                                                  {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1);};}

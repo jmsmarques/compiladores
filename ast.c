@@ -23,6 +23,7 @@ void addChild(node father, node son) {
 }
 
 void addSibling(node sibling1, node sibling2) {
+   // printf("%s %s\n", sibling1->tag, sibling2->tag);
     sibling1->sibling = sibling2;
 }
 

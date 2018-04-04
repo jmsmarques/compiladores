@@ -93,7 +93,7 @@ FunctionsAndDeclarations: FunctionDefinition                    {if(flag == 'T')
     | FunctionsAndDeclarations Declaration                      {if(flag == 'T'){ addSibling($1, $2); $$ = $1;}}
     ;
 
-FunctionDefinition: TypeSpec FunctionDeclarator FunctionBody    {if(flag == 'T'){ $$ = createNode("FuncDefinition"); addChild($$, $1); addSibling($1, $2); addSibling($2, $3);};}
+FunctionDefinition: TypeSpec FunctionDeclarator FunctionBody    {if(flag == 'T'){ $$ = createNode("FuncDefinition"); addChild($$, $1); addSibling($1, $2); addSibling($2, $3);};printf("ola: %s\n", $2->sibling->tag);}
     ;
 
 FunctionBody: LBRACE DeclarationsAndStatements RBRACE           {if(flag == 'T'){ $$ = createNode("FuncBody"); addChild($$, $2);};}
@@ -109,15 +109,15 @@ DeclarationsAndStatements: DeclarationsAndStatements Statement  {if(flag == 'T')
 FunctionDeclaration: TypeSpec FunctionDeclarator SEMI           {if(flag == 'T'){ $$ = createNode("FuncDeclaration"); addChild($$, $1); addSibling($1, $2);};}
     ;
 
-FunctionDeclarator: ID LPAR ParameterList RPAR                  {}//if(flag == 'T'){ $$ = createNodeTerminal("ID", $1); addSibling($$, $3);};}
+FunctionDeclarator: ID LPAR ParameterList RPAR                  {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1); addSibling($$, $3);};printf("oi: %s\n", $3->tag);}
     ;
 
-ParameterList: ParameterDeclaration                             {}
-    | ParameterList COMMA ParameterDeclaration                  {}
+ParameterList: ParameterDeclaration                             {if(flag == 'T'){ $$ = createNode("ParamList"); addChild($$, $1);};printf("%s %s\n", $1->tag, $$->tag);}
+    | ParameterList COMMA ParameterDeclaration                  {if(flag == 'T'){ addSibling($1, $3); $$ = $1;};}
     ;
 
-ParameterDeclaration: TypeSpec ID                               {}
-    | TypeSpec                                                  {}
+ParameterDeclaration: TypeSpec ID                               {if(flag == 'T'){ $$ = createNode("ParamDeclaration"); addChild($$, $1); addChild($$, createNodeTerminal("Id", $2));};}
+    | TypeSpec                                                  {if(flag == 'T'){ $$ = createNode("ParamDeclaration"); addChild($$, $1);};}
     ;
 
 CommaDeclarator: CommaDeclarator COMMA Declarator               {}
@@ -126,14 +126,14 @@ CommaDeclarator: CommaDeclarator COMMA Declarator               {}
 
 Declaration: TypeSpec Declarator SEMI                           {}
     | TypeSpec Declarator CommaDeclarator SEMI                  {}
-    | error SEMI                                                {}
+    | error SEMI                                                {flag = 'N'; freeTree($$);}
     ;
 
-TypeSpec: CHAR                                                  {}
-    | INT                                                       {}
-    | VOID                                                      {}
-    | SHORT                                                     {}
-    | DOUBLE                                                    {}
+TypeSpec: CHAR                                                  {if(flag = 'T'){ $$ = createNode("Char");};}
+    | INT                                                       {if(flag = 'T'){ $$ = createNode("Int");};}
+    | VOID                                                      {if(flag = 'T'){ $$ = createNode("Void");};}
+    | SHORT                                                     {if(flag = 'T'){ $$ = createNode("Short");};}
+    | DOUBLE                                                    {if(flag = 'T'){ $$ = createNode("Double");};}
     ;
 
 Declarator: ID                                                  {}
@@ -145,7 +145,7 @@ MultStatement: ErrorStatement MultStatement                     {}
     ;
 
 ErrorStatement: Statement                                       {}
-    | error SEMI                                                {}
+    | error SEMI                                                {flag = 'N'; freeTree($$);}
     ;
 
 Statement: SEMI                                                 {}
@@ -188,7 +188,7 @@ Expr: Expr ASSIGN Expr                                          {}
     | CHRLIT                                                    {}
     | REALLIT                                                   {}
     | LPAR Expr RPAR                                            {}
-    | ID LPAR error RPAR                                        {}
-    | LPAR error RPAR                                           {}
+    | ID LPAR error RPAR                                        {flag = 'N'; freeTree($$);}
+    | LPAR error RPAR                                           {flag = 'N'; freeTree($$);}
     ;
 %%

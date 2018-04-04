@@ -83,7 +83,7 @@
 %nonassoc ELSE
 
 %%
-program: FunctionsAndDeclarations                               {if(flag == 'T'){ root = createNode("Program"); addChild(root, $1); $$ = root;}; if(print_flag == 'Y') printTree(root, 0);}
+program: FunctionsAndDeclarations                               {if(flag == 'T'){ root = createNode("Program"); addChild(root, $1); $$ = root;}; if(print_flag == 'Y'){ printTree(root, 0);} else { freeTree(root);};}
     ;
 
 FunctionsAndDeclarations: FunctionDefinition                    {if(flag == 'T'){ $$ = $1;}}
@@ -122,12 +122,12 @@ ParameterDeclaration: TypeSpec ID                               {if(flag == 'T')
     ;
 
 CommaDeclarator: CommaDeclarator COMMA Declarator               {}
-    | COMMA Declarator                                          {}
+    | COMMA Declarator                                          {if(flag == 'T'){ addSibling($1, $2); $$ = $1;};}
     ;
 
 Declaration: TypeSpec Declarator SEMI                           {if(flag == 'T'){ addSibling($1, $2); $$ = $1;};}
-    | TypeSpec Declarator CommaDeclarator SEMI                  {}
-    | error SEMI                                                {print_flag = 'N'; freeTree($$);}
+    | TypeSpec Declarator CommaDeclarator SEMI                  {if(flag == 'T'){ addSibling($1, $2); addSibling($2, $3); $$ = $1;};}
+    | error SEMI                                                {print_flag = 'N';}
     ;
 
 TypeSpec: CHAR                                                  {if(flag == 'T'){ $$ = createNode("Char");};}
@@ -146,7 +146,7 @@ MultStatement: ErrorStatement MultStatement                     {}
     ;
 
 ErrorStatement: Statement                                       {}
-    | error SEMI                                                {print_flag = 'N'; freeTree($$);}
+    | error SEMI                                                {print_flag = 'N';}
     ;
 
 Statement: SEMI                                                 {}
@@ -158,7 +158,7 @@ Statement: SEMI                                                 {}
     | WHILE LPAR Expr RPAR ErrorStatement                       {}
     | RETURN Expr SEMI                                          {}
     | RETURN SEMI                                               {}
-    | LBRACE error RBRACE                                       {}
+    | LBRACE error RBRACE                                       {print_flag = 'N';}
     ;
 
 Expr: Expr ASSIGN Expr                                          {}
@@ -184,12 +184,12 @@ Expr: Expr ASSIGN Expr                                          {}
     | NOT Expr                                                  {}
     | ID LPAR RPAR                                              {}
     | ID LPAR Expr RPAR                                         {}
-    | ID                                                        {}
-    | INTLIT                                                    {}
-    | CHRLIT                                                    {}
-    | REALLIT                                                   {}
+    | ID                                                        {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1);};}
+    | INTLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("IntLit", $1);};}
+    | CHRLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("ChrLit", $1);};}
+    | REALLIT                                                   {if(flag == 'T'){ $$ = createNodeTerminal("RealLit", $1);};}
     | LPAR Expr RPAR                                            {}
-    | ID LPAR error RPAR                                        {print_flag = 'N'; freeTree($$);}
-    | LPAR error RPAR                                           {print_flag = 'N'; freeTree($$);}
+    | ID LPAR error RPAR                                        {print_flag = 'N';}
+    | LPAR error RPAR                                           {print_flag = 'N';}
     ;
 %%

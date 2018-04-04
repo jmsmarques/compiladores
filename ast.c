@@ -26,7 +26,7 @@ void addNullChild(node father) {
     node aux;
     aux = (node) malloc(sizeof(tree_node));
     aux->tag = (char*) malloc(5*sizeof(char));
-    strcpy(aux->tag, "NULL");
+    strcpy(aux->tag, "Null");
     aux->child = NULL;
     aux->sibling = NULL;
 

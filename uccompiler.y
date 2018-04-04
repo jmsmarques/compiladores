@@ -2,6 +2,7 @@
     #include "structs.h"  
 
     node root;
+    char print_flag = 'Y';
 %}
 
 %token CHAR
@@ -82,18 +83,18 @@
 %nonassoc ELSE
 
 %%
-program: FunctionsAndDeclarations                               {if(flag == 'T'){ root = createNode("Program"); addChild(root, $1); $$ = root; printTree(root, 0);}}
+program: FunctionsAndDeclarations                               {if(flag == 'T'){ root = createNode("Program"); addChild(root, $1); $$ = root;}; if(print_flag == 'Y') printTree(root, 0);}
     ;
 
 FunctionsAndDeclarations: FunctionDefinition                    {if(flag == 'T'){ $$ = $1;}}
     | FunctionDeclaration                                       {if(flag == 'T'){ $$ = $1;}}
-    | Declaration                                               {if(flag == 'T'){ $$ = $1;}}
+    | Declaration                                               {if(flag == 'T'){ $$ = $1;};}
     | FunctionsAndDeclarations FunctionDefinition               {if(flag == 'T'){ addSibling($1, $2); $$ = $1;}}
     | FunctionsAndDeclarations FunctionDeclaration              {if(flag == 'T'){ addSibling($1, $2); $$ = $1;}}
     | FunctionsAndDeclarations Declaration                      {if(flag == 'T'){ addSibling($1, $2); $$ = $1;}}
     ;
 
-FunctionDefinition: TypeSpec FunctionDeclarator FunctionBody    {if(flag == 'T'){ $$ = createNode("FuncDefinition"); addChild($$, $1); addSibling($1, $2); addSibling($2, $3);};printf("ola: %s\n", $2->sibling->tag);}
+FunctionDefinition: TypeSpec FunctionDeclarator FunctionBody    {if(flag == 'T'){ $$ = createNode("FuncDefinition"); addChild($$, $1); addSibling($1, $2); addSibling($2, $3);};}
     ;
 
 FunctionBody: LBRACE DeclarationsAndStatements RBRACE           {if(flag == 'T'){ $$ = createNode("FuncBody"); addChild($$, $2);};}
@@ -109,10 +110,10 @@ DeclarationsAndStatements: DeclarationsAndStatements Statement  {if(flag == 'T')
 FunctionDeclaration: TypeSpec FunctionDeclarator SEMI           {if(flag == 'T'){ $$ = createNode("FuncDeclaration"); addChild($$, $1); addSibling($1, $2);};}
     ;
 
-FunctionDeclarator: ID LPAR ParameterList RPAR                  {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1); addSibling($$, $3);};printf("oi: %s\n", $3->tag);}
+FunctionDeclarator: ID LPAR ParameterList RPAR                  {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1); addSibling($$, $3);};}
     ;
 
-ParameterList: ParameterDeclaration                             {if(flag == 'T'){ $$ = createNode("ParamList"); addChild($$, $1);};printf("%s %s\n", $1->tag, $$->tag);}
+ParameterList: ParameterDeclaration                             {if(flag == 'T'){ $$ = createNode("ParamList"); addChild($$, $1);};}
     | ParameterList COMMA ParameterDeclaration                  {if(flag == 'T'){ addSibling($1, $3); $$ = $1;};}
     ;
 
@@ -124,9 +125,9 @@ CommaDeclarator: CommaDeclarator COMMA Declarator               {}
     | COMMA Declarator                                          {}
     ;
 
-Declaration: TypeSpec Declarator SEMI                           {}
+Declaration: TypeSpec Declarator SEMI                           {if(flag == 'T'){ addSibling($1, $2); $$ = $1;};}
     | TypeSpec Declarator CommaDeclarator SEMI                  {}
-    | error SEMI                                                {flag = 'N'; freeTree($$);}
+    | error SEMI                                                {print_flag = 'N'; freeTree($$);}
     ;
 
 TypeSpec: CHAR                                                  {if(flag = 'T'){ $$ = createNode("Char");};}
@@ -136,7 +137,7 @@ TypeSpec: CHAR                                                  {if(flag = 'T'){
     | DOUBLE                                                    {if(flag = 'T'){ $$ = createNode("Double");};}
     ;
 
-Declarator: ID                                                  {}
+Declarator: ID                                                  {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1);};}
     | ID ASSIGN Expr                                            {}
     ;
 
@@ -145,7 +146,7 @@ MultStatement: ErrorStatement MultStatement                     {}
     ;
 
 ErrorStatement: Statement                                       {}
-    | error SEMI                                                {flag = 'N'; freeTree($$);}
+    | error SEMI                                                {print_flag = 'N'; freeTree($$);}
     ;
 
 Statement: SEMI                                                 {}
@@ -188,7 +189,7 @@ Expr: Expr ASSIGN Expr                                          {}
     | CHRLIT                                                    {}
     | REALLIT                                                   {}
     | LPAR Expr RPAR                                            {}
-    | ID LPAR error RPAR                                        {flag = 'N'; freeTree($$);}
-    | LPAR error RPAR                                           {flag = 'N'; freeTree($$);}
+    | ID LPAR error RPAR                                        {print_flag = 'N'; freeTree($$);}
+    | LPAR error RPAR                                           {print_flag = 'N'; freeTree($$);}
     ;
 %%

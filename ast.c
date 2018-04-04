@@ -24,6 +24,9 @@ void addChild(node father, node son) {
 
 void addSibling(node sibling1, node sibling2) {
    // printf("%s %s\n", sibling1->tag, sibling2->tag);
+    while(sibling1->sibling != NULL) {
+        sibling1 = sibling1->sibling;
+    }
     sibling1->sibling = sibling2;
 }
 
@@ -37,6 +40,7 @@ void printTree(node root, int level) {
             printf("..");
         }
         printf("%s\n", root->tag);
+        
     }
     printTree(root->child, level + 1);
     printTree(root->sibling, level);

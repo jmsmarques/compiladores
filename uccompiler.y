@@ -82,34 +82,34 @@
 %nonassoc ELSE
 
 %%
-program: FunctionsAndDeclarations                               {if(flag == 'T') root = createNode("Program"); if(flag == 'T') addChild(root, $1); if(flag == 'T') $$ = root; if(flag == 'T') printTree(root, 0);}
+program: FunctionsAndDeclarations                               {if(flag == 'T'){ root = createNode("Program"); addChild(root, $1); $$ = root; printTree(root, 0);}}
     ;
 
-FunctionsAndDeclarations: FunctionDefinition                    {if(flag == 'T')}
-    | FunctionDeclaration                                       {}
-    | Declaration                                               {}
-    | FunctionDefinition FunctionsAndDeclarations               {}
-    | FunctionDeclaration FunctionsAndDeclarations              {}
-    | Declaration FunctionsAndDeclarations                      {}
+FunctionsAndDeclarations: FunctionDefinition                    {if(flag == 'T'){ $$ = $1;}}
+    | FunctionDeclaration                                       {if(flag == 'T'){ $$ = $1;}}
+    | Declaration                                               {if(flag == 'T'){ $$ = $1;}}
+    | FunctionsAndDeclarations FunctionDefinition               {if(flag == 'T'){ addSibling($1, $2); $$ = $1;}}
+    | FunctionsAndDeclarations FunctionDeclaration              {if(flag == 'T'){ addSibling($1, $2); $$ = $1;}}
+    | FunctionsAndDeclarations Declaration                      {if(flag == 'T'){ addSibling($1, $2); $$ = $1;}}
     ;
 
-FunctionDefinition: TypeSpec FunctionDeclarator FunctionBody    {}
+FunctionDefinition: TypeSpec FunctionDeclarator FunctionBody    {if(flag == 'T'){ $$ = createNode("FuncDefinition"); addChild($$, $1); addSibling($1, $2); addSibling($2, $3);};}
     ;
 
-FunctionBody: LBRACE DeclarationsAndStatements RBRACE           {}
-    | LBRACE RBRACE                                             {}
+FunctionBody: LBRACE DeclarationsAndStatements RBRACE           {if(flag == 'T'){ $$ = createNode("FuncBody"); addChild($$, $2);};}
+    | LBRACE RBRACE                                             {if(flag == 'T') $$ = createNode("FuncBody");}
     ;
 
-DeclarationsAndStatements: Statement DeclarationsAndStatements  {}
-    | Declaration DeclarationsAndStatements                     {}
-    | Statement                                                 {}
-    | Declaration                                               {}
+DeclarationsAndStatements: DeclarationsAndStatements Statement  {if(flag == 'T'){ addSibling($1, $2); $$ = $1;};}
+    | DeclarationsAndStatements Declaration                     {if(flag == 'T'){ addSibling($1, $2); $$ = $1;};}
+    | Statement                                                 {if(flag == 'T'){ $$ = $1;};}
+    | Declaration                                               {if(flag == 'T'){ $$ = $1;};}
     ;
 
-FunctionDeclaration: TypeSpec FunctionDeclarator SEMI           {}
+FunctionDeclaration: TypeSpec FunctionDeclarator SEMI           {if(flag == 'T'){ $$ = createNode("FuncDeclaration"); addChild($$, $1); addSibling($1, $2);};}
     ;
 
-FunctionDeclarator: ID LPAR ParameterList RPAR                  {}
+FunctionDeclarator: ID LPAR ParameterList RPAR                  {}//if(flag == 'T'){ $$ = createNodeTerminal("ID", $1); addSibling($$, $3);};}
     ;
 
 ParameterList: ParameterDeclaration                             {}

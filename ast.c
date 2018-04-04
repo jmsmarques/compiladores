@@ -1,13 +1,23 @@
 #include "structs.h"
 
 node createNode(char* tagValue) {
-    node no = malloc(sizeof(tree_node));
-    no->tag = malloc(strlen(tagValue) * sizeof(char));
+    node no = (node)malloc(sizeof(tree_node));
+    no->tag = (char*)malloc((strlen(tagValue) + 1) * sizeof(char));
     strcpy(no->tag, tagValue);
     no->child = NULL;
     no->sibling = NULL;
     return no;
 }
+
+node createNodeTerminal(char* tagValue, char* value) {
+    node no = (node)malloc(sizeof(tree_node));
+    no->tag = (char*)malloc((strlen(tagValue) + strlen(value) + 3) * sizeof(char));
+    sprintf(no->tag, "%s%c%s%c", tagValue, '(', value, ')');
+    no->child = NULL;
+    no->sibling = NULL;
+    return no;
+}
+
 void addChild(node father, node son) {
     father->child = son;
 }

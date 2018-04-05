@@ -66,6 +66,7 @@
 %type <no> ErrorStatement
 %type <no> Statement
 %type <no> Expr
+%type <no> Expr1
 
 %left COMMA
 %right ASSIGN
@@ -78,6 +79,7 @@
 %left GE GT LE LT
 %left PLUS MINUS
 %left MUL DIV MOD
+%left UNITARY
 %right NOT
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
@@ -149,7 +151,7 @@ ErrorStatement: Statement                                       {if(flag == 'T')
     ;
 
 Statement: SEMI                                                 {if(flag == 'T'){};}
-    | Expr SEMI                                                 {if(flag == 'T'){};}
+    | Expr SEMI                                                 {if(flag == 'T'){ $$ = $1;};}
     | LBRACE RBRACE                                             {if(flag == 'T'){};}
     | LBRACE MultStatement RBRACE                               {if(flag == 'T'){};}
     | IF LPAR Expr RPAR ErrorStatement %prec LOWER_THAN_ELSE    {if(flag == 'T'){};}
@@ -178,11 +180,43 @@ Expr: Expr ASSIGN Expr                                          {if(flag == 'T')
     | Expr GE Expr                                              {if(flag == 'T'){ $$ = createNode("Ge"); addChild($$, $1); addSibling($1, $3);};}
     | Expr LT Expr                                              {if(flag == 'T'){ $$ = createNode("Lt"); addChild($$, $1); addSibling($1, $3);};}
     | Expr GT Expr                                              {if(flag == 'T'){ $$ = createNode("Gt"); addChild($$, $1); addSibling($1, $3);};}
-    | PLUS Expr                                                 {if(flag == 'T'){ $$ = createNode("Plus"); addChild($$, $2);};}
-    | MINUS Expr                                                {if(flag == 'T'){ $$ = createNode("Minus"); addChild($$, $2);};}
-    | NOT Expr                                                  {if(flag == 'T'){ $$ = createNode("Not"); addChild($$, $2);};}
-    | ID LPAR RPAR                                              {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1);};}
-    | ID LPAR Expr RPAR                                         {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1); addSibling($$, $3);};}
+    | PLUS Expr     %prec UNITARY                               {if(flag == 'T'){ $$ = createNode("Plus"); addChild($$, $2);};}
+    | MINUS Expr    %prec UNITARY                               {if(flag == 'T'){ $$ = createNode("Minus"); addChild($$, $2);};}
+    | NOT Expr      %prec UNITARY                               {if(flag == 'T'){ $$ = createNode("Not"); addChild($$, $2);};}
+    | ID LPAR RPAR                                              {if(flag == 'T'){ $$ = createNode("Call"); addChild($$, createNodeTerminal("Id", $1));};}
+    | ID LPAR Expr1 RPAR                                        {if(flag == 'T'){ $$ = createNode("Call"); addChild($$, createNodeTerminal("Id", $1)); addSibling($$->child, $3);};}
+    | ID                                                        {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1);};}
+    | INTLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("IntLit", $1);};}
+    | CHRLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("ChrLit", $1);};}
+    | REALLIT                                                   {if(flag == 'T'){ $$ = createNodeTerminal("RealLit", $1);};}
+    | LPAR Expr RPAR                                            {if(flag == 'T'){ $$ = $2;};}
+    | ID LPAR error RPAR                                        {printFlag = 'N';}
+    | LPAR error RPAR                                           {printFlag = 'N';}
+    ;
+
+Expr1: Expr1 ASSIGN Expr1                                       {if(flag == 'T'){ $$ = createNode("Store"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr1 COMMA Expr1                                         {if(flag == 'T'){ addSibling($1, $3); $$ = $1;};}
+    | Expr1 PLUS Expr1                                          {if(flag == 'T'){ $$ = createNode("Add"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr1 MINUS Expr1                                         {if(flag == 'T'){ $$ = createNode("Sub"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr1 MUL Expr1                                           {if(flag == 'T'){ $$ = createNode("Mul"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr1 DIV Expr1                                           {if(flag == 'T'){ $$ = createNode("Div"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr1 MOD Expr1                                           {if(flag == 'T'){ $$ = createNode("Mod"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr1 OR Expr1                                            {if(flag == 'T'){ $$ = createNode("Or"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr1 AND Expr1                                           {if(flag == 'T'){ $$ = createNode("And"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr1 BITWISEAND Expr1                                    {if(flag == 'T'){ $$ = createNode("BitWiseAnd"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr1 BITWISEOR Expr1                                     {if(flag == 'T'){ $$ = createNode("BitWiseOr"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr1 BITWISEXOR Expr1                                    {if(flag == 'T'){ $$ = createNode("BitWiseXor"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr1 EQ Expr1                                            {if(flag == 'T'){ $$ = createNode("Eq"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr1 NE Expr1                                            {if(flag == 'T'){ $$ = createNode("Ne"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr1 LE Expr1                                            {if(flag == 'T'){ $$ = createNode("Le"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr1 GE Expr1                                            {if(flag == 'T'){ $$ = createNode("Ge"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr1 LT Expr1                                            {if(flag == 'T'){ $$ = createNode("Lt"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr1 GT Expr1                                            {if(flag == 'T'){ $$ = createNode("Gt"); addChild($$, $1); addSibling($1, $3);};}
+    | PLUS Expr1        %prec UNITARY                           {if(flag == 'T'){ $$ = createNode("Plus"); addChild($$, $2);};}
+    | MINUS Expr1       %prec UNITARY                           {if(flag == 'T'){ $$ = createNode("Minus"); addChild($$, $2);};}
+    | NOT Expr1         %prec UNITARY                           {if(flag == 'T'){ $$ = createNode("Not"); addChild($$, $2);};}
+    | ID LPAR RPAR                                              {if(flag == 'T'){ $$ = createNode("Call"); addChild($$, createNodeTerminal("Id", $1));};}
+    | ID LPAR Expr1 RPAR                                        {if(flag == 'T'){ $$ = createNode("Call"); addChild($$, createNodeTerminal("Id", $1)); addSibling($$->child, $3);};}
     | ID                                                        {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1);};}
     | INTLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("IntLit", $1);};}
     | CHRLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("ChrLit", $1);};}

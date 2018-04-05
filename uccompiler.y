@@ -67,8 +67,8 @@
 %type <no> Statement
 %type <no> Expr
 
-%right ASSIGN
 %left COMMA
+%right ASSIGN
 %left OR
 %left AND
 %left BITWISEOR
@@ -188,7 +188,6 @@ Expr: Expr ASSIGN Expr                                          {if(flag == 'T')
     | INTLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("IntLit", $1);};}
     | CHRLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("ChrLit", $1);};}
     | REALLIT                                                   {if(flag == 'T'){ $$ = createNodeTerminal("RealLit", $1);};}
-    | LPAR RPAR                                                 {;}
     | LPAR Expr RPAR                                            {if(flag == 'T'){ $$ = $2;};}
     | ID LPAR error RPAR                                        {printFlag = 'N';}
     | LPAR error RPAR                                           {printFlag = 'N';}

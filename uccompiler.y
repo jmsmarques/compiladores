@@ -142,7 +142,7 @@ Declarator: ID                                                  {if(flag == 'T')
     | ID ASSIGN Expr                                            {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1); addSibling($$, $3);};}
     ;
 
-MultStatement: ErrorStatement MultStatement                     {if(flag == 'T'); addSibling($1, $2); $$ = $1;}
+MultStatement: ErrorStatement MultStatement                     {if(flag == 'T'){ addSibling($1, $2); $$ = $1;};}
     | ErrorStatement                                            {if(flag == 'T'){ $$ = $1;};}
     ;
 

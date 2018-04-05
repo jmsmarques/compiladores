@@ -95,3 +95,12 @@ void freeTree(node root) {
     free(root->child);
     free(root->sibling);
 }
+
+node checkNull(node no) {
+    if(no != NULL) {
+        return no;
+    }
+    else {
+        return createNode("Null");
+    }
+}

@@ -20,5 +20,6 @@ void addSibling(node sibling1, node sibling2);
 void typeSpecDef(node up, char* newTag);
 void printTree(node root, int level);
 void freeTree(node root);
+node checkNull(node no);
 
 extern char flag;

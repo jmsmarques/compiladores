@@ -128,7 +128,7 @@ CommaDeclarator: COMMA Declarator CommaDeclarator               {if(flag == 'T')
     ;
 
 Declaration: TypeSpec Declarator CommaDeclarator SEMI           {if(flag == 'T'){ $$ = createNode("Declaration"); addSibling($1, $2); addSibling($$, $3); addChild($$, $1); typeSpecDef($$->sibling, $$->child->tag);};}
-    | error SEMI                                                {printFlag = 'N';}
+    | error SEMI                                                {printFlag = 'N'; if(flag == 'T') $$ = NULL;}
     ;
 
 TypeSpec: CHAR                                                  {if(flag == 'T'){ $$ = createNode("Char");};}
@@ -142,24 +142,24 @@ Declarator: ID                                                  {if(flag == 'T')
     | ID ASSIGN Expr                                            {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1); addSibling($$, $3);};}
     ;
 
-MultStatement: ErrorStatement MultStatement                     {if(flag == 'T');}
+MultStatement: ErrorStatement MultStatement                     {if(flag == 'T'); addSibling($1, $2); $$ = $1;}
     | ErrorStatement                                            {if(flag == 'T'){ $$ = $1;};}
     ;
 
 ErrorStatement: Statement                                       {if(flag == 'T'){ $$ = $1;};}
-    | error SEMI                                                {printFlag = 'N';}
+    | error SEMI                                                {printFlag = 'N'; if(flag == 'T') $$ = NULL;}
     ;
 
-Statement: SEMI                                                 {if(flag == 'T'){};}
+Statement: SEMI                                                 {if(flag == 'T'){ $$ = NULL;};}
     | Expr SEMI                                                 {if(flag == 'T'){ $$ = $1;};}
-    | LBRACE RBRACE                                             {if(flag == 'T'){};}
-    | LBRACE MultStatement RBRACE                               {if(flag == 'T'){};}
-    | IF LPAR Expr RPAR ErrorStatement %prec LOWER_THAN_ELSE    {if(flag == 'T'){};}
-    | IF LPAR Expr RPAR ErrorStatement ELSE ErrorStatement      {if(flag == 'T'){};}
-    | WHILE LPAR Expr RPAR ErrorStatement                       {if(flag == 'T'){};}
+    | LBRACE RBRACE                                             {if(flag == 'T'){ $$ = NULL;};}
+    | LBRACE MultStatement RBRACE                               {if(flag == 'T'){ if($2->sibling != NULL){ $$ = createNode("StatList"); addChild($$, $2);}else{ $$ = $2;}};}
+    | IF LPAR Expr RPAR ErrorStatement %prec LOWER_THAN_ELSE    {if(flag == 'T'){ $$ = createNode("If"); addChild($$, checkNull($3)); addSibling($$->child, checkNull($5)); addSibling($$->child->sibling, createNode("Null"));};}
+    | IF LPAR Expr RPAR ErrorStatement ELSE ErrorStatement      {if(flag == 'T'){ $$ = createNode("If"); addChild($$, checkNull($3)); addSibling($$->child, checkNull($5)); addSibling($$->child->sibling, checkNull($7));};}
+    | WHILE LPAR Expr RPAR ErrorStatement                       {if(flag == 'T'){ $$ = createNode("While"); addChild($$, checkNull($3)); addSibling($$->child, checkNull($5));};}
     | RETURN Expr SEMI                                          {if(flag == 'T'){ $$ = createNode("Return"); addChild($$, $2);};}
     | RETURN SEMI                                               {if(flag == 'T'){ $$ = createNode("Return"); addNullChild($$);};}
-    | LBRACE error RBRACE                                       {printFlag = 'N';}
+    | LBRACE error RBRACE                                       {printFlag = 'N'; if(flag == 'T') $$ = NULL;}
     ;
 
 Expr: Expr ASSIGN Expr                                          {if(flag == 'T'){ $$ = createNode("Store"); addChild($$, $1); addSibling($1, $3);};}
@@ -190,8 +190,8 @@ Expr: Expr ASSIGN Expr                                          {if(flag == 'T')
     | CHRLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("ChrLit", $1);};}
     | REALLIT                                                   {if(flag == 'T'){ $$ = createNodeTerminal("RealLit", $1);};}
     | LPAR Expr RPAR                                            {if(flag == 'T'){ $$ = $2;};}
-    | ID LPAR error RPAR                                        {printFlag = 'N';}
-    | LPAR error RPAR                                           {printFlag = 'N';}
+    | ID LPAR error RPAR                                        {printFlag = 'N'; if(flag == 'T') $$ = NULL;}
+    | LPAR error RPAR                                           {printFlag = 'N'; if(flag == 'T') $$ = NULL;}
     ;
 
 Expr1: Expr1 ASSIGN Expr1                                       {if(flag == 'T'){ $$ = createNode("Store"); addChild($$, $1); addSibling($1, $3);};}
@@ -222,7 +222,7 @@ Expr1: Expr1 ASSIGN Expr1                                       {if(flag == 'T')
     | CHRLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("ChrLit", $1);};}
     | REALLIT                                                   {if(flag == 'T'){ $$ = createNodeTerminal("RealLit", $1);};}
     | LPAR Expr RPAR                                            {if(flag == 'T'){ $$ = $2;};}
-    | ID LPAR error RPAR                                        {printFlag = 'N';}
-    | LPAR error RPAR                                           {printFlag = 'N';}
+    | ID LPAR error RPAR                                        {printFlag = 'N'; if(flag == 'T') $$ = NULL;}
+    | LPAR error RPAR                                           {printFlag = 'N'; if(flag == 'T') $$ = NULL;}
     ;
 %%

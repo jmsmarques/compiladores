@@ -98,7 +98,7 @@ FunctionDefinition: TypeSpec FunctionDeclarator FunctionBody    {if(flag == 'T')
     ;
 
 FunctionBody: LBRACE DeclarationsAndStatements RBRACE           {if(flag == 'T'){ $$ = createNode("FuncBody"); addChild($$, $2);};}
-    | LBRACE RBRACE                                             {if(flag == 'T') $$ = createNode("FuncBody");}
+    | LBRACE RBRACE                                             {if(flag == 'T'){ $$ = createNode("FuncBody");};}
     ;
 
 DeclarationsAndStatements: DeclarationsAndStatements Statement  {if(flag == 'T'){ addSibling($1, $2); $$ = $1;};}
@@ -114,10 +114,10 @@ FunctionDeclarator: ID LPAR ParameterList RPAR                  {if(flag == 'T')
     ;
 
 ParameterList: ParameterDeclaration                             {if(flag == 'T'){ $$ = createNode("ParamList"); addChild($$, $1);};}
-    | ParameterList COMMA ParameterDeclaration                  {if(flag == 'T'){ addSibling($1, $3); $$ = createNode("Comma"); addChild($$, $1);};}
+    | ParameterList COMMA ParameterDeclaration                  {if(flag == 'T'){ addSibling($1->child, $3); $$ = $1;};}
     ;
 
-ParameterDeclaration: TypeSpec ID                               {if(flag == 'T'){ $$ = createNode("ParamDeclaration"); addChild($$, $1); addChild($$, createNodeTerminal("Id", $2));};}
+ParameterDeclaration: TypeSpec ID                               {if(flag == 'T'){ $$ = createNode("ParamDeclaration"); addChild($$, $1); addSibling($1, createNodeTerminal("Id", $2));};}
     | TypeSpec                                                  {if(flag == 'T'){ $$ = createNode("ParamDeclaration"); addChild($$, $1);};}
     ;
 
@@ -125,8 +125,8 @@ CommaDeclarator: CommaDeclarator COMMA Declarator               {if(flag == 'T')
     | COMMA Declarator                                          {if(flag == 'T'){ $$ = $2;};}
     ;
 
-Declaration: TypeSpec Declarator SEMI                           {if(flag == 'T'){ addSibling($1, $2); $$ = $1;};}
-    | TypeSpec Declarator CommaDeclarator SEMI                  {if(flag == 'T'){ addSibling($1, $2); addSibling($2, $3); $$ = $1;};}
+Declaration: TypeSpec Declarator SEMI                           {if(flag == 'T'){ $$ = createNode("Declaration"); addSibling($1, $2); addChild($$, $1);};}
+    | TypeSpec Declarator CommaDeclarator SEMI                  {if(flag == 'T'){ $$ = createNode("Declaration"); addSibling($1, $2); addSibling($2, $3); addChild($$, $1);};}
     | error SEMI                                                {printFlag = 'N';}
     ;
 

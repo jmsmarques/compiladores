@@ -149,39 +149,39 @@ ErrorStatement: Statement                                       {if(flag == 'T')
     | error SEMI                                                {printFlag = 'N';}
     ;
 
-Statement: SEMI                                                 {}
-    | Expr SEMI                                                 {}
-    | LBRACE RBRACE                                             {}
-    | LBRACE MultStatement RBRACE                               {}
-    | IF LPAR Expr RPAR ErrorStatement %prec LOWER_THAN_ELSE    {}
-    | IF LPAR Expr RPAR ErrorStatement ELSE ErrorStatement      {}
-    | WHILE LPAR Expr RPAR ErrorStatement                       {}
+Statement: SEMI                                                 {if(flag == 'T'){};}
+    | Expr SEMI                                                 {if(flag == 'T'){};}
+    | LBRACE RBRACE                                             {if(flag == 'T'){};}
+    | LBRACE MultStatement RBRACE                               {if(flag == 'T'){};}
+    | IF LPAR Expr RPAR ErrorStatement %prec LOWER_THAN_ELSE    {if(flag == 'T'){};}
+    | IF LPAR Expr RPAR ErrorStatement ELSE ErrorStatement      {if(flag == 'T'){};}
+    | WHILE LPAR Expr RPAR ErrorStatement                       {if(flag == 'T'){};}
     | RETURN Expr SEMI                                          {if(flag == 'T'){ $$ = createNode("Return"); addChild($$, $2);};}
     | RETURN SEMI                                               {if(flag == 'T'){ $$ = createNode("Return"); addNullChild($$);};}
     | LBRACE error RBRACE                                       {printFlag = 'N';}
     ;
 
-Expr: Expr ASSIGN Expr                                          {}
-    | Expr COMMA Expr                                           {}
-    | Expr PLUS Expr                                            {}
-    | Expr MINUS Expr                                           {}
-    | Expr MUL Expr                                             {}
-    | Expr DIV Expr                                             {}
-    | Expr MOD Expr                                             {}
-    | Expr OR Expr                                              {}
-    | Expr AND Expr                                             {}
-    | Expr BITWISEAND Expr                                      {}
-    | Expr BITWISEOR Expr                                       {}
-    | Expr BITWISEXOR Expr                                      {}
-    | Expr EQ Expr                                              {}
-    | Expr NE Expr                                              {}
-    | Expr LE Expr                                              {}
-    | Expr GE Expr                                              {}
-    | Expr LT Expr                                              {}
-    | Expr GT Expr                                              {}
-    | PLUS Expr                                                 {}
-    | MINUS Expr                                                {}
-    | NOT Expr                                                  {}
+Expr: Expr ASSIGN Expr                                          {if(flag == 'T'){};}
+    | Expr COMMA Expr                                           {if(flag == 'T'){};}
+    | Expr PLUS Expr                                            {if(flag == 'T'){};}
+    | Expr MINUS Expr                                           {if(flag == 'T'){};}
+    | Expr MUL Expr                                             {if(flag == 'T'){};}
+    | Expr DIV Expr                                             {if(flag == 'T'){};}
+    | Expr MOD Expr                                             {if(flag == 'T'){};}
+    | Expr OR Expr                                              {if(flag == 'T'){};}
+    | Expr AND Expr                                             {if(flag == 'T'){};}
+    | Expr BITWISEAND Expr                                      {if(flag == 'T'){};}
+    | Expr BITWISEOR Expr                                       {if(flag == 'T'){};}
+    | Expr BITWISEXOR Expr                                      {if(flag == 'T'){};}
+    | Expr EQ Expr                                              {if(flag == 'T'){};}
+    | Expr NE Expr                                              {if(flag == 'T'){};}
+    | Expr LE Expr                                              {if(flag == 'T'){};}
+    | Expr GE Expr                                              {if(flag == 'T'){};}
+    | Expr LT Expr                                              {if(flag == 'T'){};}
+    | Expr GT Expr                                              {if(flag == 'T'){};}
+    | PLUS Expr                                                 {if(flag == 'T'){};}
+    | MINUS Expr                                                {if(flag == 'T'){};}
+    | NOT Expr                                                  {if(flag == 'T'){};}
     | ID LPAR RPAR                                              {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1);};}
     | ID LPAR Expr RPAR                                         {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1); addSibling($$, $3);};}
     | ID                                                        {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1);};}

@@ -1,14 +1,14 @@
-int a, b, c;
-char g = 1, h = 2, f;
-void n, m;
-short l, p;
-double q, w;
+int main(int){
 
-int main(void) {
-    int f = 2;
-    return 0;
-}
-
-void aux(void fa, int fe){
-    return;
+    test((2,3),1);
+    if(b){
+        if(c){
+            a = 2;
+            ;
+        }
+        ;
+        if(b){
+            if(e){}
+        }
+    }
 }

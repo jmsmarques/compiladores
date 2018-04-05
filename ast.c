@@ -26,6 +26,8 @@ node createNodeTerminal(char* tagValue, char* value) {
 }
 
 void addChild(node father, node son) {
+    if(father == NULL)
+        return;
     father->child = son;
 }
 
@@ -41,7 +43,7 @@ void addNullChild(node father) {
 }
 
 void addSibling(node sibling1, node sibling2) {
-    if(sibling1 == NULL) {
+    if(sibling1 == NULL || sibling2 == NULL) {
         return;
     }
     while(sibling1->sibling != NULL) {

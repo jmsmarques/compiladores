@@ -85,7 +85,7 @@
 %nonassoc ELSE
 
 %%
-program: FunctionsAndDeclarations                               {if(flag == 'T'){ root = createNode("Program"); addChild(root, $1); $$ = root;}; if(printFlag == 'Y'){ printTree(root, 0);} else { freeTree(root);};}
+program: FunctionsAndDeclarations                               {if(flag == 'T'){ root = createNode("Program"); addChild(root, $1); $$ = root; if(printFlag == 'Y'){ printTree(root, 0);} else { freeTree(root);};};}
     ;
 
 FunctionsAndDeclarations: FunctionDefinition                    {if(flag == 'T'){ $$ = $1;};}
@@ -142,7 +142,7 @@ Declarator: ID                                                  {if(flag == 'T')
     | ID ASSIGN Expr                                            {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1); addSibling($$, $3);};}
     ;
 
-MultStatement: ErrorStatement MultStatement                     {if(flag == 'T'){ addSibling($1, $2); $$ = $1;};}
+MultStatement: ErrorStatement MultStatement                     {if(flag == 'T'){ addSibling($1, $2); if($1 != NULL){ $$ = $1;} else{ $$ = $2;};};}
     | ErrorStatement                                            {if(flag == 'T'){ $$ = $1;};}
     ;
 
@@ -153,7 +153,7 @@ ErrorStatement: Statement                                       {if(flag == 'T')
 Statement: SEMI                                                 {if(flag == 'T'){ $$ = NULL;};}
     | Expr SEMI                                                 {if(flag == 'T'){ $$ = $1;};}
     | LBRACE RBRACE                                             {if(flag == 'T'){ $$ = NULL;};}
-    | LBRACE MultStatement RBRACE                               {if(flag == 'T'){ if($2->sibling != NULL){ $$ = createNode("StatList"); addChild($$, $2);}else{ $$ = $2;}};}
+    | LBRACE MultStatement RBRACE                               {if(flag == 'T'){ if($2 != NULL && $2->sibling != NULL){ $$ = createNode("StatList"); addChild($$, $2);}else{ $$ = $2;}};}
     | IF LPAR Expr RPAR ErrorStatement %prec LOWER_THAN_ELSE    {if(flag == 'T'){ $$ = createNode("If"); addChild($$, checkNull($3)); addSibling($$->child, checkNull($5)); addSibling($$->child->sibling, createNode("Null"));};}
     | IF LPAR Expr RPAR ErrorStatement ELSE ErrorStatement      {if(flag == 'T'){ $$ = createNode("If"); addChild($$, checkNull($3)); addSibling($$->child, checkNull($5)); addSibling($$->child->sibling, checkNull($7));};}
     | WHILE LPAR Expr RPAR ErrorStatement                       {if(flag == 'T'){ $$ = createNode("While"); addChild($$, checkNull($3)); addSibling($$->child, checkNull($5));};}

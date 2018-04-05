@@ -9,6 +9,13 @@ node createNode(char* tagValue) {
     return no;
 }
 
+node createNodeEmpty() {
+    node no = (node)malloc(sizeof(tree_node));
+    no->child = NULL;
+    no->sibling = NULL;
+    return no;
+}
+
 node createNodeTerminal(char* tagValue, char* value) {
     node no = (node)malloc(sizeof(tree_node));
     no->tag = (char*)malloc((strlen(tagValue) + strlen(value) + 3) * sizeof(char));
@@ -38,6 +45,17 @@ void addSibling(node sibling1, node sibling2) {
         sibling1 = sibling1->sibling;
     }
     sibling1->sibling = sibling2;
+}
+
+void typeSpecDef(node up, char* newTag) {
+    if(up == NULL) {
+        return;
+    }
+
+    up->child->tag = (char*)malloc((strlen(newTag) + 1) * sizeof(char));
+    strcpy(up->child->tag, newTag);
+
+    typeSpecDef(up->sibling, newTag);
 }
 
 void printTree(node root, int level) {

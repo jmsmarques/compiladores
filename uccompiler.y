@@ -121,12 +121,12 @@ ParameterDeclaration: TypeSpec ID                               {if(flag == 'T')
     | TypeSpec                                                  {if(flag == 'T'){ $$ = createNode("ParamDeclaration"); addChild($$, $1);};}
     ;
 
-CommaDeclarator: CommaDeclarator COMMA Declarator               {if(flag == 'T'){ addSibling($1, $3); $$ = $1;};}
-    | COMMA Declarator                                          {if(flag == 'T'){ $$ = $2;};}
+CommaDeclarator: CommaDeclarator COMMA Declarator               {if(flag == 'T'){ $$ = createNode("Declaration"); addChild($$, createNodeEmpty()); addSibling($$->child, $3); addSibling($1, $$); $$ = $1;};}
+    | COMMA Declarator                                          {if(flag == 'T'){ $$ = createNode("Declaration"); addChild($$, createNodeEmpty()); addSibling($$->child, $2);};}
     ;
 
-Declaration: TypeSpec Declarator SEMI                           {if(flag == 'T'){ $$ = createNode("Declaration"); addSibling($1, $2); addChild($$, $1);};}
-    | TypeSpec Declarator CommaDeclarator SEMI                  {if(flag == 'T'){ $$ = createNode("Declaration"); addSibling($1, $2); addSibling($2, $3); addChild($$, $1);};}
+Declaration: TypeSpec Declarator CommaDeclarator SEMI           {if(flag == 'T'){ $$ = createNode("Declaration"); addSibling($1, $2); addSibling($$, $3); addChild($$, $1); typeSpecDef($$->sibling, $$->child->tag);};}
+    | TypeSpec Declarator SEMI                                  {if(flag == 'T'){ $$ = createNode("Declaration"); addSibling($1, $2); addChild($$, $1);};}
     | error SEMI                                                {printFlag = 'N';}
     ;
 
@@ -162,7 +162,7 @@ Statement: SEMI                                                 {if(flag == 'T')
     ;
 
 Expr: Expr ASSIGN Expr                                          {if(flag == 'T'){};}
-    | Expr COMMA Expr                                           {if(flag == 'T'){};}
+    | Expr COMMA Expr                                           {;}
     | Expr PLUS Expr                                            {if(flag == 'T'){};}
     | Expr MINUS Expr                                           {if(flag == 'T'){};}
     | Expr MUL Expr                                             {if(flag == 'T'){};}
@@ -188,6 +188,7 @@ Expr: Expr ASSIGN Expr                                          {if(flag == 'T')
     | INTLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("IntLit", $1);};}
     | CHRLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("ChrLit", $1);};}
     | REALLIT                                                   {if(flag == 'T'){ $$ = createNodeTerminal("RealLit", $1);};}
+    | LPAR RPAR                                                 {;}
     | LPAR Expr RPAR                                            {if(flag == 'T'){ $$ = $2;};}
     | ID LPAR error RPAR                                        {printFlag = 'N';}
     | LPAR error RPAR                                           {printFlag = 'N';}

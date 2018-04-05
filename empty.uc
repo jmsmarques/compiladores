@@ -1,5 +1,5 @@
 int a, b, c;
-char g, h, f;
+char g = 1, h = 2, f;
 void n, m;
 short l, p;
 double q, w;

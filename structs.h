@@ -12,10 +12,12 @@ typedef struct _tree_node{
 int yylex(void);
 void yyerror (char *s);
 node createNode(char* tagValue);
+node createNodeEmpty();
 node createNodeTerminal(char* tagValue, char* value);
 void addChild(node father, node son);
 void addNullChild(node father);
 void addSibling(node sibling1, node sibling2);
+void typeSpecDef(node up, char* newTag);
 void printTree(node root, int level);
 void freeTree(node root);
 

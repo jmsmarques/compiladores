@@ -41,6 +41,9 @@ void addNullChild(node father) {
 }
 
 void addSibling(node sibling1, node sibling2) {
+    if(sibling1 == NULL) {
+        return;
+    }
     while(sibling1->sibling != NULL) {
         sibling1 = sibling1->sibling;
     }

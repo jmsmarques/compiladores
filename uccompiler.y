@@ -121,12 +121,11 @@ ParameterDeclaration: TypeSpec ID                               {if(flag == 'T')
     | TypeSpec                                                  {if(flag == 'T'){ $$ = createNode("ParamDeclaration"); addChild($$, $1);};}
     ;
 
-CommaDeclarator: CommaDeclarator COMMA Declarator               {if(flag == 'T'){ $$ = createNode("Declaration"); addChild($$, createNodeEmpty()); addSibling($$->child, $3); addSibling($1, $$); $$ = $1;};}
-    | COMMA Declarator                                          {if(flag == 'T'){ $$ = createNode("Declaration"); addChild($$, createNodeEmpty()); addSibling($$->child, $2);};}
+CommaDeclarator: COMMA Declarator CommaDeclarator               {if(flag == 'T'){ $$ = createNode("Declaration"); addChild($$, createNodeEmpty()); addSibling($$->child, $2); addSibling($$, $3);};}
+    |                                                           {if(flag == 'T'){ $$ = NULL;};}
     ;
 
 Declaration: TypeSpec Declarator CommaDeclarator SEMI           {if(flag == 'T'){ $$ = createNode("Declaration"); addSibling($1, $2); addSibling($$, $3); addChild($$, $1); typeSpecDef($$->sibling, $$->child->tag);};}
-    | TypeSpec Declarator SEMI                                  {if(flag == 'T'){ $$ = createNode("Declaration"); addSibling($1, $2); addChild($$, $1);};}
     | error SEMI                                                {printFlag = 'N';}
     ;
 
@@ -161,27 +160,27 @@ Statement: SEMI                                                 {if(flag == 'T')
     | LBRACE error RBRACE                                       {printFlag = 'N';}
     ;
 
-Expr: Expr ASSIGN Expr                                          {if(flag == 'T'){};}
-    | Expr COMMA Expr                                           {;}
-    | Expr PLUS Expr                                            {if(flag == 'T'){};}
-    | Expr MINUS Expr                                           {if(flag == 'T'){};}
-    | Expr MUL Expr                                             {if(flag == 'T'){};}
-    | Expr DIV Expr                                             {if(flag == 'T'){};}
-    | Expr MOD Expr                                             {if(flag == 'T'){};}
-    | Expr OR Expr                                              {if(flag == 'T'){};}
-    | Expr AND Expr                                             {if(flag == 'T'){};}
-    | Expr BITWISEAND Expr                                      {if(flag == 'T'){};}
-    | Expr BITWISEOR Expr                                       {if(flag == 'T'){};}
-    | Expr BITWISEXOR Expr                                      {if(flag == 'T'){};}
-    | Expr EQ Expr                                              {if(flag == 'T'){};}
-    | Expr NE Expr                                              {if(flag == 'T'){};}
-    | Expr LE Expr                                              {if(flag == 'T'){};}
-    | Expr GE Expr                                              {if(flag == 'T'){};}
-    | Expr LT Expr                                              {if(flag == 'T'){};}
-    | Expr GT Expr                                              {if(flag == 'T'){};}
-    | PLUS Expr                                                 {if(flag == 'T'){};}
-    | MINUS Expr                                                {if(flag == 'T'){};}
-    | NOT Expr                                                  {if(flag == 'T'){};}
+Expr: Expr ASSIGN Expr                                          {if(flag == 'T'){ $$ = createNode("Store"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr COMMA Expr                                           {if(flag == 'T'){ $$ = createNode("Comma"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr PLUS Expr                                            {if(flag == 'T'){ $$ = createNode("Add"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr MINUS Expr                                           {if(flag == 'T'){ $$ = createNode("Sub"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr MUL Expr                                             {if(flag == 'T'){ $$ = createNode("Mul"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr DIV Expr                                             {if(flag == 'T'){ $$ = createNode("Div"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr MOD Expr                                             {if(flag == 'T'){ $$ = createNode("Mod"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr OR Expr                                              {if(flag == 'T'){ $$ = createNode("Or"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr AND Expr                                             {if(flag == 'T'){ $$ = createNode("And"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr BITWISEAND Expr                                      {if(flag == 'T'){ $$ = createNode("BitWiseAnd"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr BITWISEOR Expr                                       {if(flag == 'T'){ $$ = createNode("BitWiseOr"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr BITWISEXOR Expr                                      {if(flag == 'T'){ $$ = createNode("BitWiseXor"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr EQ Expr                                              {if(flag == 'T'){ $$ = createNode("Eq"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr NE Expr                                              {if(flag == 'T'){ $$ = createNode("Ne"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr LE Expr                                              {if(flag == 'T'){ $$ = createNode("Le"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr GE Expr                                              {if(flag == 'T'){ $$ = createNode("Ge"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr LT Expr                                              {if(flag == 'T'){ $$ = createNode("Lt"); addChild($$, $1); addSibling($1, $3);};}
+    | Expr GT Expr                                              {if(flag == 'T'){ $$ = createNode("Gt"); addChild($$, $1); addSibling($1, $3);};}
+    | PLUS Expr                                                 {if(flag == 'T'){ $$ = createNode("Plus"); addChild($$, $2);};}
+    | MINUS Expr                                                {if(flag == 'T'){ $$ = createNode("Minus"); addChild($$, $2);};}
+    | NOT Expr                                                  {if(flag == 'T'){ $$ = createNode("Not"); addChild($$, $2);};}
     | ID LPAR RPAR                                              {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1);};}
     | ID LPAR Expr RPAR                                         {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1); addSibling($$, $3);};}
     | ID                                                        {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1);};}

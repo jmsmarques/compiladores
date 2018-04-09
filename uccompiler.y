@@ -112,14 +112,14 @@ DeclarationsAndStatements: DeclarationsAndStatements Statement  {if(flag == 'T')
 FunctionDeclaration: TypeSpec FunctionDeclarator SEMI           {if(flag == 'T'){ $$ = createNode("FuncDeclaration"); addChild($$, $1); addSibling($1, $2);};}
     ;
 
-FunctionDeclarator: ID LPAR ParameterList RPAR                  {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1); addSibling($$, $3);};}
+FunctionDeclarator: ID LPAR ParameterList RPAR                  {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1); free($1); addSibling($$, $3);};}
     ;
 
 ParameterList: ParameterDeclaration                             {if(flag == 'T'){ $$ = createNode("ParamList"); addChild($$, $1);};}
     | ParameterList COMMA ParameterDeclaration                  {if(flag == 'T'){ addSibling($1->child, $3); $$ = $1;};}
     ;
 
-ParameterDeclaration: TypeSpec ID                               {if(flag == 'T'){ $$ = createNode("ParamDeclaration"); addChild($$, $1); addSibling($1, createNodeTerminal("Id", $2));};}
+ParameterDeclaration: TypeSpec ID                               {if(flag == 'T'){ $$ = createNode("ParamDeclaration"); addChild($$, $1); addSibling($1, createNodeTerminal("Id", $2)); free($2);};}
     | TypeSpec                                                  {if(flag == 'T'){ $$ = createNode("ParamDeclaration"); addChild($$, $1);};}
     ;
 
@@ -138,8 +138,8 @@ TypeSpec: CHAR                                                  {if(flag == 'T')
     | DOUBLE                                                    {if(flag == 'T'){ $$ = createNode("Double");};}
     ;
 
-Declarator: ID                                                  {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1);};}
-    | ID ASSIGN Expr                                            {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1); addSibling($$, $3);};}
+Declarator: ID                                                  {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1); free($1);};}
+    | ID ASSIGN Expr                                            {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1); free($1); addSibling($$, $3);};}
     ;
 
 MultStatement: ErrorStatement MultStatement                     {if(flag == 'T'){ addSibling($1, $2); if($1 != NULL){ $$ = $1;} else{ $$ = $2;};};}
@@ -183,12 +183,12 @@ Expr: Expr ASSIGN Expr                                          {if(flag == 'T')
     | PLUS Expr     %prec UNITARY                               {if(flag == 'T'){ $$ = createNode("Plus"); addChild($$, $2);};}
     | MINUS Expr    %prec UNITARY                               {if(flag == 'T'){ $$ = createNode("Minus"); addChild($$, $2);};}
     | NOT Expr      %prec UNITARY                               {if(flag == 'T'){ $$ = createNode("Not"); addChild($$, $2);};}
-    | ID LPAR RPAR                                              {if(flag == 'T'){ $$ = createNode("Call"); addChild($$, createNodeTerminal("Id", $1));};}
-    | ID LPAR Expr1 RPAR                                        {if(flag == 'T'){ $$ = createNode("Call"); addChild($$, createNodeTerminal("Id", $1)); addSibling($$->child, $3);};}
-    | ID                                                        {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1);};}
-    | INTLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("IntLit", $1);};}
-    | CHRLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("ChrLit", $1);};}
-    | REALLIT                                                   {if(flag == 'T'){ $$ = createNodeTerminal("RealLit", $1);};}
+    | ID LPAR RPAR                                              {if(flag == 'T'){ $$ = createNode("Call"); addChild($$, createNodeTerminal("Id", $1)); free($1);};}
+    | ID LPAR Expr1 RPAR                                        {if(flag == 'T'){ $$ = createNode("Call"); addChild($$, createNodeTerminal("Id", $1)); free($1); addSibling($$->child, $3);};}
+    | ID                                                        {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1); free($1);};}
+    | INTLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("IntLit", $1); free($1);};}
+    | CHRLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("ChrLit", $1); free($1);};}
+    | REALLIT                                                   {if(flag == 'T'){ $$ = createNodeTerminal("RealLit", $1); free($1);};}
     | LPAR Expr RPAR                                            {if(flag == 'T'){ $$ = $2;};}
     | ID LPAR error RPAR                                        {printFlag = 'N'; if(flag == 'T') $$ = NULL;}
     | LPAR error RPAR                                           {printFlag = 'N'; if(flag == 'T') $$ = NULL;}
@@ -215,12 +215,12 @@ Expr1: Expr1 ASSIGN Expr1                                       {if(flag == 'T')
     | PLUS Expr1        %prec UNITARY                           {if(flag == 'T'){ $$ = createNode("Plus"); addChild($$, $2);};}
     | MINUS Expr1       %prec UNITARY                           {if(flag == 'T'){ $$ = createNode("Minus"); addChild($$, $2);};}
     | NOT Expr1         %prec UNITARY                           {if(flag == 'T'){ $$ = createNode("Not"); addChild($$, $2);};}
-    | ID LPAR RPAR                                              {if(flag == 'T'){ $$ = createNode("Call"); addChild($$, createNodeTerminal("Id", $1));};}
-    | ID LPAR Expr1 RPAR                                        {if(flag == 'T'){ $$ = createNode("Call"); addChild($$, createNodeTerminal("Id", $1)); addSibling($$->child, $3);};}
-    | ID                                                        {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1);};}
-    | INTLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("IntLit", $1);};}
-    | CHRLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("ChrLit", $1);};}
-    | REALLIT                                                   {if(flag == 'T'){ $$ = createNodeTerminal("RealLit", $1);};}
+    | ID LPAR RPAR                                              {if(flag == 'T'){ $$ = createNode("Call"); addChild($$, createNodeTerminal("Id", $1)); free($1);};}
+    | ID LPAR Expr1 RPAR                                        {if(flag == 'T'){ $$ = createNode("Call"); addChild($$, createNodeTerminal("Id", $1)); free($1); addSibling($$->child, $3);};}
+    | ID                                                        {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1); free($1);};}
+    | INTLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("IntLit", $1); free($1);};}
+    | CHRLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("ChrLit", $1); free($1);};}
+    | REALLIT                                                   {if(flag == 'T'){ $$ = createNodeTerminal("RealLit", $1); free($1);};}
     | LPAR Expr RPAR                                            {if(flag == 'T'){ $$ = $2;};}
     | ID LPAR error RPAR                                        {printFlag = 'N'; if(flag == 'T') $$ = NULL;}
     | LPAR error RPAR                                           {printFlag = 'N'; if(flag == 'T') $$ = NULL;}

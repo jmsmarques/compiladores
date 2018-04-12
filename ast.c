@@ -11,6 +11,7 @@ node createNode(char* tagValue) {
 
 node createNodeEmpty() {
     node no = (node)malloc(sizeof(tree_node));
+    no->tag = NULL;
     no->child = NULL;
     no->sibling = NULL;
     return no;

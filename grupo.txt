@@ -1,0 +1,7 @@
+Grupo: jms
+Nome1: Fabio Antunes
+Numero1: 2014206491
+Email1: fantunes@student.dei.uc.pt
+Nome2: Jorge Marques
+Numero2: 2014199355
+Email2: jms@student.dei.uc.pt

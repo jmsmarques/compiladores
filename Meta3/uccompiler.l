@@ -3,12 +3,15 @@
 /*Grupo Mooshak: jms*/
 %{
 #include "y.tab.h"
+#include "structs.h"
 
 char flag = 'N';
 int col = 1;
 int line = 1;
 int aux_line = 1;
 int aux_col = 1;
+
+table symTab;
 %}
 /*states*/
 %X COMMENT
@@ -121,22 +124,25 @@ int main(int argc, char** argv)
         if(argv[1][0] == '-' && argv[1][1] == 'l') {
             flag = 'Y';
             yylex();
-            
+            return 0;
         }
         else if(argv[1][0] == '-' && argv[1][1] == '2') {
             yyparse();
             yylex_destroy();
+            return 0;
         }
         else if(argv[1][0] == '-' && argv[1][1] == 't') {
             flag = 'T';
-            yyparse();
-            yylex_destroy();
         }
         else if(argv[1][0] == '-' && argv[1][1] == 's') {
-            yyparse();
-            yylex_destroy();
+            flag = 'T';
+            printFlag = 'N';
         }
     }
+
+    yyparse();
+    yylex_destroy();
+    
     return 0;
 }
 

@@ -1,3 +1,5 @@
+#ifndef STRUCTURES_H
+#define STRUCTURES_H
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -8,6 +10,12 @@ typedef struct _tree_node{
     node child;
     node sibling;
 }tree_node;
+
+typedef struct _sym_table* table;
+typedef struct _sym_table{
+    char* tag;
+    table next;
+}sym_table;
 
 int yylex(void);
 void yyerror (char *s);
@@ -22,4 +30,11 @@ void printTree(node root, int level);
 void freeTree(node root);
 node checkNull(node no);
 
+void printTable(table root, char* type);
+table createSymbol(char* tagValue);
+
 extern char flag;
+extern char printFlag;
+extern table symTab;
+
+#endif

@@ -85,7 +85,7 @@
 %nonassoc ELSE
 
 %%
-program: FunctionsAndDeclarations                               {if(flag == 'T'){ root = createNode("Program"); addChild(root, $1); $$ = root; if(printFlag == 'Y'){ printTree(root, 0);} else { freeTree(root);};};}
+program: FunctionsAndDeclarations                               {if(flag == 'T'){ root = createNode("Program"); addChild(root, $1); $$ = root; if(printFlag == 'Y') printTree(root, 0);};}
     ;
 
 FunctionsAndDeclarations: FunctionDefinition                    {if(flag == 'T'){ $$ = $1;};}

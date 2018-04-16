@@ -23,8 +23,7 @@ void insertInTable(table root, char* tagValue) {
     root->next = createSymbol(tagValue);
 }
 
-void printTable(table root, char* type) {
-    printf("%s\n", type);
+void printTable(table root) {
     while(root) {
         printf("%s\n", root->tag);
         root = root->next;

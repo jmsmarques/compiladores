@@ -6,12 +6,14 @@
 #include "structs.h"
 
 char flag = 'N';
+char printTableFlag = 'N';
 int col = 1;
 int line = 1;
 int aux_line = 1;
 int aux_col = 1;
 
 table symTab;
+table funcTab = NULL;
 %}
 /*states*/
 %X COMMENT
@@ -133,17 +135,26 @@ int main(int argc, char** argv)
         }
         else if(argv[1][0] == '-' && argv[1][1] == 't') {
             flag = 'T';
+            yyparse();
+            yylex_destroy();
+            return 0;
         }
         else if(argv[1][0] == '-' && argv[1][1] == 's') {
-            flag = 'T';
-            printFlag = 'N';
+            printTableFlag = 'Y';
         }
     }
 
+    flag = 'T';
+    printFlag = 'N';
     yyparse();
-    symTab = startTable();
     yylex_destroy();
 
+    symTab = startTable();
+    
+    if(printTableFlag == 'Y') {
+        printTable(symTab);
+    }
+    
     return 0;
 }
 

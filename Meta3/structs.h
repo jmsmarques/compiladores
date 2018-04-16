@@ -30,7 +30,7 @@ void printTree(node root, int level);
 void freeTree(node root);
 node checkNull(node no);
 
-void printTable(table root, char* type);
+void printTable(table root);
 table createSymbol(char* tagValue);
 void insertInTable(table root, char* tagValue);
 table startTable();
@@ -38,5 +38,6 @@ table startTable();
 extern char flag;
 extern char printFlag;
 extern table symTab;
+extern node root;
 
 #endif

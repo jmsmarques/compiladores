@@ -123,15 +123,19 @@ int main(int argc, char** argv)
             yylex();
             
         }
+        else if(argv[1][0] == '-' && argv[1][1] == '2') {
+            yyparse();
+            yylex_destroy();
+        }
         else if(argv[1][0] == '-' && argv[1][1] == 't') {
             flag = 'T';
             yyparse();
             yylex_destroy();
         }
-    }
-    else {
-        yyparse();
-        yylex_destroy();
+        else if(argv[1][0] == '-' && argv[1][1] == 's') {
+            yyparse();
+            yylex_destroy();
+        }
     }
     return 0;
 }

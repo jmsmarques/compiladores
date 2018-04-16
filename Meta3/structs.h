@@ -32,6 +32,8 @@ node checkNull(node no);
 
 void printTable(table root, char* type);
 table createSymbol(char* tagValue);
+void insertInTable(table root, char* tagValue);
+table startTable();
 
 extern char flag;
 extern char printFlag;

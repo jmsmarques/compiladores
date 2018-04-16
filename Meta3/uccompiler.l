@@ -141,8 +141,9 @@ int main(int argc, char** argv)
     }
 
     yyparse();
+    symTab = startTable();
     yylex_destroy();
-    
+
     return 0;
 }
 

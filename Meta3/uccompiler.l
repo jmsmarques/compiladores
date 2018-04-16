@@ -150,7 +150,8 @@ int main(int argc, char** argv)
     yylex_destroy();
 
     symTab = startTable();
-    
+    checkFuncDec(root, symTab);
+
     if(printTableFlag == 'Y') {
         printTable(symTab);
     }

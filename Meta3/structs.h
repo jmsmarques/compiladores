@@ -34,6 +34,9 @@ void printTable(table root);
 table createSymbol(char* tagValue);
 void insertInTable(table root, char* tagValue);
 table startTable();
+char* getParamList(node root);
+void checkFuncDec(node root, table symTab);
+void turnLowerCase(char* string);
 
 extern char flag;
 extern char printFlag;

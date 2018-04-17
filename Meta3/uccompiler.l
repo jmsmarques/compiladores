@@ -12,7 +12,7 @@ int line = 1;
 int aux_line = 1;
 int aux_col = 1;
 
-table symTab;
+gTable symTab;
 table auxSymTab = NULL;
 %}
 /*states*/
@@ -150,11 +150,11 @@ int main(int argc, char** argv)
     yylex_destroy();
 
     symTab = startTable();
-    auxSymTab = createSymbol("", "");
+    auxSymTab = createSymbolTable("", "");
     checkSemantics(root, symTab, auxSymTab);
 
     if(printTableFlag == 'Y') {
-        printTable(symTab);
+        printGTable(symTab);
         printTable(auxSymTab);
     }
     

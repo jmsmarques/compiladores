@@ -18,6 +18,14 @@ typedef struct _sym_table{
     table next;
 }sym_table;
 
+typedef struct _g_sym_table* gTable;
+typedef struct _g_sym_table{
+    char* tag;
+    char* type;
+    table params;
+    gTable next;
+}g_sym_table;
+
 int yylex(void);
 void yyerror (char *s);
 node createNode(char* tagValue);
@@ -32,22 +40,26 @@ void freeTree(node root);
 node checkNull(node no);
 
 void printTable(table root);
-table createSymbol(char* tagValue, char* tagType);
-void insertInTable(table root, char* tagValue, char* tagType);
-table startTable();
-char* getParamList(node root);
-void checkFuncDec(node root, table symTab, table auxSymTab);
-void turnLowerCase(char* string);
-int checkDeclaration(table symTab, char* dec);
+void printGTable(gTable root);
+void printParams(table param);
+gTable createSymbolGTable(char* tagValue, char* tagType, table fParams);
+table createSymbolTable(char* tagValue, char* tagType);
+void insertInTable(gTable root, char* tagValue, char* tagType, table param);
+gTable startTable();
+table getParamList(node root);
+void checkFuncDec(node root, gTable symTab, table auxSymTab);
+char* lowerCase(char* string);
+int checkDeclaration(gTable symTab, char* dec);
 char* removeId(char* id);
 void startAuxTable(table root, char* tagValue, char* ret);
 table insertInAuxTable(table root, char* tagValue, table node);
-void checkSemantics(node root, table symTab, table auxSymTab);
-void analiseFuncDec(node root, table symTab, table auxSymTab);
+void checkSemantics(node root, gTable symTab, table auxSymTab);
+void analiseFuncDec(node root, gTable symTab, table auxSymTab);
 
 extern char flag;
 extern char printFlag;
-extern table symTab, auxSymTab;
+extern table auxSymTab;
+extern gTable symTab;
 extern node root;
 
 #endif

@@ -27,10 +27,19 @@ char* getParamList(node root) {
     char* aux;
     aux = (char*)malloc(strlen(root->tag) * sizeof(char) + 1);
     strcpy(aux, root->child->tag);
+
+    if(root->child->sibling) {
+        aux = (char*)realloc(aux, (strlen(aux) + strlen(root->child->sibling->tag) + 2) * sizeof(char));
+        sprintf(aux, "%s\t%s", aux, removeId(root->child->sibling->tag));
+    }
     while(root->sibling) {
         root = root->sibling;
-        aux = (char*)realloc(aux, (strlen(aux) + strlen(root->child->tag) + 1) * sizeof(char));
-        sprintf(aux, "%s\t%s", aux, root->tag);
+        aux = (char*)realloc(aux, (strlen(aux) + strlen(root->child->tag) + 3) * sizeof(char));
+        sprintf(aux, "%s, %s", aux, root->child->tag);
+        if(root->child->sibling) {
+            aux = (char*)realloc(aux, (strlen(aux) + strlen(root->child->sibling->tag) + 2) * sizeof(char));
+            sprintf(aux, "%s\t%s", aux, removeId(root->child->sibling->tag));
+        }
     }
     return aux;
 }
@@ -40,13 +49,11 @@ void checkFuncDec(node root, table symTab) {
         char* aux = NULL;
         char* aux1 = NULL;
         char* aux2 = NULL;
-
+        
         if(strcmp(root->tag, "FuncDeclaration") == 0) {
             aux1 = getParamList(root->child->sibling->sibling->child);
-            aux2 = (char*)malloc((strlen(root->child->sibling->tag) - 4) * sizeof(char));
-            strncpy(aux2, root->child->sibling->tag + 3, sizeof(root->child->sibling->tag) - 4 * sizeof(char));
-            *(aux2 + strlen(root->child->sibling->tag) - 4) = '\0';
-            aux = (char*)malloc((strlen(root->child->tag) + strlen(aux2) + strlen(aux1) + 3) * sizeof(char));
+            aux2 = removeId(root->child->sibling->tag);
+            aux = (char*)malloc((strlen(root->child->tag) + strlen(aux2) + strlen(aux1) + 4) * sizeof(char));
             sprintf(aux, "%s\t%s(%s)", aux2, root->child->tag, aux1);
             turnLowerCase(aux);
             insertInTable(symTab, aux);
@@ -62,9 +69,11 @@ void checkFuncDec(node root, table symTab) {
 }
 
 void printTable(table root) {
-    while(root) {
+    if(root) {
         printf("%s\n", root->tag);
-        root = root->next;
+        printTable(root->next);
+        free(root->tag);
+        free(root);
     }
 }
 
@@ -75,4 +84,23 @@ void turnLowerCase(char* string) {
         }
         string++;
     }
+}
+
+table checkDeclaration(table symTab, char* dec) {
+    if(symTab == NULL) {
+        return NULL;
+    }
+    else if(strcmp(dec, symTab->tag) == 0) {
+        return symTab;
+    }
+    else {
+        return checkDeclaration(symTab->next, dec);
+    }
+}
+
+char* removeId(char* id) {
+    char* aux = (char*)malloc((strlen(id) - 3) * sizeof(char));;
+    strncpy(aux, id + 3, (strlen(id) - 4) * sizeof(char));
+    *(aux + strlen(id) - 4) = '\0';
+    return aux;
 }

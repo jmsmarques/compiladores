@@ -37,6 +37,8 @@ table startTable();
 char* getParamList(node root);
 void checkFuncDec(node root, table symTab);
 void turnLowerCase(char* string);
+table checkDeclaration(table symTab, char* dec);
+char* removeId(char* id);
 
 extern char flag;
 extern char printFlag;

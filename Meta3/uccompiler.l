@@ -150,7 +150,7 @@ int main(int argc, char** argv)
     yylex_destroy();
 
     symTab = startTable();
-    auxSymTab = createSymbol("");
+    auxSymTab = createSymbol("", "");
     checkSemantics(root, symTab, auxSymTab);
 
     if(printTableFlag == 'Y') {

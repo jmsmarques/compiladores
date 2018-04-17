@@ -2,39 +2,37 @@
 
 table startTable() {
     table symTab;
-    symTab = createSymbol("==== Global Symbol Table ====");
-    insertInTable(symTab, "putchar\tint(int)");
-    insertInTable(symTab, "getchar\tint(void)");
+    symTab = createSymbol("==== Global Symbol Table ====", "");
+    insertInTable(symTab, "putchar", "int(int)");
+    insertInTable(symTab, "getchar", "int(void)");
     return symTab;
 }
 
-table createSymbol(char* tagValue) {
+table createSymbol(char* tagValue, char* typeValue) {
     table aux = (table)malloc(sizeof(sym_table));
     aux->tag = (char*)malloc((strlen(tagValue) + 1) * sizeof(char));
     strcpy(aux->tag, tagValue);
+    aux->type = (char*)malloc((strlen(typeValue) + 1) * sizeof(char));
+    strcpy(aux->type, typeValue);
     aux->next = NULL;
     return aux;
 }
 
-void insertInTable(table root, char* tagValue) {
+void insertInTable(table root, char* tagValue, char* typeValue) {
     while(root->next) {
         root = root->next;
     }
-    root->next = createSymbol(tagValue);
+    root->next = createSymbol(tagValue, typeValue);
 }
 
 void startAuxTable(table root, char* tagValue, char* ret) {
-    char* aux = NULL;
     while(root->next) {
         root = root->next;
     }
-    aux = (char*)malloc((strlen(ret) + strlen("return ") + 1) * sizeof(char));
     turnLowerCase(ret);
-    sprintf(aux, "return\t%s", ret);
-    root->next = createSymbol(tagValue);
-    root->next->next = createSymbol(aux);
-    root->next->next->next = createSymbol("");
-
+    root->next = createSymbol(tagValue, "");
+    root->next->next = createSymbol("return", ret);
+    root->next->next->next = createSymbol("", "");
 }
 
 table insertInAuxTable(table root, char* tagValue, table node) {
@@ -75,43 +73,50 @@ char* getParamList(node root) {
 
 void checkFuncDec(node root, table symTab, table auxSymTab) {
     if(root) {
+        table tabAux = NULL;
         char* aux = NULL;
-        char* aux1 = NULL;
-        char* aux2 = NULL;
-        //table tabAux = NULL;
 
         if(strcmp(root->tag, "FuncDeclaration") == 0) {
-            aux1 = getParamList(root->child->sibling->sibling->child);
-            aux2 = removeId(root->child->sibling->tag);
-            aux = (char*)malloc((strlen(root->child->tag) + strlen(aux2) + strlen(aux1) + 4) * sizeof(char));
-            sprintf(aux, "%s\t%s(%s)", aux2, root->child->tag, aux1);
-            turnLowerCase(aux);
-            insertInTable(symTab, aux);
-            if(strcmp(root->child->tag, "void") != 0) {
-                aux2 = (char*)realloc(aux2, (strlen(aux2) + 33) * sizeof(char));
-                sprintf(aux2, "==== Function %s Symbol Table ====", strdup(aux2));
-                startAuxTable(auxSymTab, aux2, root->child->tag);
-            }
-            free(aux1);
-            free(aux2);
+            analiseFuncDec(root, symTab, auxSymTab);
         }
         else if(strcmp(root->tag, "FuncDefinition") == 0) {
-            /*aux2 = removeId(root->child->sibling->tag);
-            tabAux = checkDeclaration(symTab, aux2);
-            if(tabAux != NULL) {
+            aux = removeId(root->child->sibling->tag);
+            if(checkDeclaration(symTab, aux)) {
 
             }
             else {
-
+                analiseFuncDec(root, symTab, auxSymTab);
             }
-            free(tabAux);*/
+            free(tabAux);
         }
     }
 }
 
+void analiseFuncDec(node root, table symTab, table auxSymTab) {
+    char* aux;
+    char* aux1;
+    char* aux2;
+
+    aux2 = removeId(root->child->sibling->tag);
+    aux1 = getParamList(root->child->sibling->sibling->child);
+    aux = (char*)malloc((strlen(root->child->tag) + strlen(aux1) + 4) * sizeof(char));
+    sprintf(aux, "%s(%s)", root->child->tag, aux1);
+    turnLowerCase(aux);
+    turnLowerCase(aux2);
+    insertInTable(symTab, aux2, aux);
+    if(strcmp(root->child->tag, "void") != 0) {
+        aux2 = (char*)realloc(aux2, (strlen(aux2) + 33) * sizeof(char));
+        sprintf(aux2, "==== Function %s Symbol Table ====", strdup(aux2));
+        startAuxTable(auxSymTab, aux2, root->child->tag);
+    }
+
+    free(aux1);
+    free(aux2);
+}
+
 void printTable(table root) {
     if(root) {
-        printf("%s\n", root->tag);
+        printf("%s\t%s\n", root->tag, root->type);
         printTable(root->next);
         free(root->tag);
         free(root);
@@ -127,12 +132,12 @@ void turnLowerCase(char* string) {
     }
 }
 
-table checkDeclaration(table symTab, char* dec) {
+int checkDeclaration(table symTab, char* dec) {
     if(symTab == NULL) {
-        return NULL;
+        return 0;
     }
     else if(strcmp(dec, symTab->tag) == 0) {
-        return symTab;
+        return 1;
     }
     else {
         return checkDeclaration(symTab->next, dec);

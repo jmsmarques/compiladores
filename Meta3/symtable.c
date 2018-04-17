@@ -23,6 +23,35 @@ void insertInTable(table root, char* tagValue) {
     root->next = createSymbol(tagValue);
 }
 
+void startAuxTable(table root, char* tagValue, char* ret) {
+    char* aux = NULL;
+    while(root->next) {
+        root = root->next;
+    }
+    aux = (char*)malloc((strlen(ret) + strlen("return ") + 1) * sizeof(char));
+    turnLowerCase(ret);
+    sprintf(aux, "return\t%s", ret);
+    root->next = createSymbol(tagValue);
+    root->next->next = createSymbol(aux);
+    root->next->next->next = createSymbol("");
+
+}
+
+table insertInAuxTable(table root, char* tagValue, table node) {
+    while(root) {
+        if(strcmp(root->tag, tagValue) == 0) {
+            while(strcmp(root->next->tag, "") != 0) {
+                root = root->next;
+            }
+            node->next = root->next;
+            root->next = node;
+            return node;
+        }
+        root = root->next;
+    }
+    return NULL;
+}
+
 char* getParamList(node root) {
     char* aux;
     aux = (char*)malloc(strlen(root->tag) * sizeof(char) + 1);
@@ -44,12 +73,13 @@ char* getParamList(node root) {
     return aux;
 }
 
-void checkFuncDec(node root, table symTab) {
+void checkFuncDec(node root, table symTab, table auxSymTab) {
     if(root) {
         char* aux = NULL;
         char* aux1 = NULL;
         char* aux2 = NULL;
-        
+        //table tabAux = NULL;
+
         if(strcmp(root->tag, "FuncDeclaration") == 0) {
             aux1 = getParamList(root->child->sibling->sibling->child);
             aux2 = removeId(root->child->sibling->tag);
@@ -57,14 +87,25 @@ void checkFuncDec(node root, table symTab) {
             sprintf(aux, "%s\t%s(%s)", aux2, root->child->tag, aux1);
             turnLowerCase(aux);
             insertInTable(symTab, aux);
+            if(strcmp(root->child->tag, "void") != 0) {
+                aux2 = (char*)realloc(aux2, (strlen(aux2) + 33) * sizeof(char));
+                sprintf(aux2, "==== Function %s Symbol Table ====", strdup(aux2));
+                startAuxTable(auxSymTab, aux2, root->child->tag);
+            }
             free(aux1);
             free(aux2);
         }
         else if(strcmp(root->tag, "FuncDefinition") == 0) {
+            /*aux2 = removeId(root->child->sibling->tag);
+            tabAux = checkDeclaration(symTab, aux2);
+            if(tabAux != NULL) {
 
+            }
+            else {
+
+            }
+            free(tabAux);*/
         }
-        checkFuncDec(root->child, symTab);
-        checkFuncDec(root->sibling, symTab);
     }
 }
 
@@ -103,4 +144,13 @@ char* removeId(char* id) {
     strncpy(aux, id + 3, (strlen(id) - 4) * sizeof(char));
     *(aux + strlen(id) - 4) = '\0';
     return aux;
+}
+
+void checkSemantics(node root, table symTab, table auxSymTab) {
+    if(!root) {
+        return;       
+    }
+    checkFuncDec(root, symTab, auxSymTab);
+    checkSemantics(root->child, symTab, auxSymTab);
+    checkSemantics(root->sibling, symTab, auxSymTab);
 }

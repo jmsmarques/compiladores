@@ -35,14 +35,17 @@ table createSymbol(char* tagValue);
 void insertInTable(table root, char* tagValue);
 table startTable();
 char* getParamList(node root);
-void checkFuncDec(node root, table symTab);
+void checkFuncDec(node root, table symTab, table auxSymTab);
 void turnLowerCase(char* string);
 table checkDeclaration(table symTab, char* dec);
 char* removeId(char* id);
+void startAuxTable(table root, char* tagValue, char* ret);
+table insertInAuxTable(table root, char* tagValue, table node);
+void checkSemantics(node root, table symTab, table auxSymTab);
 
 extern char flag;
 extern char printFlag;
-extern table symTab;
+extern table symTab, auxSymTab;
 extern node root;
 
 #endif

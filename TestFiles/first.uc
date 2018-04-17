@@ -1,15 +1,1 @@
-'o'
-'oi'hrikg'os'
-'e\'
-'\'\''
-''
-'\\\\\\'
-'fknjgjsnjhdjjkdsjsk'  '\r' '\t' '
- '       ' '\n' '
-    '
-'\'
-'\\\
-'\\\\'
-'\\\\\'
-'\\\\'nas
-'\a\
+int main(void sera, int oi);

@@ -7,6 +7,7 @@
 
 char flag = 'N';
 char printTableFlag = 'N';
+char sinError = 'N';
 int col = 1;
 int line = 1;
 int aux_line = 1;
@@ -148,16 +149,17 @@ int main(int argc, char** argv)
     printFlag = 'N';
     yyparse();
     yylex_destroy();
-
-    symTab = startTable();
-    auxSymTab = createSymbolTable("", "");
-    checkSemantics(root, symTab, auxSymTab);
-
-    if(printTableFlag == 'Y') {
-        printGTable(symTab);
-        printTable(auxSymTab);
-    }
     
+    if(sinError == 'N') {
+        symTab = startTable();
+        auxSymTab = createSymbolTable("", "");
+        checkSemantics(root, symTab, auxSymTab);
+
+        if(printTableFlag == 'Y') {
+            printGTable(symTab);
+            printTable(auxSymTab);
+        }
+    }
     return 0;
 }
 
@@ -166,5 +168,6 @@ int yywrap() {
 }
 
 void yyerror (char *s) {
+    sinError = 'Y';
     printf("Line %d, col %d: %s: %s\n", line, col - (int)strlen(yytext), s, yytext);
 }

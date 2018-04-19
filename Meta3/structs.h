@@ -54,7 +54,10 @@ char* removeId(char* id);
 void startAuxTable(table root, char* tagValue, char* ret);
 table insertInAuxTable(table root, char* tagValue, table node);
 void checkSemantics(node root, gTable symTab, table auxSymTab);
-void analiseFuncDec(node root, gTable symTab, table auxSymTab);
+void analiseFuncDec(node root, gTable symTab);
+void createFuncTable(node root, table auxSymTab);
+void analiseFuncBody(node root, table auxSymTab);
+void analiseDec(node root, gTable symTab);
 
 extern char flag;
 extern char printFlag;

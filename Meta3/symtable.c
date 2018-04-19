@@ -88,34 +88,61 @@ void checkFuncDec(node root, gTable symTab, table auxSymTab) {
         char* aux = NULL;
 
         if(strcmp(root->tag, "FuncDeclaration") == 0) {
-            analiseFuncDec(root, symTab, auxSymTab);
+            analiseFuncDec(root, symTab);
         }
         else if(strcmp(root->tag, "FuncDefinition") == 0) {
             aux = removeId(root->child->sibling->tag);
             if(checkDeclaration(symTab, aux)) {
-
+                createFuncTable(root, auxSymTab);
             }
             else {
-                analiseFuncDec(root, symTab, auxSymTab);
+                analiseFuncDec(root, symTab);
+                createFuncTable(root, auxSymTab);
             }
         }
+        else if(strcmp(root->tag, "Declaration") == 0) {
+            aux = removeId(root->child->sibling->tag);
+            if(checkDeclaration(symTab, aux)) {
+                //not good
+            }
+            else {
+                analiseDec(root, symTab);
+            }
+        }
+        free(aux);
     }
 }
 
-void analiseFuncDec(node root, gTable symTab, table auxSymTab) {
+void analiseFuncDec(node root, gTable symTab) {
     char* aux;
     table aux1;
 
     aux = removeId(root->child->sibling->tag);
     aux1 = getParamList(root->child->sibling->sibling->child);
     insertInTable(symTab, lowerCase(aux), lowerCase(root->child->tag), aux1);
-    if(strcmp(root->child->tag, "void") != 0) {
-        aux = (char*)realloc(aux, (strlen(aux) + 33) * sizeof(char));
-        sprintf(aux, "==== Function %s Symbol Table ====", strdup(aux));
-        startAuxTable(auxSymTab, aux, root->child->tag);
-    }
 
     free(aux);
+}
+
+void createFuncTable(node root, table auxSymTab) {
+    char* aux = removeId(root->child->sibling->tag);
+    aux = (char*)realloc(aux, (strlen(aux) + 33) * sizeof(char));
+    sprintf(aux, "==== Function %s Symbol Table ====", strdup(aux));
+    startAuxTable(auxSymTab, aux, root->child->tag);
+    free(aux);
+}
+
+void analiseDec(node root, gTable symTab) {
+    char* aux;
+
+    aux = removeId(root->child->sibling->tag);
+    insertInTable(symTab, lowerCase(aux), lowerCase(root->child->tag), NULL);
+
+    free(aux);
+}
+
+void analiseFuncBody(node root, table auxSymTab) {
+
 }
 
 void printGTable(gTable root) {

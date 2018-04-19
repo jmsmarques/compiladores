@@ -52,12 +52,13 @@ char* lowerCase(char* string);
 int checkDeclaration(gTable symTab, char* dec);
 char* removeId(char* id);
 void startAuxTable(table root, char* tagValue, char* ret);
-table insertInAuxTable(table root, char* tagValue, table node);
+table insertInAuxTable(table root, char* functionName, table node);
 void checkSemantics(node root, gTable symTab, table auxSymTab);
 void analiseFuncDec(node root, gTable symTab);
-void createFuncTable(node root, table auxSymTab);
-void analiseFuncBody(node root, table auxSymTab);
+char* createFuncTable(node root, table auxSymTab);
+void analiseFuncBody(node root, table auxSymTab, char* functionName);
 void analiseDec(node root, gTable symTab);
+void analiseDecF(node root, table symTab, char* functionName);
 
 extern char flag;
 extern char printFlag;

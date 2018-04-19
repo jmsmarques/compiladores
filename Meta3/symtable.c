@@ -36,6 +36,35 @@ void insertInTable(gTable root, char* tagValue, char* typeValue, table param) {
     root->next = createSymbolGTable(tagValue, typeValue, param);
 }
 
+int searchFuncDec(gTable root, char* tagValue) {
+    while(root) {
+        if(strcmp(tagValue, root->tag) == 0) {
+            return 1;
+        }
+        else {
+            root = root->next;
+        }
+    }
+    return 0;
+}
+
+int searchFuncDef(table root, char* tagValue) {
+    char* aux = NULL;
+    aux = (char*)malloc((strlen(tagValue) + 33) * sizeof(char));
+    sprintf(aux, "==== Function %s Symbol Table ====", tagValue);
+    while(root) {
+        if(strcmp(aux, root->tag) == 0) {
+            free(aux);
+            return 1;
+        }
+        else {
+            root = root->next;
+        }
+    }
+    free(aux);
+    return 0;
+}
+
 table startAuxTable(table root, char* tagValue, char* tagType) {
     while(root->next) {
         root = root->next;
@@ -95,16 +124,22 @@ void checkFuncDec(node root, gTable symTab, table auxSymTab) {
         char* functionName = NULL;
         table func;
         if(strcmp(root->tag, "FuncDeclaration") == 0) {
-            analiseFuncDec(root, symTab);
+            if(!searchFuncDec(symTab, removeId(root->child->sibling->tag)))
+                analiseFuncDec(root, symTab);
         }
         else if(strcmp(root->tag, "FuncDefinition") == 0) {
             aux = removeId(root->child->sibling->tag);
-            if(!checkDeclaration(symTab, aux)) {
-                analiseFuncDec(root, symTab);
+            if(!searchFuncDef(auxSymTab, aux)) {
+                if(!checkDeclaration(symTab, aux)) {
+                    analiseFuncDec(root, symTab);
+                }
+                func = createFuncTable(root, auxSymTab);
+                functionName = strdup(func->tag);
+                analiseFuncBody(root->child->sibling->sibling->sibling, func, functionName);
             }
-            func = createFuncTable(root, auxSymTab);
-            functionName = strdup(func->tag);
-            analiseFuncBody(root->child->sibling->sibling->sibling, func, functionName);
+            else {
+                //funcao ja definida
+            }
             free((char*)functionName);
         }
         else if(strcmp(root->tag, "Declaration") == 0) {
@@ -203,7 +238,7 @@ void printParams(table param) {
 }
 
 void printTable(table root) {
-    if(root->next) {
+    if(root) {
         printf("%s\t%s\n", root->tag, root->type);
         printTable(root->next);
         free(root->tag);

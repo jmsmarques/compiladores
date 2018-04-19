@@ -45,6 +45,8 @@ void printParams(table param);
 gTable createSymbolGTable(char* tagValue, char* tagType, table fParams);
 table createSymbolTable(char* tagValue, char* tagType);
 void insertInTable(gTable root, char* tagValue, char* tagType, table param);
+int searchFuncDec(gTable root, char* tagValue);
+int searchFuncDef(table root, char* tagValue);
 gTable startTable();
 table getParamList(node root);
 void checkFuncDec(node root, gTable symTab, table auxSymTab);

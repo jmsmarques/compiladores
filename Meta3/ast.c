@@ -4,6 +4,7 @@ node createNode(char* tagValue) {
     node no = (node)malloc(sizeof(tree_node));
     no->tag = (char*)malloc((strlen(tagValue) + 1) * sizeof(char));
     strcpy(no->tag, tagValue);
+    no->type = NULL;
     no->child = NULL;
     no->sibling = NULL;
     return no;
@@ -12,6 +13,7 @@ node createNode(char* tagValue) {
 node createNodeEmpty() {
     node no = (node)malloc(sizeof(tree_node));
     no->tag = NULL;
+    no->type = NULL;
     no->child = NULL;
     no->sibling = NULL;
     return no;
@@ -21,6 +23,7 @@ node createNodeTerminal(char* tagValue, char* value) {
     node no = (node)malloc(sizeof(tree_node));
     no->tag = (char*)malloc((strlen(tagValue) + strlen(value) + 3) * sizeof(char));
     sprintf(no->tag, "%s%c%s%c", tagValue, '(', value, ')');
+    no->type = NULL;
     no->child = NULL;
     no->sibling = NULL;
     return no;
@@ -37,6 +40,7 @@ void addNullChild(node father) {
     aux = (node) malloc(sizeof(tree_node));
     aux->tag = (char*) malloc(5*sizeof(char));
     strcpy(aux->tag, "Null");
+    aux->type = NULL;
     aux->child = NULL;
     aux->sibling = NULL;
 

@@ -118,7 +118,7 @@ table getParamList(node root) {
     return init;
 }
 
-void checkFuncDec(node root, gTable symTab, table auxSymTab) {
+int checkFuncDec(node root, gTable symTab, table auxSymTab) {
     if(root) {
         char* aux = NULL;
         char* functionName = NULL;
@@ -135,7 +135,7 @@ void checkFuncDec(node root, gTable symTab, table auxSymTab) {
                 }
                 func = createFuncTable(root, auxSymTab);
                 functionName = strdup(func->tag);
-                analiseFuncBody(root->child->sibling->sibling->sibling, func, functionName);
+                analiseFuncBody(root->child->sibling->sibling->sibling, symTab, func, functionName);
             }
             else {
                 //funcao ja definida
@@ -146,10 +146,18 @@ void checkFuncDec(node root, gTable symTab, table auxSymTab) {
             aux = removeId(root->child->sibling->tag);
             if(!checkDeclaration(symTab, aux)) {
                 analiseDec(root, symTab);
+                if(root->child->sibling->sibling) {
+                    root->child->sibling->sibling->type = checkVarType(root->child->sibling->sibling->tag);
+                }
             }
+        }
+        else {
+            free(aux);
+            return 1;
         }
         free(aux);
     }
+    return 0;
 }
 
 void analiseFuncDec(node root, gTable symTab) {
@@ -190,20 +198,29 @@ void analiseDecF(node root, table symTab, char* functionName) {
         aux1 = createSymbolTable(aux, lowerCase(root->child->tag));
         insertInAuxTable(symTab, aux1);
     }
-
+    
     free(aux);
 }
 
-void analiseFuncBody(node root, table auxSymTab, char* functionName) {
+void analiseFuncBody(node root, gTable symTab, table auxSymTab, char* functionName) {
     if(!root) {
         return;
     }
-   
+    
+    int aux = 1;
+
     if(strcmp(root->tag, "Declaration") == 0) {
         analiseDecF(root, auxSymTab, functionName);
+        aux = 0;
+        if(root->child->sibling->sibling) {
+            root->child->sibling->sibling->type = checkVarType(root->child->sibling->sibling->tag);
+        }
     }
-    analiseFuncBody(root->child, auxSymTab, functionName);
-    analiseFuncBody(root->sibling, auxSymTab, functionName);
+
+    annoteTree(root, symTab, auxSymTab);
+    if(aux)
+        analiseFuncBody(root->child, symTab, auxSymTab, functionName);
+    analiseFuncBody(root->sibling, symTab, auxSymTab, functionName);
 }
 
 void printGTable(gTable root) {
@@ -292,11 +309,13 @@ char* removeId(char* id) {
 }
 
 void checkSemantics(node root, gTable symTab, table auxSymTab) {
+    int aux;
     if(!root) {
         return;       
     }
-    checkFuncDec(root, symTab, auxSymTab);
-    if(strcmp(root->tag, "FuncDefinition") != 0)
+    aux = checkFuncDec(root, symTab, auxSymTab);
+    annoteTree(root, symTab, auxSymTab);
+    if(aux)
         checkSemantics(root->child, symTab, auxSymTab);
     checkSemantics(root->sibling, symTab, auxSymTab);
 }

@@ -7,6 +7,8 @@
 typedef struct _tree_node* node;
 typedef struct _tree_node{
     char* tag;
+    char* type;
+    int pos[2];
     node child;
     node sibling;
 }tree_node;
@@ -49,7 +51,7 @@ int searchFuncDec(gTable root, char* tagValue);
 int searchFuncDef(table root, char* tagValue);
 gTable startTable();
 table getParamList(node root);
-void checkFuncDec(node root, gTable symTab, table auxSymTab);
+int checkFuncDec(node root, gTable symTab, table auxSymTab);
 char* lowerCase(char* string);
 int checkDeclaration(gTable symTab, char* dec);
 int checkFuncVarDec(table symTab, char* dec);
@@ -59,9 +61,16 @@ void insertInAuxTable(table root, table node);
 void checkSemantics(node root, gTable symTab, table auxSymTab);
 void analiseFuncDec(node root, gTable symTab);
 table createFuncTable(node root, table auxSymTab);
-void analiseFuncBody(node root, table auxSymTab, char* functionName);
+void analiseFuncBody(node root, gTable symTab, table auxSymTab, char* functionName);
 void analiseDec(node root, gTable symTab);
 void analiseDecF(node root, table symTab, char* functionName);
+
+char* checkVarType(char* string);
+void annoteTree(node root, gTable symTab, table auxSymTab);
+char* annoteFuncParams(gTable symTab);
+int analiseFuncId(node root, char* id, gTable symTab);
+void analiseVarId(node root, gTable symTab, table auxSymTab);
+void printAnnotedTree(node root, int level);
 
 extern char flag;
 extern char printFlag;

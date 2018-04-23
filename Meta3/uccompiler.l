@@ -158,6 +158,7 @@ int main(int argc, char** argv)
         if(printTableFlag == 'Y') {
             printGTable(symTab);
             printTable(auxSymTab);
+            printAnnotedTree(root, 0);
         }
     }
     return 0;

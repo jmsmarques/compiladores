@@ -16,6 +16,9 @@ char* checkVarType(char* string) {
     else if(strncmp(string, "char", 4) == 0) {
         aux = strdup("char");
     }
+    else if(strncmp(string, "void", 4) == 0) {
+        aux = strdup("void");
+    }
     if(aux)
         return aux;
     return NULL;

@@ -165,9 +165,9 @@ int checkFuncDec(node root, gTable symTab, table auxSymTab) {
             aux = removeId(root->child->sibling->tag);
             if(!checkDeclaration(symTab, aux)) {
                 analiseDec(root, symTab);
-                if(root->child->sibling->sibling) {
-                    root->child->sibling->sibling->type = checkVarType(root->child->sibling->sibling->tag);
-                }
+            }
+            if(root->child->sibling->sibling) {
+                annotedDecOp(root->child->sibling->sibling);
             }
         }
         else {
@@ -232,7 +232,7 @@ void analiseFuncBody(node root, gTable symTab, table auxSymTab, char* functionNa
         analiseDecF(root, auxSymTab, functionName);
         aux = 0;
         if(root->child->sibling->sibling) {
-            root->child->sibling->sibling->type = checkVarType(root->child->sibling->sibling->tag);
+            annotedDecOp(root->child->sibling->sibling);
         }
     }
 
@@ -262,7 +262,7 @@ void printParams(table param) {
     if(param) {
         printf("%s", param->type);
         if(strcmp(param->tag, "") != 0)
-            printf("%s", param->tag);
+            printf(" %s", param->tag);
         if(param->next) {
             printf(",");
         }
@@ -299,7 +299,7 @@ char* lowerCase(char* string) {
     return aux;
 }
 
-int checkDeclaration(gTable symTab, char* dec) {
+int checkDeclaration(gTable symTab, char* dec) { //verifica se variavel ja foi declarada globalmente
     if(symTab == NULL) {
         return 0;
     }

@@ -128,6 +128,17 @@ int checkIfId(char* string) {
     return 0;
 }
 
+void annotedDecOp(node root) {
+    if(checkIfOperation(root->tag)) {
+        root->type = strdup("int");
+        root->child->type = checkVarType(root->child->tag);
+        root->child->sibling->type = checkVarType(root->child->sibling->tag);
+    }
+    else {
+        root->type = checkVarType(root->tag);
+    }
+}
+
 void printAnnotedTree(node root, int level) {
     int aux;
     if(root == NULL) {

@@ -11,7 +11,7 @@ char* checkVarType(char* string) {
         aux = strdup("int");
     }
     else if(strncmp(string, "RealLit", 7) == 0) {
-        aux = strdup("real");
+        aux = strdup("double");
     }
     else if(strncmp(string, "char", 4) == 0) {
         aux = strdup("char");
@@ -72,6 +72,7 @@ void analiseVarId(node root, gTable symTab, table auxSymTab) {
     while(auxSymTab) {
         if(strcmp(auxSymTab->tag, aux) == 0) {
             root->type = strdup(auxSymTab->type);
+            free(aux);
             return;
         }
         auxSymTab = auxSymTab->next;
@@ -80,15 +81,16 @@ void analiseVarId(node root, gTable symTab, table auxSymTab) {
     while(symTab) {
         if(strcmp(symTab->tag, aux) == 0) {
             root->type = strdup(symTab->type);
+            free(aux);
             return;
         }
         symTab = symTab->next;
     }
-
+    free(aux);
     //id nao declarado
 }
 
-char* annoteFuncParams(gTable symTab) {
+char* annoteFuncParams(gTable symTab) { //anota parametros de uma funcao
     char* aux;
     table auxParam = symTab->params;
     aux = (char*)malloc((strlen(symTab->type) + 2) * sizeof(char));
@@ -128,11 +130,16 @@ int checkIfId(char* string) {
     return 0;
 }
 
-void annotedDecOp(node root) {
+void annotedDecOp(node root, gTable symTab, table auxSymTab) {
     if(checkIfOperation(root->tag)) {
         root->type = strdup("int");
-        root->child->type = checkVarType(root->child->tag);
-        root->child->sibling->type = checkVarType(root->child->sibling->tag);
+        annotedDecOp(root->child, symTab, auxSymTab);
+        annotedDecOp(root->child->sibling, symTab, auxSymTab);
+    }
+    else if(checkIfId(root->tag)) {
+        if(analiseFuncId(root, root->tag, symTab)) {
+            analiseVarId(root, symTab, auxSymTab);
+        }
     }
     else {
         root->type = checkVarType(root->tag);

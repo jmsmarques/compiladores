@@ -73,7 +73,7 @@ int analiseFuncId(node root, char* id, gTable symTab);
 void analiseVarId(node root, gTable symTab, table auxSymTab);
 int checkIfOperation(char* string);
 int checkIfId(char* string);
-void annotedDecOp(node root);
+void annotedDecOp(node root, gTable symTab, table auxSymTab);
 void printAnnotedTree(node root, int level);
 
 extern char flag;

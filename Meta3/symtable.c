@@ -2,7 +2,7 @@
 
 gTable startTable() {
     gTable symTab;
-    symTab = createSymbolGTable("==== Global Symbol Table ====", "", NULL);
+    symTab = createSymbolGTable("===== Global Symbol Table =====", "", NULL);
     insertInTable(symTab, "putchar", "int", createSymbolTable("", "int"));
     insertInTable(symTab, "getchar", "int", createSymbolTable("", "void"));
     return symTab;
@@ -49,10 +49,10 @@ int searchFuncDec(gTable root, char* tagValue) {
     return 0;
 }
 
-int searchFuncDef(table root, char* tagValue) {
+int searchFuncDef(table root, char* tagValue) { //procura tabela de definicao de uma funcao
     char* aux = NULL;
     aux = (char*)malloc((strlen(tagValue) + 33) * sizeof(char));
-    sprintf(aux, "==== Function %s Symbol Table ====", tagValue);
+    sprintf(aux, "===== Function %s Symbol Table =====", tagValue);
     while(root) {
         if(strcmp(aux, root->tag) == 0) {
             free(aux);
@@ -104,16 +104,6 @@ void insertInAuxTable(table root, table node) { //insere linha na tabela de uma 
     root->next = node;
 }
 
-table findAuxTable(table root, char* functionName) {
-    while(root) {
-        if(strcmp(root->tag, functionName) == 0) {
-            return root;
-        }
-        root = root->next;
-    }
-    return NULL;
-}
-
 table getParamList(node root) {
     table aux;
     table init;
@@ -163,11 +153,11 @@ int checkFuncDec(node root, gTable symTab, table auxSymTab) {
         }
         else if(strcmp(root->tag, "Declaration") == 0) {
             aux = removeId(root->child->sibling->tag);
-            if(!checkDeclaration(symTab, aux)) {
+            if(!checkDeclaration(symTab, aux)) { //Se variavel nao estiver declarada
                 analiseDec(root, symTab);
-            }
-            if(root->child->sibling->sibling) {
-                annotedDecOp(root->child->sibling->sibling);
+                if(root->child->sibling->sibling) {
+                    annotedDecOp(root->child->sibling->sibling, symTab, auxSymTab);
+                }
             }
         }
         else {
@@ -185,7 +175,7 @@ void analiseFuncDec(node root, gTable symTab) {
 
     aux = removeId(root->child->sibling->tag);
     aux1 = getParamList(root->child->sibling->sibling->child);
-    insertInTable(symTab, lowerCase(aux), lowerCase(root->child->tag), aux1);
+    insertInTable(symTab, aux, lowerCase(root->child->tag), aux1);
 
     free(aux);
 }
@@ -194,7 +184,7 @@ table createFuncTable(node root, table auxSymTab) {
     table func;
     char* aux = removeId(root->child->sibling->tag);
     aux = (char*)realloc(aux, (strlen(aux) + 33) * sizeof(char));
-    sprintf(aux, "==== Function %s Symbol Table ====", strdup(aux));
+    sprintf(aux, "===== Function %s Symbol Table =====", strdup(aux));
     func = startAuxTable(root, auxSymTab, aux, root->child->tag);
     return func;
 }
@@ -203,7 +193,7 @@ void analiseDec(node root, gTable symTab) {
     char* aux;
 
     aux = removeId(root->child->sibling->tag);
-    insertInTable(symTab, lowerCase(aux), lowerCase(root->child->tag), NULL);
+    insertInTable(symTab, aux, lowerCase(root->child->tag), NULL);
 
     free(aux);
 }
@@ -232,7 +222,7 @@ void analiseFuncBody(node root, gTable symTab, table auxSymTab, char* functionNa
         analiseDecF(root, auxSymTab, functionName);
         aux = 0;
         if(root->child->sibling->sibling) {
-            annotedDecOp(root->child->sibling->sibling);
+            annotedDecOp(root->child->sibling->sibling, symTab, auxSymTab);
         }
     }
 
@@ -244,7 +234,12 @@ void analiseFuncBody(node root, gTable symTab, table auxSymTab, char* functionNa
 
 void printGTable(gTable root) {
     if(root) {
-        printf("%s\t%s", root->tag, root->type);
+        if(strcmp(root->type, "") == 0) {
+            printf("%s", root->tag);
+        }
+        else if(strcmp(root->tag, "") != 0){
+            printf("%s\t%s", root->tag, root->type);
+        }
         if(root->params) {
             printf("(");
             printParams(root->params);
@@ -262,7 +257,7 @@ void printParams(table param) {
     if(param) {
         printf("%s", param->type);
         if(strcmp(param->tag, "") != 0)
-            printf(" %s", param->tag);
+            printf("%s", param->tag);
         if(param->next) {
             printf(",");
         }
@@ -275,13 +270,19 @@ void printParams(table param) {
 
 void printTable(table root) {
     if(root) {
-        printf("%s\t%s", root->tag, root->type);
+        if(strcmp(root->type, "") == 0) {
+            printf("%s", root->tag);
+        }
+        else if(strcmp(root->tag, "") != 0){
+            printf("%s\t%s", root->tag, root->type);
+        }
         if(root->param)
             printf("\t%s", root->param);
         printf("\n");
         printTable(root->next);
         free(root->tag);
         free(root->type);
+        free(root->param);
         free(root);
     }
 }

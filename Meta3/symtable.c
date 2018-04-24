@@ -243,9 +243,9 @@ void printParams(table param) {
     if(param) {
         printf("%s", param->type);
         if(strcmp(param->tag, "") != 0)
-            printf(" %s", param->tag);
+            printf("%s", param->tag);
         if(param->next) {
-            printf("\t");
+            printf(",");
         }
         printParams(param->next);
         free(param->tag);

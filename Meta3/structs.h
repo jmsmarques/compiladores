@@ -70,6 +70,8 @@ void annoteTree(node root, gTable symTab, table auxSymTab);
 char* annoteFuncParams(gTable symTab);
 int analiseFuncId(node root, char* id, gTable symTab);
 void analiseVarId(node root, gTable symTab, table auxSymTab);
+int checkIfOperation(char* string);
+int checkIfId(char* string);
 void printAnnotedTree(node root, int level);
 
 extern char flag;

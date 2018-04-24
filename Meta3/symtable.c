@@ -26,6 +26,7 @@ table createSymbolTable(char* tagValue, char* typeValue) {
     aux->type = (char*)malloc((strlen(typeValue) + 1) * sizeof(char));
     strcpy(aux->type, typeValue);
     aux->next = NULL;
+    aux->param = NULL;
     return aux;
 }
 
@@ -65,19 +66,37 @@ int searchFuncDef(table root, char* tagValue) {
     return 0;
 }
 
-table startAuxTable(table root, char* tagValue, char* tagType) {
+table startAuxTable(node tree, table root, char* tagValue, char* tagType) {
+    table aux = NULL;
+    table params = getParamList(tree->child->sibling->sibling->child);
     while(root->next) {
         root = root->next;
     }
     root->next = createSymbolTable(tagValue, "");
     root->next->next = createSymbolTable("return", lowerCase(tagType));
-    root->next->next->next = createSymbolTable("", "");
-    root = root->next;
-
+    if(params) {
+        aux = root->next->next;
+        while(params) { //caso tenha parametros poe os na tabela
+            if(strcmp(params->tag, "") != 0) {
+                aux->next = createSymbolTable(strdup(params->tag), strdup(params->type));
+                aux = aux->next;
+                aux->param = strdup("param");
+            }
+            params = params->next;
+        }
+        aux->next = createSymbolTable("", "");
+        root = aux;
+    }
+    else {
+        root->next->next->next = createSymbolTable("", "");
+        root = root->next;
+    }
+    
+    
     return root;
 }
 
-void insertInAuxTable(table root, table node) {
+void insertInAuxTable(table root, table node) { //insere linha na tabela de uma funcao
     while(strcmp(root->next->tag, "") != 0) {
         root = root->next;
     }
@@ -129,11 +148,11 @@ int checkFuncDec(node root, gTable symTab, table auxSymTab) {
         }
         else if(strcmp(root->tag, "FuncDefinition") == 0) {
             aux = removeId(root->child->sibling->tag);
-            if(!searchFuncDef(auxSymTab, aux)) {
-                if(!checkDeclaration(symTab, aux)) {
-                    analiseFuncDec(root, symTab);
+            if(!searchFuncDef(auxSymTab, aux)) { //verifica se funcao ja foi definida (V se nao tiver sido)
+                if(!checkDeclaration(symTab, aux)) { //verifica se funcao ja foi declarada (V se nao tiver sido)
+                    analiseFuncDec(root, symTab); //cria declaracao na tabela global
                 }
-                func = createFuncTable(root, auxSymTab);
+                func = createFuncTable(root, auxSymTab); //cria definicao na tabela de simbolos
                 functionName = strdup(func->tag);
                 analiseFuncBody(root->child->sibling->sibling->sibling, symTab, func, functionName);
             }
@@ -176,7 +195,7 @@ table createFuncTable(node root, table auxSymTab) {
     char* aux = removeId(root->child->sibling->tag);
     aux = (char*)realloc(aux, (strlen(aux) + 33) * sizeof(char));
     sprintf(aux, "==== Function %s Symbol Table ====", strdup(aux));
-    func = startAuxTable(auxSymTab, aux, root->child->tag);
+    func = startAuxTable(root, auxSymTab, aux, root->child->tag);
     return func;
 }
 
@@ -189,12 +208,12 @@ void analiseDec(node root, gTable symTab) {
     free(aux);
 }
 
-void analiseDecF(node root, table symTab, char* functionName) {
+void analiseDecF(node root, table symTab, char* functionName) { //verifica se funcao ja foi definida se nao foi define
     char* aux;
     table aux1;
 
     aux = removeId(root->child->sibling->tag);
-    if(!checkFuncVarDec(symTab, aux)) {
+    if(!checkFuncVarDec(symTab, aux)) { //verifica se funcao ja foi definida (V se nao estiver)
         aux1 = createSymbolTable(aux, lowerCase(root->child->tag));
         insertInAuxTable(symTab, aux1);
     }
@@ -256,7 +275,10 @@ void printParams(table param) {
 
 void printTable(table root) {
     if(root) {
-        printf("%s\t%s\n", root->tag, root->type);
+        printf("%s\t%s", root->tag, root->type);
+        if(root->param)
+            printf("\t%s", root->param);
+        printf("\n");
         printTable(root->next);
         free(root->tag);
         free(root->type);

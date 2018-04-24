@@ -17,6 +17,7 @@ typedef struct _sym_table* table;
 typedef struct _sym_table{
     char* tag;
     char* type;
+    char* param;
     table next;
 }sym_table;
 
@@ -56,7 +57,7 @@ char* lowerCase(char* string);
 int checkDeclaration(gTable symTab, char* dec);
 int checkFuncVarDec(table symTab, char* dec);
 char* removeId(char* id);
-table startAuxTable(table root, char* tagValue, char* ret);
+table startAuxTable(node tree, table root, char* tagValue, char* ret);
 void insertInAuxTable(table root, table node);
 void checkSemantics(node root, gTable symTab, table auxSymTab);
 void analiseFuncDec(node root, gTable symTab);

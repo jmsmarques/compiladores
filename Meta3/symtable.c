@@ -287,15 +287,17 @@ void printParams(table param) {
 
 void printTable(table root) {
     if(root) {
-        if(strcmp(root->type, "") == 0) {
-            printf("%s", root->tag);
+        if(!(root->param && strcmp(root->param, "param") != 0)) {
+            if(strcmp(root->type, "") == 0) {
+                printf("%s", root->tag);
+            }
+            else if(strcmp(root->tag, "") != 0){
+                printf("%s\t%s", root->tag, root->type);
+            }
+            if(root->param)
+                printf("\t%s", root->param);
+            printf("\n");
         }
-        else if(strcmp(root->tag, "") != 0){
-            printf("%s\t%s", root->tag, root->type);
-        }
-        if(root->param)
-            printf("\t%s", root->param);
-        printf("\n");
         printTable(root->next);
         free(root->tag);
         free(root->type);

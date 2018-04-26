@@ -19,6 +19,9 @@ char* checkVarType(char* string) {
     else if(strncmp(string, "void", 4) == 0) {
         aux = strdup("void");
     }
+    else if(strncmp(string, "short", 5) == 0) {
+        aux = strdup("short");
+    }
     if(aux)
         return aux;
     return NULL;
@@ -140,19 +143,31 @@ void checkOperationType(node root, gTable symTab, table auxSymTable) { //verific
             return;
 
         if(strcmp(aux1, "double") == 0 || strcmp(aux2, "double") == 0) {
-        root->type = strdup("double");
+            root->type = strdup("double");
         }
-        else {
+        else if (strcmp(aux1, "int") == 0 || strcmp(aux2, "int") == 0) {
             root->type = strdup("int");
         }
+        else if (strcmp(aux1, "short") == 0 || strcmp(aux2, "short") == 0) {
+            root->type = strdup("short");
+        }
+        else {
+            root->type = strdup("char");
+        }
     }
-    else {
+    else { //operadores unarios
        if(strcmp(aux1, "double") == 0) {
             root->type = strdup("double");
         }
-        else {
+        else if(strcmp(aux1, "int") == 0){
             root->type = strdup("int");
         } 
+        else if(strcmp(aux1, "short") == 0) {
+            root->type = strdup("short");
+        }
+        else {
+            root->type = strdup("char");
+        }
     }
     free(aux1);
     free(aux2);

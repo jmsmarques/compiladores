@@ -1,5 +1,6 @@
 int readint (void) {
     int read = 0 ,sign = 1;
+    //read = 1, sign = 0, read = 1;
     char c = getchar();
     if(c == '-')
         sign = -1;

@@ -39,7 +39,7 @@ void annoteTree(node root, gTable symTab, table auxSymTab) {
             root->type = checkVarType(root->child->type);
         }
         else if(checkIfOperation(root->tag)) {
-            annoteTree(root->child, symTab, auxSymTab);
+            //annoteTree(root->child, symTab, auxSymTab);
             checkOperationType(root, symTab, auxSymTab);
         }
         else if(checkIfLogicalOperation(root->tag)) {
@@ -120,7 +120,8 @@ char* annoteFuncParams(gTable symTab) { //anota parametros de uma funcao
 int checkIfOperation(char* string) {
     if((strcmp(string, "Mul") == 0) || (strcmp(string, "Add") == 0) 
     || (strcmp(string, "Sub") == 0) || (strcmp(string, "Minus") == 0) 
-    || (strcmp(string, "Div") == 0) || (strcmp(string, "Plus") == 0)) {
+    || (strcmp(string, "Div") == 0) || (strcmp(string, "Plus") == 0)
+    || (strcmp(string, "Comma") == 0)) {
         return 1;
     }
     else {
@@ -200,7 +201,7 @@ void annotedDecOp(node root, gTable symTab, table auxSymTab) { //anota filhos ca
     if(!root)
         return;
     if(checkIfOperation(root->tag)) {
-        annoteTree(root->child, symTab, auxSymTab);
+        //annoteTree(root->child, symTab, auxSymTab);
         checkOperationType(root, symTab, auxSymTab);
         annotedDecOp(root->child, symTab, auxSymTab);
         annotedDecOp(root->child->sibling, symTab, auxSymTab);

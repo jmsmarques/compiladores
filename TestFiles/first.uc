@@ -1,10 +1,4 @@
-int main(void sera, int oi);
-
-void teste(void);
-
-int b = 'C';
-
-void teste(void) {
-    int a;
-    main();
-}
+int B4 = 1%2 + 1, f = i + 2, K;
+char c;
+char N = 'o';
+double t = 2e4;

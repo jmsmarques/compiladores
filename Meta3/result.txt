@@ -1,23 +1,23 @@
 ===== Global Symbol Table =====
-putchar	int(int)
-getchar	int(void)
-readint	int(void)
-printint	void(int)
-main	int(void)
+putchar int(int)
+getchar int(void)
+readint int(void)
+printint    void(int)
+main    int(void)
 
 ===== Function readint Symbol Table =====
-return	int
-read	int
-sign	int
-c	char
+return  int
+read    int
+sign    int
+c   char
 
 ===== Function printint Symbol Table =====
-return	void
-n	int	param
+return  void
+n   int param
 
 ===== Function main Symbol Table =====
-return	int
-i	int
+return  int
+i   int
 
 Program
 ..FuncDefinition
@@ -38,8 +38,8 @@ Program
 ......Declaration
 ........Char
 ........Id(c)
-........Call
-..........Id(getchar)
+........Call - int
+..........Id(getchar) - int(void)
 ......If
 ........Eq - int
 ..........Id(c) - char
@@ -60,7 +60,7 @@ Program
 ..............ChrLit('-') - int
 ............Store - int
 ..............Id(read) - int
-..............Sub
+..............Sub - int
 ................Add - int
 ..................Mul - int
 ....................Id(read) - int

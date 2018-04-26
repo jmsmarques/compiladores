@@ -111,8 +111,8 @@ char* annoteFuncParams(gTable symTab) { //anota parametros de uma funcao
 }
 
 int checkIfOperation(char* string) {
-    if((strcmp(string, "Mul") == 0) || (strcmp(string, "Add") == 0) 
-    || (strcmp(string, "Sub") == 0) || (strcmp(string, "Mod") == 0)
+    if((strcmp(string, "Mul") == 0) || (strcmp(string, "Add") == 0) || (strcmp(string, "Sub") == 0)) 
+    || (strcmp(string, "Minus") == 0) || (strcmp(string, "Mod") == 0 || (strcmp(string, "Div") == 0))
     || (strcmp(string, "Eq") == 0) || (strcmp(string, "Ne") == 0)
     || (strcmp(string, "Lt") == 0) || (strcmp(string, "Gt") == 0)
     || (strcmp(string, "Le") == 0) || (strcmp(string, "Ge") == 0)) {

@@ -67,11 +67,13 @@ void analiseDec(node root, gTable symTab);
 void analiseDecF(node root, table symTab);
 
 char* checkVarType(char* string);
+void checkOperationType(node root, gTable symTab, table auxSymTable);
 void annoteTree(node root, gTable symTab, table auxSymTab);
 char* annoteFuncParams(gTable symTab);
 int analiseFuncId(node root, char* id, gTable symTab);
 void analiseVarId(node root, gTable symTab, table auxSymTab);
 int checkIfOperation(char* string);
+int checkIfLogicalOperation(char* string);
 int checkIfId(char* string);
 void annotedDecOp(node root, gTable symTab, table auxSymTab);
 void printAnnotedTree(node root, int level);

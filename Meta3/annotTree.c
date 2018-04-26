@@ -36,6 +36,10 @@ void annoteTree(node root, gTable symTab, table auxSymTab) {
             root->type = checkVarType(root->child->type);
         }
         else if(checkIfOperation(root->tag)) {
+            annoteTree(root->child, symTab, auxSymTab);
+            checkOperationType(root, symTab, auxSymTab);
+        }
+        else if(checkIfLogicalOperation(root->tag)) {
             root->type = strdup("int");
         }
         else {
@@ -113,15 +117,56 @@ char* annoteFuncParams(gTable symTab) { //anota parametros de uma funcao
 int checkIfOperation(char* string) {
     if((strcmp(string, "Mul") == 0) || (strcmp(string, "Add") == 0) 
     || (strcmp(string, "Sub") == 0) || (strcmp(string, "Minus") == 0) 
-    || (strcmp(string, "Mod") == 0) || (strcmp(string, "Div") == 0)
-    || (strcmp(string, "Plus") == 0) || (strcmp(string, "Not") == 0)
-    || (strcmp(string, "And") == 0) || (strcmp(string, "Or") == 0)
-    || (strcmp(string, "BitWiseOr") == 0) || (strcmp(string, "BitWiseXor") == 0)
-    || (strcmp(string, "BitWiseAnd") == 0) || (strcmp(string, "Comma") == 0)
+    || (strcmp(string, "Div") == 0) || (strcmp(string, "Plus") == 0)) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+
+void checkOperationType(node root, gTable symTab, table auxSymTable) { //verifica tipo de operacao
+    char* aux1 = NULL;
+    char* aux2 = NULL;
+
+    annotedDecOp(root->child, symTab, auxSymTab);
+    aux1 = checkVarType(root->child->type);     
+    if(!aux1)
+        return;
+    if(root->child->sibling) {
+        annotedDecOp(root->child->sibling, symTab, auxSymTab);
+        aux2 = checkVarType(root->child->sibling->type);
+        if(!aux2)
+            return;
+
+        if(strcmp(aux1, "double") == 0 || strcmp(aux2, "double") == 0) {
+        root->type = strdup("double");
+        }
+        else {
+            root->type = strdup("int");
+        }
+    }
+    else {
+       if(strcmp(aux1, "double") == 0) {
+            root->type = strdup("double");
+        }
+        else {
+            root->type = strdup("int");
+        } 
+    }
+    free(aux1);
+    free(aux2);
+}
+
+int checkIfLogicalOperation(char* string) {
+    if((strcmp(string, "Not") == 0) || (strcmp(string, "And") == 0) 
+    || (strcmp(string, "Or") == 0) || (strcmp(string, "Mod") == 0) 
     || (strcmp(string, "Le") == 0) || (strcmp(string, "Ge") == 0)
     || (strcmp(string, "Eq") == 0) || (strcmp(string, "Ne") == 0)
     || (strcmp(string, "Lt") == 0) || (strcmp(string, "Gt") == 0)
-    || (strcmp(string, "Le") == 0) || (strcmp(string, "Ge") == 0)) {
+    || (strcmp(string, "Le") == 0) || (strcmp(string, "Ge") == 0)
+    || (strcmp(string, "BitWiseOr") == 0) 
+    || (strcmp(string, "BitWiseXor") == 0) || (strcmp(string, "BitWiseAnd") == 0)) {
         return 1;
     }
     else {
@@ -136,10 +181,16 @@ int checkIfId(char* string) {
     return 0;
 }
 
-void annotedDecOp(node root, gTable symTab, table auxSymTab) {
+void annotedDecOp(node root, gTable symTab, table auxSymTab) { //anota filhos caso sejam operacoes
     if(!root)
         return;
     if(checkIfOperation(root->tag)) {
+        annoteTree(root->child, symTab, auxSymTab);
+        checkOperationType(root, symTab, auxSymTab);
+        annotedDecOp(root->child, symTab, auxSymTab);
+        annotedDecOp(root->child->sibling, symTab, auxSymTab);
+    }
+    else if(checkIfLogicalOperation(root->tag)) {
         root->type = strdup("int");
         annotedDecOp(root->child, symTab, auxSymTab);
         annotedDecOp(root->child->sibling, symTab, auxSymTab);

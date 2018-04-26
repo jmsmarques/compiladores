@@ -38,8 +38,8 @@ Program
 ......Declaration
 ........Char
 ........Id(c)
-........Call
-..........Id(getchar)
+........Call - int
+..........Id(getchar) - int(void)
 ......If
 ........Eq - int
 ..........Id(c) - char
@@ -60,7 +60,7 @@ Program
 ..............ChrLit('-') - int
 ............Store - int
 ..............Id(read) - int
-..............Sub
+..............Sub - int
 ................Add - int
 ..................Mul - int
 ....................Id(read) - int

@@ -10,7 +10,7 @@ char* checkVarType(char* string) {
     else if(strncmp(string, "ChrLit", 6) == 0) {
         aux = strdup("int");
     }
-    else if(strncmp(string, "RealLit", 7) == 0) {
+    else if(strncmp(string, "RealLit", 7) == 0 || strncmp(string, "double", 6) == 0) {
         aux = strdup("double");
     }
     else if(strncmp(string, "char", 4) == 0) {
@@ -111,8 +111,14 @@ char* annoteFuncParams(gTable symTab) { //anota parametros de uma funcao
 }
 
 int checkIfOperation(char* string) {
-    if((strcmp(string, "Mul") == 0) || (strcmp(string, "Add") == 0) || (strcmp(string, "Sub") == 0)) 
-    || (strcmp(string, "Minus") == 0) || (strcmp(string, "Mod") == 0 || (strcmp(string, "Div") == 0))
+    if((strcmp(string, "Mul") == 0) || (strcmp(string, "Add") == 0) 
+    || (strcmp(string, "Sub") == 0) || (strcmp(string, "Minus") == 0) 
+    || (strcmp(string, "Mod") == 0) || (strcmp(string, "Div") == 0)
+    || (strcmp(string, "Plus") == 0) || (strcmp(string, "Not") == 0)
+    || (strcmp(string, "And") == 0) || (strcmp(string, "Or") == 0)
+    || (strcmp(string, "BitWiseOr") == 0) || (strcmp(string, "BitWiseXor") == 0)
+    || (strcmp(string, "BitWiseAnd") == 0) || (strcmp(string, "Comma") == 0)
+    || (strcmp(string, "Le") == 0) || (strcmp(string, "Ge") == 0)
     || (strcmp(string, "Eq") == 0) || (strcmp(string, "Ne") == 0)
     || (strcmp(string, "Lt") == 0) || (strcmp(string, "Gt") == 0)
     || (strcmp(string, "Le") == 0) || (strcmp(string, "Ge") == 0)) {
@@ -131,6 +137,8 @@ int checkIfId(char* string) {
 }
 
 void annotedDecOp(node root, gTable symTab, table auxSymTab) {
+    if(!root)
+        return;
     if(checkIfOperation(root->tag)) {
         root->type = strdup("int");
         annotedDecOp(root->child, symTab, auxSymTab);
@@ -140,6 +148,12 @@ void annotedDecOp(node root, gTable symTab, table auxSymTab) {
         if(analiseFuncId(root, root->tag, symTab)) {
             analiseVarId(root, symTab, auxSymTab);
         }
+    }
+    else if(strcmp(root->tag, "Call") == 0 || strcmp(root->tag, "Store") == 0) {
+        annoteTree(root->child, symTab, auxSymTab);
+        root->type = checkVarType(root->child->type);
+        annotedDecOp(root->child, symTab, auxSymTab);
+        annotedDecOp(root->child->sibling, symTab, auxSymTab);
     }
     else {
         root->type = checkVarType(root->tag);

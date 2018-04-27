@@ -142,8 +142,10 @@ void checkOperationType(node root, gTable symTab, table auxSymTable) { //verific
         aux2 = checkVarType(root->child->sibling->type);
         if(!aux2)
             return;
-
-        if(strcmp(aux1, "double") == 0 || strcmp(aux2, "double") == 0) {
+        if((strcmp(root->tag, "Comma") == 0)) {
+            root->type = strdup(aux2);
+        }
+        else if(strcmp(aux1, "double") == 0 || strcmp(aux2, "double") == 0) {
             root->type = strdup("double");
         }
         else if (strcmp(aux1, "int") == 0 || strcmp(aux2, "int") == 0) {
@@ -157,18 +159,7 @@ void checkOperationType(node root, gTable symTab, table auxSymTable) { //verific
         }
     }
     else { //operadores unarios
-       if(strcmp(aux1, "double") == 0) {
-            root->type = strdup("double");
-        }
-        else if(strcmp(aux1, "int") == 0){
-            root->type = strdup("int");
-        } 
-        else if(strcmp(aux1, "short") == 0) {
-            root->type = strdup("short");
-        }
-        else {
-            root->type = strdup("char");
-        }
+       root->type = strdup(aux1);
     }
     free(aux1);
     free(aux2);

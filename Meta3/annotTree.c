@@ -39,7 +39,8 @@ void annoteTree(node root, gTable symTab, table auxSymTab) {
             root->type = checkVarType(root->child->type);
         }
         else if(checkIfOperation(root->tag)) {
-            //annoteTree(root->child, symTab, auxSymTab);
+            annoteTree(root->child, symTab, auxSymTab);
+            annoteTree(root->child->sibling, symTab, auxSymTab);
             checkOperationType(root, symTab, auxSymTab);
         }
         else if(checkIfLogicalOperation(root->tag)) {
@@ -133,12 +134,12 @@ void checkOperationType(node root, gTable symTab, table auxSymTable) { //verific
     char* aux1 = NULL;
     char* aux2 = NULL;
 
-    annotedDecOp(root->child, symTab, auxSymTab);
+    //annotedDecOp(root->child, symTab, auxSymTab);
     aux1 = checkVarType(root->child->type);     
     if(!aux1)
         return;
     if(root->child->sibling) {
-        annotedDecOp(root->child->sibling, symTab, auxSymTab);
+        //annotedDecOp(root->child->sibling, symTab, auxSymTab);
         aux2 = checkVarType(root->child->sibling->type);
         if(!aux2)
             return;
@@ -193,9 +194,9 @@ void annotedDecOp(node root, gTable symTab, table auxSymTab) { //anota filhos ca
         return;
     if(checkIfOperation(root->tag)) {
         //annoteTree(root->child, symTab, auxSymTab);
-        checkOperationType(root, symTab, auxSymTab);
         annotedDecOp(root->child, symTab, auxSymTab);
         annotedDecOp(root->child->sibling, symTab, auxSymTab);
+        checkOperationType(root, symTab, auxSymTab);
     }
     else if(checkIfLogicalOperation(root->tag)) {
         root->type = strdup("int");

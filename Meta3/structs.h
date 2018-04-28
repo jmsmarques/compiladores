@@ -51,6 +51,7 @@ void typeSpecDef(node up, char* newTag);
 void printTree(node root, int level);
 void freeTree(node root);
 node checkNull(node no);
+void addLinesAndCols(node root, int line, int col);
 
 void printTable(table root);
 void printGTable(gTable root);

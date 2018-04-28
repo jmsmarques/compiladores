@@ -111,3 +111,8 @@ node checkNull(node no) {
         return createNode("Null");
     }
 }
+
+void addLinesAndCols(node root, int line, int col) { //adiciona a linha e a col a um no da ast
+    root->pos[0] = line;
+    root->pos[1] = col;
+}

@@ -1,12 +1,15 @@
-Line: 2, col 5: Symbol a already defined
-Line: 3, col 6: Conflicting types (got char, expected int)
+Line: 1, col 8: Symbol a already defined
+Line: 2, col 6: Conflicting types (got char, expected int)
+Line: 3, col 1: Invalid use of void type in declaration
 Line: 11, col 9: Symbol A already defined
+Line: 13, col 5: Invalid use of void type in declaration
 Line: 20, col 5: Symbol fAbio already defined
 ===== Global Symbol Table =====
 putchar	int(int)
 getchar	int(void)
 a	int
 b	void
+c	int
 fAbio	int(int,int)
 jorge	int(void)
 main	int(void)
@@ -35,6 +38,9 @@ Program
 ..Declaration
 ....Void
 ....Id(b)
+..Declaration
+....Int
+....Id(c)
 ..FuncDeclaration
 ....Int
 ....Id(fAbio)

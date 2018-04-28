@@ -152,6 +152,7 @@ table getParamList(node root) { //cria lista ligada com todos os parametros de u
 
 int checkFuncDec(node root, gTable symTab, table auxSymTab) { //verifica declaracoes para adicinar a tabela de simbolos
     if(root) {
+        int voidValue;
         char* aux = NULL;
         table func = NULL, aux1 = NULL;
         if(strcmp(root->tag, "FuncDeclaration") == 0) {
@@ -174,8 +175,9 @@ int checkFuncDec(node root, gTable symTab, table auxSymTab) { //verifica declara
             }
         }
         else if(strcmp(root->tag, "Declaration") == 0) {
+            voidValue = checkIfVoid(root);
             aux = removeId(root->child->sibling->tag);
-            if(!checkDeclaration(symTab, aux, root)) { //verifica se variavel nao esta declarada e da erros
+            if(!checkDeclaration(symTab, aux, root, voidValue)) { //verifica se variavel nao esta declarada e da erros
                 analiseDec(root, symTab);
                 if(root->child->sibling->sibling) {
                     annotedDecOp(root->child->sibling->sibling, symTab, auxSymTab);
@@ -231,9 +233,9 @@ void analiseDec(node root, gTable symTab) { //poe variavel na tabela
 void analiseDecF(node root, table symTab) { //verifica se funcao ja foi definida se nao foi define
     char* aux;
     table aux1;
-
+    int voidValue = checkIfVoid(root);
     aux = removeId(root->child->sibling->tag);
-    if(!checkFuncVarDec(symTab, aux, root)) { //verifica se variavel da funcao ja foi definida (V se nao estiver)
+    if(!checkFuncVarDec(symTab, aux, root, voidValue)) { //verifica se variavel da funcao ja foi definida (V se nao estiver)
         aux1 = createSymbolTable(aux, lowerCase(root->child->tag));
         insertInAuxTable(symTab, aux1);
     }
@@ -333,13 +335,12 @@ char* lowerCase(char* string) {
     return aux;
 }
 
-int checkDeclaration(gTable symTab, char* dec, node root) { //verifica se variavel ja foi declarada globalmente
+int checkDeclaration(gTable symTab, char* dec, node root, int voidValue) { //verifica se variavel ja foi declarada globalmente
     if(symTab == NULL) {
         return 0;
     }
     else if(strcmp(dec, symTab->tag) == 0) { //funcao variavel ja definida
-        int aux = checkIfVoid(root); //verifica se e void
-        if(strcmp(lowerCase(root->child->tag), symTab->type) == 0 || aux) { //redeclaracao
+        if(strcmp(lowerCase(root->child->tag), symTab->type) == 0 || voidValue) { //redeclaracao
             symbolAlreadyDefined(root->child->sibling->pos[0], root->child->sibling->pos[1], dec);
         }
         else { //conflicting types
@@ -348,17 +349,16 @@ int checkDeclaration(gTable symTab, char* dec, node root) { //verifica se variav
         return 1;
     }
     else {
-        return checkDeclaration(symTab->next, dec, root);
+        return checkDeclaration(symTab->next, dec, root, voidValue);
     }
 }
 
-int checkFuncVarDec(table symTab, char* dec, node root) {
+int checkFuncVarDec(table symTab, char* dec, node root, int voidValue) {
     if(symTab == NULL || strcmp("", symTab->tag) == 0) {
         return 0;
     }
     else if(strcmp(dec, symTab->tag) == 0) {
-        int aux = checkIfVoid(root);
-        if(strcmp(lowerCase(root->child->tag), symTab->type) == 0 || aux) { //redeclaracao
+        if(strcmp(lowerCase(root->child->tag), symTab->type) == 0 || voidValue) { //redeclaracao
             symbolAlreadyDefined(root->child->sibling->pos[0], root->child->sibling->pos[1], dec);
         }
         else { //conflicting types
@@ -367,7 +367,7 @@ int checkFuncVarDec(table symTab, char* dec, node root) {
         return 1;
     }
     else {
-        return checkFuncVarDec(symTab->next, dec, root);
+        return checkFuncVarDec(symTab->next, dec, root, voidValue);
     }
 }
 

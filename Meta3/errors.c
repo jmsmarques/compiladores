@@ -4,9 +4,9 @@ void errorLocation(int line, int col) {
     printf("Line: %d, col %d: ", line, col);
 }
 
-void conflictingTypes(int line, int col, char* type1, char* type2) {
+void conflictingTypes(int line, int col, char* got, char* expected) {
     errorLocation(line, col);
-    printf("Conflicting types (got %s, expected %s)\n", type1, type2);
+    printf("Conflicting types (got %s, expected %s)\n", got, expected);
 }
 
 void invalidVoid(int line, int col) {

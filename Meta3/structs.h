@@ -59,7 +59,7 @@ void printParams(table param);
 gTable createSymbolGTable(char* tagValue, char* tagType, table fParams);
 table createSymbolTable(char* tagValue, char* tagType);
 void insertInTable(gTable root, char* tagValue, char* tagType, table param);
-int searchFuncDec(gTable root, char* tagValue);
+int searchFuncDec(gTable symTab, char* tagValue, node root);
 int searchFuncDef(table root, char* tagValue);
 gTable startTable();
 table getParamList(node root);
@@ -76,6 +76,8 @@ table createFuncTable(node root, table auxSymTab);
 void analiseFuncBody(node root, gTable symTab, table auxSymTab);
 void analiseDec(node root, gTable symTab);
 void analiseDecF(node root, table symTab);
+void checkIfVoid(node root);
+char* getFunctionType(char* type, table symTab);
 
 char* checkVarType(char* string);
 void checkOperationType(node root, gTable symTab, table auxSymTable);

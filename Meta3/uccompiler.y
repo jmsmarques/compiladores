@@ -13,7 +13,7 @@
 %token SHORT
 %token DOUBLE
 %token RETURN
-%token VOID
+%token <info> VOID
 %token BITWISEAND
 %token BITWISEOR
 %token BITWISEXOR
@@ -133,7 +133,7 @@ Declaration: TypeSpec Declarator CommaDeclarator SEMI           {if(flag == 'T')
 
 TypeSpec: CHAR                                                  {if(flag == 'T'){ $$ = createNode("Char");};}
     | INT                                                       {if(flag == 'T'){ $$ = createNode("Int");};}
-    | VOID                                                      {if(flag == 'T'){ $$ = createNode("Void");};}
+    | VOID                                                      {if(flag == 'T'){ $$ = createNode("Void"); addLinesAndCols($$, $1->line, $1->col); free($1);};}
     | SHORT                                                     {if(flag == 'T'){ $$ = createNode("Short");};}
     | DOUBLE                                                    {if(flag == 'T'){ $$ = createNode("Double");};}
     ;

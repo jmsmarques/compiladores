@@ -146,6 +146,9 @@ void checkOperationType(node root, gTable symTab, table auxSymTable) { //verific
         if((strcmp(root->tag, "Comma") == 0)) {
             root->type = strdup(aux2);
         }
+        else if (strcmp(aux1, "undef") == 0 || strcmp(aux2, "undef") == 0) {
+            root->type = strdup("undef");
+        }
         else if(strcmp(aux1, "double") == 0 || strcmp(aux2, "double") == 0) {
             root->type = strdup("double");
         }

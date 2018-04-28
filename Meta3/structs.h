@@ -78,6 +78,17 @@ int checkIfId(char* string);
 void annotedDecOp(node root, gTable symTab, table auxSymTab);
 void printAnnotedTree(node root, int level);
 
+void errorLocation(int line, int col);
+void conflictingTypes(int line, int col, char* type1, char* type2);
+void invalidVoid(int line, int col);
+void lValue(int line, int col);
+void operatorApplication(int line, int col, char* token, char* type);
+void operatorsApplication(int line, int col, char* token, char* type1, char* type2);
+void symbolAlreadyDefined(int line, int col, char* token);
+void symbolNotFunction(int line, int col, char* token);
+void unknownSymbol(int line, int col, char* token);
+void wrongArguments(int line, int col, char* token, int got, int expected);
+
 extern char flag;
 extern char printFlag;
 extern table auxSymTab;

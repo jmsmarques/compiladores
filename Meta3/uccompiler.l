@@ -111,18 +111,17 @@ REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 {RPAR}                      {if(flag == 'Y') printf("RPAR\n");  col += yyleng; if(flag != 'Y') return RPAR;}
 {SEMI}                      {if(flag == 'Y') printf("SEMI\n");  col += yyleng; if(flag != 'Y') return SEMI;}
 {RESERVED}                  {if(flag == 'Y') printf("RESERVED(%s)\n", yytext); col += yyleng; return RESERVED;}
-{ID}                        {if(flag == 'Y') printf("ID(%s)\n", yytext);  col += yyleng; if(flag != 'Y') yylval.id = (char*)strdup(yytext); if(flag != 'Y') return ID;}
-{INTLIT}                    {if(flag == 'Y') printf("INTLIT(%s)\n", yytext);  col += yyleng; if(flag != 'Y') yylval.id = (char*)strdup(yytext); if(flag != 'Y') return INTLIT;}
-{REALLIT}                   {if(flag == 'Y') printf("REALLIT(%s)\n", yytext);  col += yyleng; if(flag != 'Y') yylval.id = (char*)strdup(yytext); if(flag != 'Y') return REALLIT;}
-\'{CHRLIT}\' 	            {if(flag == 'Y') printf("CHRLIT(%s)\n", yytext);  col += yyleng; if(flag != 'Y') yylval.id = (char*)strdup(yytext); if(flag != 'Y') return CHRLIT;}
+{ID}                        {if(flag == 'Y') printf("ID(%s)\n", yytext); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return ID;}
+{INTLIT}                    {if(flag == 'Y') printf("INTLIT(%s)\n", yytext); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return INTLIT;}
+{REALLIT}                   {if(flag == 'Y') printf("REALLIT(%s)\n", yytext); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return REALLIT;}
+\'{CHRLIT}\' 	            {if(flag == 'Y') printf("CHRLIT(%s)\n", yytext); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return CHRLIT;}
 \'([^\n\'\\]|\\.)*\'        {printf("Line %d, col %d: invalid char constant (%s)\n", line, col, yytext); col += yyleng;}
 \'([^\n\'\\]|\\.)*(\\)?     {printf("Line %d, col %d: unterminated char constant\n", line, col); col += yyleng;}
 [ ]|"\t"                    {col += yyleng;}
 \n|"\r\n"|"\r"              {col = 1; line++;}
 .                           {printf("Line %d, col %d: illegal character (%c)\n", line, col, *yytext); col += yyleng;}
 %%
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
     if(argc > 1) {
         if(argv[1][0] == '-' && argv[1][1] == 'l') {
             flag = 'Y';
@@ -171,4 +170,12 @@ int yywrap() {
 void yyerror (char *s) {
     sinError = 'Y';
     printf("Line %d, col %d: %s: %s\n", line, col - (int)strlen(yytext), s, yytext);
+}
+
+idInfo sendInfo(char* info) {
+    idInfo aux = (idInfo)malloc(sizeof(info_node));
+    aux->id = strdup(info);
+    aux->line = line;
+    aux->col = col;
+    return aux;
 }

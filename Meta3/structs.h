@@ -4,6 +4,14 @@
 #include <stdio.h>
 #include <string.h>
 
+//estrutura para passar toda a informacao necessaria do lex
+typedef struct _info_node* idInfo;
+typedef struct _info_node{
+    char* id;
+    int line;
+    int col;
+}info_node;
+
 typedef struct _tree_node* node;
 typedef struct _tree_node{
     char* tag;
@@ -31,6 +39,8 @@ typedef struct _g_sym_table{
 
 int yylex(void);
 void yyerror (char *s);
+idInfo sendInfo(char* info);
+
 node createNode(char* tagValue);
 node createNodeEmpty();
 node createNodeTerminal(char* tagValue, char* value);

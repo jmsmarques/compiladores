@@ -84,6 +84,8 @@ char* checkVarType(char* string);
 void checkOperationType(node root, gTable symTab, table auxSymTable);
 void annoteTree(node root, gTable symTab, table auxSymTab);
 char* annoteFuncParams(gTable symTab);
+int analiseStore(node root);
+int analiseFuncCall(node root, char* id, gTable symTab);
 int analiseFuncId(node root, char* id, gTable symTab);
 void analiseVarId(node root, gTable symTab, table auxSymTab);
 int checkIfOperation(char* string);
@@ -91,6 +93,8 @@ int checkIfLogicalOperation(char* string);
 int checkIfId(char* string);
 void annotedDecOp(node root, gTable symTab, table auxSymTab);
 void printAnnotedTree(node root, int level);
+int getFunctionNrParams(gTable symTab, char* funcName);
+int validateConversion(node root);
 
 void errorLocation(int line, int col);
 void conflictingTypes(int line, int col, char* got, char* expected);

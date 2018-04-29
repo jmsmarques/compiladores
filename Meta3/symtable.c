@@ -37,7 +37,7 @@ void insertInTable(gTable root, char* tagValue, char* typeValue, table param) {
     root->next = createSymbolGTable(tagValue, typeValue, param);
 }
 
-int searchFuncDec(gTable symTab, char* tagValue, node root) { //procura declaracoes de funcoes e erros
+int searchFuncDec(gTable symTab, char* tagValue, node root) { //procura declaracoes de funcoes e anuncia erros
     while(symTab) {
         if(strcmp(tagValue, symTab->tag) == 0) {
             char*  aux1 = NULL;

@@ -22,6 +22,9 @@ char* checkVarType(char* string) {
     else if(strncmp(string, "short", 5) == 0) {
         aux = strdup("short");
     }
+    else if(strcmp(string, "undef") == 0) {
+        aux = strdup("undef");
+    }
     if(aux)
         return aux;
     return NULL;
@@ -34,9 +37,24 @@ void annoteTree(node root, gTable symTab, table auxSymTab) {
                 analiseVarId(root, symTab, auxSymTab);
             }
         }
-        else if(strcmp(root->tag, "Call") == 0 || strcmp(root->tag, "Store") == 0) {
+        else if(strcmp(root->tag, "Call") == 0) {
             annoteTree(root->child, symTab, auxSymTab);
-            root->type = checkVarType(root->child->type);
+            if((strcmp(root->child->type, "undef") != 0) && analiseFuncCall(root->child, root->child->tag, symTab)) { //se nao for uma funcao e for um call
+                root->type = strdup("undef");
+            } 
+            else {
+                root->type = checkVarType(root->child->type);
+            }
+        }
+        else if(strcmp(root->tag, "Store") == 0) {
+            annoteTree(root->child, symTab, auxSymTab);
+            annoteTree(root->child->sibling, symTab, auxSymTab);
+            if((strcmp(root->child->type, "undef") != 0) && analiseStore(root->child)) {
+                root->type = strdup("undef");
+            }
+            else {
+                root->type = checkVarType(root->child->type);
+            }
         }
         else if(checkIfOperation(root->tag)) {
             annoteTree(root->child, symTab, auxSymTab);
@@ -52,17 +70,52 @@ void annoteTree(node root, gTable symTab, table auxSymTab) {
     }       
 }
 
-int analiseFuncId(node root, char* id, gTable symTab) {
+int analiseStore(node root) {
+    if(!checkIfId(root->tag)) { //verifica se nao e id onde vamos guardar
+        lValue(root->pos[0], root->pos[1]);
+        return 1;
+    }
+    else if(validateConversion(root)) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+
+int analiseFuncCall(node root, char* id, gTable symTab) { //verifica validade de uma call
+    if(analiseFuncId(root, id, symTab)) { //primeiro verifica se se trata de uma funcao declarada v se nao tratar
+        symbolNotFunction(root->pos[0], root->pos[1], removeId(root->tag)); //se nao se tratar
+        return 1;
+    }
+    else {
+        int got = 0;
+        int expected = getFunctionNrParams(symTab, removeId(id));
+        node aux = root->sibling;
+        while(aux) { //verifica quantos argumentos recebeu
+            got++;
+            aux = aux->sibling;
+        }
+        if(got != expected) {
+            wrongArguments(root->pos[0], root->pos[1], removeId(root->tag), got, expected);
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int analiseFuncId(node root, char* id, gTable symTab) { //verifica se id e uma funcao e retorna 0 e anota se for 
     char* aux;
     aux = removeId(id);
     
     while(symTab) {
         if(strcmp(symTab->tag, aux) == 0) {
-            if(symTab->params) {
-                root->type = annoteFuncParams(symTab);
+            if(symTab->params) { //como tem parametros e uma funcao
+                if(!root->type) //anota se nao tiver sido anotada anteriormente
+                    root->type = annoteFuncParams(symTab);
                 return 0;
             }
-            else {
+            else { //nao tem parametros e uma variavel
                 free(aux);
                 return 1;
             }
@@ -73,7 +126,7 @@ int analiseFuncId(node root, char* id, gTable symTab) {
     return 1;
 }   
 
-void analiseVarId(node root, gTable symTab, table auxSymTab) {
+void analiseVarId(node root, gTable symTab, table auxSymTab) { //procura declaracao de variavel
     char* aux;
     aux = removeId(root->tag);
 
@@ -96,6 +149,8 @@ void analiseVarId(node root, gTable symTab, table auxSymTab) {
     }
     free(aux);
     //id nao declarado
+    unknownSymbol(root->pos[0], root->pos[1], removeId(root->tag)); //erro unknown symbol
+    root->type = strdup("undef"); //anota o no como undef
 }
 
 char* annoteFuncParams(gTable symTab) { //anota parametros de uma funcao
@@ -185,7 +240,7 @@ int checkIfLogicalOperation(char* string) {
     }
 }
 
-int checkIfId(char* string) {
+int checkIfId(char* string) { //verifica se e uma id 1 se for 0 se nao for
     if(strncmp(string, "Id", 2) == 0) {
         return 1;
     }
@@ -245,4 +300,40 @@ void printAnnotedTree(node root, int level) {
     free(root->type);
     free(root->child);
     free(root->sibling);
+}
+
+int getFunctionNrParams(gTable symTab, char* funcName) { //retorna quantos parametros uma funcao espera receber
+    int aux = 0; //variavel para conter nr de parametros esperados
+    while(symTab) {
+        if(strcmp(symTab->tag, funcName) == 0) {
+            while(symTab->params) {
+                if(strcmp(symTab->params->type, "void") != 0)
+                    aux++;
+                symTab->params = symTab->params->next;
+            }
+            return aux;
+        }
+        symTab = symTab->next;
+    }
+    return aux;
+}
+
+int validateConversion(node root) { //verifica se uma conversao e valida
+    int aux1, aux2, i;
+    char types[4][7] = {"double", "int", "short", "char"};
+
+    for(i = 0; i < 4; i++) {
+        if(strcmp(root->type, types[i]) == 0)
+            aux1 = i;
+        if(strcmp(root->sibling->type, types[i]) == 0)
+            aux2 = i;
+    }
+
+    if(aux1 <= aux2)
+        return 1;
+    else {
+        conflictingTypes(root->sibling->pos[0], root->sibling->pos[1], lowerCase(root->sibling->type), lowerCase(root->type));
+        return 0;
+    }
+
 }

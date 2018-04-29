@@ -1,7 +1,7 @@
 #include "structs.h"
 
 void errorLocation(int line, int col) {
-    printf("Line: %d, col %d: ", line, col);
+    printf("Line %d, col %d: ", line, col);
 }
 
 void conflictingTypes(int line, int col, char* got, char* expected) {

@@ -1,12 +1,38 @@
+-->Minus
+--->Minus = int
+Id(sign) int
+Minus int
+-->Sub
+-->Add
+-->Mul
+--->Mul = int
+--->Add = int
+--->Sub = int
+Id(read) int
+Sub int
+Id(c) char
+Call int
+---> 10 ---> 9
 Line 0, col 0: Conflicting types (got int, expected char)
-Line 22, col 5: Symbol putchar is not a function
-Line 28, col 9: Symbol printint is not a function
-Line 29, col 9: Symbol putchar is not a function
+-->Mul
+--->Mul = int
+-->Minus
+--->Minus = int
+Id(n) int
+Minus int
+-->Div
+--->Div = int
+-->Div
+--->Div = int
+-->Add
+--->Add = int
+Id(i) int
+Call int
 ===== Global Symbol Table =====
-putchar	int
-getchar	int
-readint	int
-printint	void
+putchar	int(int)
+getchar	int(void)
+readint	int(void)
+printint	void(int)
 main	int(void)
 
 ===== Function readint Symbol Table =====
@@ -111,8 +137,8 @@ Program
 ............Id(n) - int
 ............IntLit(10) - int
 ........Null
-......Call - undef
-........Id(putchar) - int
+......Call - int
+........Id(putchar) - int(int)
 ........Add - int
 ..........Mod - int
 ............Id(n) - int
@@ -138,9 +164,9 @@ Program
 ............Id(i) - int
 ............Call - int
 ..............Id(readint) - int(void)
-..........Call - undef
-............Id(printint) - void
+..........Call - void
+............Id(printint) - void(int)
 ............Id(i) - int
-..........Call - undef
-............Id(putchar) - int
+..........Call - int
+............Id(putchar) - int(int)
 ............ChrLit('\n') - int

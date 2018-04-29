@@ -57,9 +57,11 @@ void annoteTree(node root, gTable symTab, table auxSymTab) {
             }
         }
         else if(checkIfOperation(root->tag)) {
+            //printf("-->%s\n", root->tag);
             annoteTree(root->child, symTab, auxSymTab);
             annoteTree(root->child->sibling, symTab, auxSymTab);
             checkOperationType(root, symTab, auxSymTab);
+            //printf("--->%s = %s\n", root->tag, root->type);
         }
         else if(checkIfLogicalOperation(root->tag)) {
             root->type = strdup("int");
@@ -75,7 +77,7 @@ int analiseStore(node root) {
         lValue(root->pos[0], root->pos[1]);
         return 1;
     }
-    else if(validateConversion(root)) {
+    else if(validateConversion(root)) { // <-- mal muito mal
         return 1;
     }
     else {
@@ -304,12 +306,14 @@ void printAnnotedTree(node root, int level) {
 
 int getFunctionNrParams(gTable symTab, char* funcName) { //retorna quantos parametros uma funcao espera receber
     int aux = 0; //variavel para conter nr de parametros esperados
+    table aux1 = NULL;
     while(symTab) {
         if(strcmp(symTab->tag, funcName) == 0) {
-            while(symTab->params) {
-                if(strcmp(symTab->params->type, "void") != 0)
+            aux1 = symTab->params;
+            while(aux1) {
+                if(strcmp(aux1->type, "void") != 0)
                     aux++;
-                symTab->params = symTab->params->next;
+                aux1 = aux1->next;
             }
             return aux;
         }
@@ -322,6 +326,8 @@ int validateConversion(node root) { //verifica se uma conversao e valida
     int aux1, aux2, i;
     char types[4][7] = {"double", "int", "short", "char"};
 
+    //printf("%s %s\n", root->tag, root->type);
+    //printf("%s %s\n", root->sibling->tag, root->sibling->type);
     for(i = 0; i < 4; i++) {
         if(strcmp(root->type, types[i]) == 0)
             aux1 = i;
@@ -332,6 +338,7 @@ int validateConversion(node root) { //verifica se uma conversao e valida
     if(aux1 <= aux2)
         return 1;
     else {
+        //printf("---> %d ---> %d\n", root->pos[0], root->pos[1]);
         conflictingTypes(root->sibling->pos[0], root->sibling->pos[1], lowerCase(root->sibling->type), lowerCase(root->type));
         return 0;
     }

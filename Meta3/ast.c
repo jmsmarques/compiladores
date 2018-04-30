@@ -61,7 +61,6 @@ void typeSpecDef(node up, char* newTag) {
     if(up == NULL) {
         return;
     }
-
     up->child->tag = (char*)malloc((strlen(newTag) + 1) * sizeof(char));
     strcpy(up->child->tag, newTag);
 

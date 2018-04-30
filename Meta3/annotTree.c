@@ -77,9 +77,9 @@ int analiseStore(node root) {
         lValue(root->pos[0], root->pos[1]);
         return 1;
     }
-    /*else if(validateConversion(root)) { // <-- mal muito mal
+    else if(validateConversion(root)) { // <-- mal muito mal
         return 1;
-    }*/
+    }
     else {
         return 0;
     }
@@ -340,12 +340,20 @@ int getFunctionNrParams(gTable symTab, char* funcName) { //retorna quantos param
 }
 
 int validateConversion(node root) { //verifica se uma conversao e valida
-    int aux1, aux2, i;
-    char types[4][7] = {"double", "int", "short", "char"};
+    //int aux1, aux2, i;
+    //char types[4][7] = {"double", "int", "short", "char"};
+
+    if(strcmp(root->child->sibling->type, "double") == 0 && strcmp(root->child->type, "double") != 0) {
+        conflictingTypes(root->pos[0], root->pos[1], lowerCase(root->child->type), lowerCase(root->child->sibling->type));
+        return 1;
+    }
+    else {
+        return 0;
+    }
 
     //printf("%s %s\n", root->tag, root->type);
     //printf("%s %s\n", root->sibling->tag, root->sibling->type);
-    for(i = 0; i < 4; i++) {
+    /*for(i = 0; i < 4; i++) {
         if(strcmp(root->type, types[i]) == 0)
             aux1 = i;
         if(strcmp(root->sibling->type, types[i]) == 0)
@@ -353,13 +361,13 @@ int validateConversion(node root) { //verifica se uma conversao e valida
     }
     
     if(aux1 <= aux2)
-        return 1;
+        return 0;
     else {
         node aux = root->sibling;
         //printf("---> %d ---> %d\n", root->pos[0], root->pos[1]);
         while(aux->pos[0] == 0)
             aux = aux->child;
         conflictingTypes(aux->pos[0], aux->pos[1], lowerCase(root->sibling->type), lowerCase(root->type));
-        return 0;
-    }
+        return 1;
+    }*/
 }

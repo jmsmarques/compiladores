@@ -47,6 +47,7 @@ int searchFuncDec(gTable symTab, char* tagValue, node root) { //procura declarac
             aux2 = getFunctionType(symTab->type, symTab->params); //funcao na tabela
             if(strcmp(aux2, aux1) != 0) { //conflicting types
                 conflictingTypes(root->child->sibling->pos[0], root->child->sibling->pos[1], lowerCase(aux1), aux2);
+                return 2;
             }
             free(aux1);
             free(aux2);
@@ -152,7 +153,7 @@ table getParamList(node root) { //cria lista ligada com todos os parametros de u
 
 int checkFuncDec(node root, gTable symTab, table auxSymTab) { //verifica declaracoes para adicinar a tabela de simbolos
     if(root) {
-        int voidValue;
+        int go = 0;
         char* aux = NULL;
         table func = NULL, aux1 = NULL;
         if(strcmp(root->tag, "FuncDeclaration") == 0) {
@@ -163,24 +164,30 @@ int checkFuncDec(node root, gTable symTab, table auxSymTab) { //verifica declara
             aux = removeId(root->child->sibling->tag);
             aux1 = searchFuncDef(auxSymTab, aux);
             if(!aux1) { //verifica se funcao ja foi definida (V se nao tiver sido)
-                if(!searchFuncDec(symTab, aux, root)) { //verifica se funcao ja foi declarada (V se nao tiver sido)
-                    analiseFuncDec(root, symTab, auxSymTab); //cria declaracao na tabela global
+                go = searchFuncDec(symTab, aux, root);
+                if(!go) { //verifica se funcao ja foi declarada (V se nao tiver sido)
+                    go = analiseFuncDec(root, symTab, auxSymTab); //cria declaracao na tabela global
                 }
-                func = createFuncTable(root, auxSymTab); //cria definicao na tabela de simbolos
-                analiseFuncBody(root->child->sibling->sibling->sibling, symTab, func, 1);
+                if(go != 2) {
+                    func = createFuncTable(root, auxSymTab); //cria definicao na tabela de simbolos
+                    analiseFuncBody(root->child->sibling->sibling->sibling, symTab, func, 1);
+                }
+                else {
+                    //annoteFuncBody(root->child->sibling->sibling->sibling, symTab, auxSymTab);
+                }
             }
             else { //funcao ja definida
-                analiseFuncBody(root->child->sibling->sibling->sibling, symTab, aux1, 0);
+                //analiseFuncBody(root->child->sibling->sibling->sibling, symTab, aux1, 0);
+                //annoteFuncBody(root->child->sibling->sibling->sibling, symTab, auxSymTab);
                 symbolAlreadyDefined(root->child->sibling->pos[0], root->child->sibling->pos[1], aux);
             }
         }
         else if(strcmp(root->tag, "Declaration") == 0) {
-            voidValue = checkIfVoid(root);
-            aux = removeId(root->child->sibling->tag);
-            if(!checkDeclaration(symTab, aux, root, voidValue)) { //verifica se variavel nao esta declarada e da erros
-                analiseDec(root, symTab);
-                if(root->child->sibling->sibling) {
-                    annotedDecOp(root->child->sibling->sibling, symTab, auxSymTab);
+            if(!checkIfVoid(root)) {
+                aux = removeId(root->child->sibling->tag);
+                if(!checkDeclaration(symTab, aux, root)) { //verifica se variavel nao esta declarada e da erros    
+                    if(checkDecAtribution(root, symTab, auxSymTab))
+                        analiseDec(root, symTab);
                 }
             }
         }
@@ -193,13 +200,15 @@ int checkFuncDec(node root, gTable symTab, table auxSymTab) { //verifica declara
     return 0;
 }
 
-void analiseFuncDec(node root, gTable symTab, table auxSymTab) { //cria declaracao na tabela global e marca posicao na tabela de funcoes
+int analiseFuncDec(node root, gTable symTab, table auxSymTab) { //cria declaracao na tabela global e marca posicao na tabela de funcoes
     char* aux;
     table aux1;
     
     aux = removeId(root->child->sibling->tag);
     aux1 = getParamList(root->child->sibling->sibling->child);
-    checkIfParamVoid(root->child->sibling->sibling->child);
+    if(checkIfParamVoid(root->child->sibling->sibling->child) || checkIfRepeatedParams(root->child->sibling->sibling->child)) {//parametros invalidos
+        return 2;
+    }
     insertInTable(symTab, aux, lowerCase(root->child->tag), aux1);
 
     while(auxSymTab->next) {
@@ -210,6 +219,7 @@ void analiseFuncDec(node root, gTable symTab, table auxSymTab) { //cria declarac
     auxSymTab->next->param = strdup(aux);
 
     free(aux);
+    return 0;
 }
 
 table createFuncTable(node root, table auxSymTab) {
@@ -231,15 +241,15 @@ void analiseDec(node root, gTable symTab) { //poe variavel na tabela
 }
 
 void analiseDecF(node root, table symTab) { //verifica se funcao ja foi definida se nao foi define
-    char* aux;
-    table aux1;
-    int voidValue = checkIfVoid(root);
-    aux = removeId(root->child->sibling->tag);
-    if(!checkFuncVarDec(symTab, aux, root, voidValue)) { //verifica se variavel da funcao ja foi definida (V se nao estiver)
-        aux1 = createSymbolTable(aux, lowerCase(root->child->tag));
-        insertInAuxTable(symTab, aux1);
+    char* aux = NULL;
+    table aux1 = NULL;
+    if(!checkIfVoid(root)) {
+        aux = removeId(root->child->sibling->tag);
+        if(!checkFuncVarDec(symTab, aux, root)) { //verifica se variavel da funcao ja foi definida (V se nao estiver)
+            aux1 = createSymbolTable(aux, lowerCase(root->child->tag));
+            insertInAuxTable(symTab, aux1);
+        }
     }
-    
     free(aux);
 }
 
@@ -251,18 +261,26 @@ void analiseFuncBody(node root, gTable symTab, table auxSymTab, int flag) {
     int aux = 1;
 
     if(strcmp(root->tag, "Declaration") == 0) {
-        if(flag) //anota mas nao cria nada
+        if(flag && checkDecAtribution(root, symTab, auxSymTab)) //anota mas nao cria nada
             analiseDecF(root, auxSymTab);
         aux = 0;
-        if(root->child->sibling->sibling) {
-            annotedDecOp(root->child->sibling->sibling, symTab, auxSymTab);
-        }
     }
 
     annoteTree(root, symTab, auxSymTab);
     if(aux)
         analiseFuncBody(root->child, symTab, auxSymTab, flag);
     analiseFuncBody(root->sibling, symTab, auxSymTab, flag);
+}
+
+int checkDecAtribution(node root, gTable symTab, table auxSymTab) { //verifica se uma atribuicao numa declaracao e valida
+    if(root->child->sibling->sibling) {
+        annotedDecOp(root->child->sibling->sibling, symTab, auxSymTab);
+        if(strcmp(root->child->sibling->sibling->type, "double") == 0 && strcmp(root->child->tag, "double") != 0) {
+            conflictingTypes(root->child->sibling->pos[0], root->child->sibling->pos[1], lowerCase(root->child->sibling->sibling->type), lowerCase(root->child->tag));
+            return 0;
+        }
+    }
+    return 1;
 }
 
 void printGTable(gTable root) {
@@ -335,39 +353,29 @@ char* lowerCase(char* string) {
     return aux;
 }
 
-int checkDeclaration(gTable symTab, char* dec, node root, int voidValue) { //verifica se variavel ja foi declarada globalmente
+int checkDeclaration(gTable symTab, char* dec, node root) { //verifica se variavel ja foi declarada globalmente
     if(symTab == NULL) {
         return 0;
     }
     else if(strcmp(dec, symTab->tag) == 0) { //funcao variavel ja definida
-        if(strcmp(lowerCase(root->child->tag), symTab->type) == 0 || voidValue) { //redeclaracao
-            symbolAlreadyDefined(root->child->sibling->pos[0], root->child->sibling->pos[1], dec);
-        }
-        else { //conflicting types
-            conflictingTypes(root->child->sibling->pos[0], root->child->sibling->pos[1], lowerCase(root->child->tag), symTab->type);
-        }
+        symbolAlreadyDefined(root->child->sibling->pos[0], root->child->sibling->pos[1], dec);
         return 1;
     }
     else {
-        return checkDeclaration(symTab->next, dec, root, voidValue);
+        return checkDeclaration(symTab->next, dec, root);
     }
 }
 
-int checkFuncVarDec(table symTab, char* dec, node root, int voidValue) {
+int checkFuncVarDec(table symTab, char* dec, node root) {
     if(symTab == NULL || strcmp("", symTab->tag) == 0) {
         return 0;
     }
     else if(strcmp(dec, symTab->tag) == 0) {
-        if(strcmp(lowerCase(root->child->tag), symTab->type) == 0 || voidValue) { //redeclaracao
-            symbolAlreadyDefined(root->child->sibling->pos[0], root->child->sibling->pos[1], dec);
-        }
-        else { //conflicting types
-            conflictingTypes(root->child->sibling->pos[0], root->child->sibling->pos[1], lowerCase(root->child->tag), symTab->type);
-        }
+        symbolAlreadyDefined(root->child->sibling->pos[0], root->child->sibling->pos[1], dec);
         return 1;
     }
     else {
-        return checkFuncVarDec(symTab->next, dec, root, voidValue);
+        return checkFuncVarDec(symTab->next, dec, root);
     }
 }
 
@@ -386,15 +394,39 @@ int checkIfVoid(node root) { //verifica se e void
     return 0;
 }
 
-void checkIfParamVoid(node root) { //verifica se algum parametro e void
+int checkIfParamVoid(node root) { //verifica se algum parametro e void
     int nrParams = 0;
     while(root) {
-        if(strcmp(root->child->tag, "Void") == 0 && (nrParams || root->child->sibling)) {
+        if(strcmp(root->child->tag, "Void") == 0 && (nrParams || root->sibling)) {
             invalidVoid(root->child->pos[0], root->child->pos[1]);
+            return 1;
         } 
         nrParams++; 
         root = root->sibling;
     } 
+    return 0;
+}
+
+int checkIfRepeatedParams(node root) { //verifica parametros repetidos
+    node aux1 = root;
+    node aux2 = root;
+    int nrParams = 0, i;
+    while(aux1) {
+        if(aux1->child->sibling) {
+            for(i = 0; aux2 && (i < nrParams); i++) {
+                if(aux2->child->sibling && strcmp(aux1->child->sibling->tag, aux2->child->sibling->tag) == 0) {
+                    symbolAlreadyDefined(aux1->child->sibling->pos[0], aux1->child->sibling->pos[1], removeId(aux1->child->sibling->tag));
+                    return 1;
+                }
+                aux2 = aux2->sibling;
+            }
+        }
+        aux2 = root;
+        nrParams++;
+        aux1 = aux1->sibling;
+    } 
+    
+    return 0;
 }
 
 char* getFunctionType(char* type, table symTab) { // cria uma string com o tipo da funcao
@@ -410,6 +442,16 @@ char* getFunctionType(char* type, table symTab) { // cria uma string com o tipo 
     }
     sprintf(aux, "%s)", aux);
     return aux;
+}
+
+void annoteFuncBody(node root, gTable symTab, table auxSymTab) {
+    if(!root)
+        return;
+
+    annoteTree(root, symTab, auxSymTab);
+    
+    annoteFuncBody(root->child, symTab, auxSymTab);
+    annoteFuncBody(root->sibling, symTab, auxSymTab);
 }
 
 void checkSemantics(node root, gTable symTab, table auxSymTab) {

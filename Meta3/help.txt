@@ -1,159 +1,135 @@
-Line 1, col 8: Symbol a already defined
-Line 2, col 6: Symbol a already defined
-Line 3, col 1: Invalid use of void type in declaration
-Line 8, col 6: Conflicting types (got char(void), expected int(void))
-Line 11, col 9: Conflicting types (got double, expected int)
-Line 15, col 5: Invalid use of void type in declaration
-Line 17, col 5: Unknown symbol d
-Line 17, col 8: Unknown symbol k
-Line 18, col 5: Wrong number of arguments to function jorge (got 2, required 0)
-Line 22, col 7: Conflicting types (got char, expected double)
-Line 25, col 5: Unknown symbol d
-Line 26, col 7: Lvalue required
-Line 33, col 5: Symbol fAbio already defined
+Line 5, col 7: Symbol c already defined
+Line 7, col 2: Wrong number of arguments to function lol (got 1, required 0)
+Line 10, col 6: Conflicting types (got void(int,void,int), expected void(void))
+Line 18, col 5: Conflicting types (got int(double), expected double(int,char))
+Line 19, col 5: Conflicting types (got int(char,char), expected double(int,char))
 ===== Global Symbol Table =====
 putchar	int(int)
 getchar	int(void)
-a	int
-c	int
-fAbio	int(int,int)
-jorge	int(void)
-main	int(void)
-
-===== Function fAbio Symbol Table =====
-return	int
-a	int	param
-b	int	param
+c	char
+lol	void(void)
+main	double(int,char)
 
 ===== Function main Symbol Table =====
-return	int
-A	int
-a	char
-b	int
-c	double
+return	double
+c	char	param
 
 Program
 ..Declaration
-....Int
-....Id(a)
-..Declaration
-....Int
-....Id(a)
-..Declaration
 ....Char
-....Id(a)
-..Declaration
-....Void
-....Id(b)
+....Id(c)
 ..Declaration
 ....Int
 ....Id(c)
 ..FuncDeclaration
-....Int
-....Id(fAbio)
-....ParamList
-......ParamDeclaration
-........Int
-........Id(a)
-......ParamDeclaration
-........Int
-........Id(b)
-..FuncDeclaration
-....Int
-....Id(jorge)
-....ParamList
-......ParamDeclaration
-........Void
-..FuncDeclaration
-....Char
-....Id(jorge)
+....Void
+....Id(lol)
 ....ParamList
 ......ParamDeclaration
 ........Void
 ..FuncDefinition
-....Int
+....Double
 ....Id(main)
 ....ParamList
 ......ParamDeclaration
+........Int
+......ParamDeclaration
+........Char
+........Id(c)
+....FuncBody
+......Declaration
+........Char
+........Id(c)
+......Call - undef
+........Id(lol) - void(void)
+........Id(c) - char
+......Return
+........IntLit(0) - int
+..FuncDefinition
+....Void
+....Id(lol)
+....ParamList
+......ParamDeclaration
+........Int
+......ParamDeclaration
 ........Void
+......ParamDeclaration
+........Int
+........Id(a)
 ....FuncBody
 ......Declaration
 ........Int
-........Id(A)
-........RealLit(1.1) - double
-......Declaration
-........Int
-........Id(A)
+........Id(b)
 ......Declaration
 ........Char
 ........Id(a)
 ......Declaration
-........Int
+........Char
 ........Id(b)
 ......Declaration
-........Void
-........Id(b)
-......Declaration
-........Double
+........Char
 ........Id(c)
-......Comma - undef
-........Id(d) - undef
-........Id(k) - undef
-......Call - undef
-........Id(jorge) - int(void)
-........Id(a) - char
-........Id(a) - char
-......Store - int
-........Id(A) - int
-........Mul - int
-..........Mul - int
-............IntLit(4) - int
-............IntLit(5) - int
-..........IntLit(6) - int
-......Store - char
-........Id(a) - char
-........Id(A) - int
-......Store - int
-........Id(A) - int
-........Id(a) - char
-......Store - undef
-........Id(a) - char
-........RealLit(2.2) - double
-......Store - double
-........Id(c) - double
-........IntLit(1) - int
-......Store - double
-........Id(c) - double
-........RealLit(2.2) - double
-......Store - undef
-........Id(d) - undef
-........IntLit(1) - int
-......Store - undef
-........IntLit(0) - int
-........IntLit(0) - int
-..FuncDefinition
+......Declaration
+........Char
+........Id(d)
+........IntLit(2)
+......Declaration
+........Char
+........Id(e)
+......Store
+........Id(c)
+........Or
+..........BitWiseOr
+............BitWiseAnd
+..............Eq
+................Id(c)
+................Le
+..................Ge
+....................Gt
+......................Lt
+........................Id(a)
+........................Id(d)
+......................Id(e)
+....................Id(b)
+..................Not
+....................Id(e)
+..............Id(a)
+............Id(e)
+..........And
+............Id(e)
+............Id(a)
+......Comma
+........Store
+..........Id(a)
+..........Add
+............Mul
+..............Id(a)
+..............IntLit(2)
+............Id(b)
+........Sub
+..........IntLit(2)
+..........Mod
+............Div
+..............IntLit(9)
+..............IntLit(2)
+............IntLit(1)
+......Call
+........Id(lol)
+........Id(a)
+........Id(b)
+..FuncDeclaration
 ....Int
-....Id(fAbio)
+....Id(main)
 ....ParamList
 ......ParamDeclaration
-........Int
-........Id(a)
-......ParamDeclaration
-........Int
-........Id(b)
-....FuncBody
-......Return
-........IntLit(1) - int
-..FuncDefinition
+........Double
+........Id(f)
+..FuncDeclaration
 ....Int
-....Id(fAbio)
+....Id(main)
 ....ParamList
 ......ParamDeclaration
-........Int
-........Id(a)
-......ParamDeclaration
-........Int
+........Char
 ........Id(b)
-....FuncBody
-......Return
-........IntLit(1)
+......ParamDeclaration
+........Char

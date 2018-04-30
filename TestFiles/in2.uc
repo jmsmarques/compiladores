@@ -3,6 +3,7 @@ int c;
 void lol(void);
 double main(int , char c){
 	char c;
+	int c;
 	//int lol();
 	lol(c);
 	return 0;

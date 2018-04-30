@@ -38,6 +38,10 @@ void insertInTable(gTable root, char* tagValue, char* typeValue, table param) {
 }
 
 int searchFuncDec(gTable symTab, char* tagValue, node root) { //procura declaracoes de funcoes e anuncia erros
+    if(checkIfParamVoid(root->child->sibling->sibling->child)) {//parametros invalidos
+        return 2;
+    }
+    checkIfRepeatedParams(root->child->sibling->sibling->child);
     while(symTab) {
         if(strcmp(tagValue, symTab->tag) == 0) {
             char*  aux1 = NULL;
@@ -165,13 +169,15 @@ int checkFuncDec(node root, gTable symTab, table auxSymTab) { //verifica declara
             aux = removeId(root->child->sibling->tag);
             aux1 = searchFuncDef(auxSymTab, aux);
             if(!aux1) { //verifica se funcao ja foi definida (V se nao tiver sido)
-                if(!searchFuncDec(symTab, aux, root)) { //verifica se funcao ja foi declarada (V se nao tiver sido)
-                    go = analiseFuncDec(root, symTab, auxSymTab); //cria declaracao na tabela global
+                go = searchFuncDec(symTab, aux, root);
+                if(!go) { //verifica se funcao ja foi declarada (V se nao tiver sido)
+                    analiseFuncDec(root, symTab, auxSymTab); //cria declaracao na tabela global
                 }
-                else {
-                    checkIfRepeatedParams(root->child->sibling->sibling->child);
-                }
-                if(go) {
+                /*else {
+                    printf("%s\n", aux);
+                    //checkIfRepeatedParams(root->child->sibling->sibling->child);
+                }*/
+                if(go != 2) {
                     func = createFuncTable(root, auxSymTab); //cria definicao na tabela de simbolos
                     analiseFuncBody(root->child->sibling->sibling->sibling, symTab, func, 1);
                 }
@@ -203,16 +209,13 @@ int checkFuncDec(node root, gTable symTab, table auxSymTab) { //verifica declara
     return 0;
 }
 
-int analiseFuncDec(node root, gTable symTab, table auxSymTab) { //cria declaracao na tabela global e marca posicao na tabela de funcoes
+void analiseFuncDec(node root, gTable symTab, table auxSymTab) { //cria declaracao na tabela global e marca posicao na tabela de funcoes
     char* aux;
     table aux1;
     
     aux = removeId(root->child->sibling->tag);
     aux1 = getParamList(root->child->sibling->sibling->child);
-    if(checkIfParamVoid(root->child->sibling->sibling->child)) {//parametros invalidos
-        return 0;
-    }
-    checkIfRepeatedParams(root->child->sibling->sibling->child);
+    
     insertInTable(symTab, aux, lowerCase(root->child->tag), aux1);
 
     while(auxSymTab->next) {
@@ -223,7 +226,6 @@ int analiseFuncDec(node root, gTable symTab, table auxSymTab) { //cria declaraca
     auxSymTab->next->param = strdup(aux);
 
     free(aux);
-    return 1;
 }
 
 table createFuncTable(node root, table auxSymTab) {
@@ -421,7 +423,6 @@ void checkIfRepeatedParams(node root) { //verifica parametros repetidos
             for(i = 0; aux2 && (i < nrParams); i++) {
                 if(aux2->child->sibling && strcmp(aux1->child->sibling->tag, aux2->child->sibling->tag) == 0) {
                     symbolAlreadyDefined(aux1->child->sibling->pos[0], aux1->child->sibling->pos[1], removeId(aux1->child->sibling->tag));
-                    return;
                 }
                 aux2 = aux2->sibling;
             }

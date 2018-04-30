@@ -72,7 +72,7 @@ char* removeId(char* id);
 table startAuxTable(node tree, table root, char* tagValue, char* ret);
 void insertInAuxTable(table root, table node);
 void checkSemantics(node root, gTable symTab, table auxSymTab);
-int analiseFuncDec(node root, gTable symTab, table auxSymTable);
+void analiseFuncDec(node root, gTable symTab, table auxSymTable);
 table createFuncTable(node root, table auxSymTab);
 void analiseFuncBody(node root, gTable symTab, table auxSymTab, int flag);
 void analiseDec(node root, gTable symTab);

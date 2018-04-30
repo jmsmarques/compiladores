@@ -47,7 +47,7 @@ node createNodeTerminal(char* tagValue, char* value);
 void addChild(node father, node son);
 void addNullChild(node father);
 void addSibling(node sibling1, node sibling2);
-void typeSpecDef(node up, char* newTag);
+void typeSpecDef(node up, node newTag);
 void printTree(node root, int level);
 void freeTree(node root);
 node checkNull(node no);
@@ -79,7 +79,8 @@ void analiseDec(node root, gTable symTab);
 void analiseDecF(node root, table symTab);
 int checkIfVoid(node root);
 int checkIfParamVoid(node root);
-int checkIfRepeatedParams(node root);
+void checkIfRepeatedParams(node root);
+table removeRepeatedParams(table root);
 char* getFunctionType(char* type, table symTab);
 void annoteFuncBody(node root, gTable symTab, table auxSymTab);
 

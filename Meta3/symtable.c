@@ -82,6 +82,7 @@ table startAuxTable(node tree, table root, char* tagValue, char* tagType) {
     table aux = NULL;
     table aux1 = NULL;
     table params = getParamList(tree->child->sibling->sibling->child);
+    params = removeRepeatedParams(params);
     while(root->next) {
         if(root->next->param && (strcmp(root->next->param, funcName) == 0))
             break;
@@ -153,9 +154,9 @@ table getParamList(node root) { //cria lista ligada com todos os parametros de u
 
 int checkFuncDec(node root, gTable symTab, table auxSymTab) { //verifica declaracoes para adicinar a tabela de simbolos
     if(root) {
-        int go = 0;
         char* aux = NULL;
         table func = NULL, aux1 = NULL;
+        int go = 1;
         if(strcmp(root->tag, "FuncDeclaration") == 0) {
             if(!searchFuncDec(symTab, removeId(root->child->sibling->tag), root))
                 analiseFuncDec(root, symTab, auxSymTab);
@@ -164,11 +165,13 @@ int checkFuncDec(node root, gTable symTab, table auxSymTab) { //verifica declara
             aux = removeId(root->child->sibling->tag);
             aux1 = searchFuncDef(auxSymTab, aux);
             if(!aux1) { //verifica se funcao ja foi definida (V se nao tiver sido)
-                go = searchFuncDec(symTab, aux, root);
-                if(!go) { //verifica se funcao ja foi declarada (V se nao tiver sido)
+                if(!searchFuncDec(symTab, aux, root)) { //verifica se funcao ja foi declarada (V se nao tiver sido)
                     go = analiseFuncDec(root, symTab, auxSymTab); //cria declaracao na tabela global
                 }
-                if(go != 2) {
+                else {
+                    checkIfRepeatedParams(root->child->sibling->sibling->child);
+                }
+                if(go) {
                     func = createFuncTable(root, auxSymTab); //cria definicao na tabela de simbolos
                     analiseFuncBody(root->child->sibling->sibling->sibling, symTab, func, 1);
                 }
@@ -206,9 +209,10 @@ int analiseFuncDec(node root, gTable symTab, table auxSymTab) { //cria declaraca
     
     aux = removeId(root->child->sibling->tag);
     aux1 = getParamList(root->child->sibling->sibling->child);
-    if(checkIfParamVoid(root->child->sibling->sibling->child) || checkIfRepeatedParams(root->child->sibling->sibling->child)) {//parametros invalidos
-        return 2;
+    if(checkIfParamVoid(root->child->sibling->sibling->child)) {//parametros invalidos
+        return 0;
     }
+    checkIfRepeatedParams(root->child->sibling->sibling->child);
     insertInTable(symTab, aux, lowerCase(root->child->tag), aux1);
 
     while(auxSymTab->next) {
@@ -219,7 +223,7 @@ int analiseFuncDec(node root, gTable symTab, table auxSymTab) { //cria declaraca
     auxSymTab->next->param = strdup(aux);
 
     free(aux);
-    return 0;
+    return 1;
 }
 
 table createFuncTable(node root, table auxSymTab) {
@@ -358,7 +362,8 @@ int checkDeclaration(gTable symTab, char* dec, node root) { //verifica se variav
         return 0;
     }
     else if(strcmp(dec, symTab->tag) == 0) { //funcao variavel ja definida
-        //symbolAlreadyDefined(root->child->sibling->pos[0], root->child->sibling->pos[1], dec);
+        if(strcmp(symTab->type, lowerCase(root->child->tag)) != 0)
+            symbolAlreadyDefined(root->child->sibling->pos[0], root->child->sibling->pos[1], dec);
         return 1;
     }
     else {
@@ -388,7 +393,7 @@ char* removeId(char* id) {
 
 int checkIfVoid(node root) { //verifica se e void
     if(strcmp(root->child->tag, "Void") == 0) {
-        invalidVoid(root->child->pos[0], root->child->pos[1]);
+        invalidVoid(root->child->sibling->pos[0], root->child->sibling->pos[1]);
         return 1;
     }   
     return 0;
@@ -407,7 +412,7 @@ int checkIfParamVoid(node root) { //verifica se algum parametro e void
     return 0;
 }
 
-int checkIfRepeatedParams(node root) { //verifica parametros repetidos
+void checkIfRepeatedParams(node root) { //verifica parametros repetidos
     node aux1 = root;
     node aux2 = root;
     int nrParams = 0, i;
@@ -416,7 +421,7 @@ int checkIfRepeatedParams(node root) { //verifica parametros repetidos
             for(i = 0; aux2 && (i < nrParams); i++) {
                 if(aux2->child->sibling && strcmp(aux1->child->sibling->tag, aux2->child->sibling->tag) == 0) {
                     symbolAlreadyDefined(aux1->child->sibling->pos[0], aux1->child->sibling->pos[1], removeId(aux1->child->sibling->tag));
-                    return 1;
+                    return;
                 }
                 aux2 = aux2->sibling;
             }
@@ -425,8 +430,33 @@ int checkIfRepeatedParams(node root) { //verifica parametros repetidos
         nrParams++;
         aux1 = aux1->sibling;
     } 
-    
-    return 0;
+}
+
+table removeRepeatedParams(table root) { //remove parametros repetidos
+    table aux1 = root;
+    table aux2 = root;
+    int nrParams = 0, i;
+    while(aux1) {
+        if(strcmp(aux1->tag, "") != 0) {
+            for(i = 0; aux2 && (i < nrParams); i++) {
+                if(strcmp(aux2->tag, "") != 0 && strcmp(aux1->tag, aux2->tag) == 0) {
+                    for(; i < nrParams - 1; i++) {
+                        aux2 = aux2->next;
+                    }
+                    aux2->next = aux1->next;
+                    //free(aux1);
+                    aux1 = aux2->next;
+                    break;
+                }
+                aux2 = aux2->next;
+            }
+        }
+        aux2 = root;
+        nrParams++;
+        if(aux1)
+            aux1 = aux1->next; 
+    }
+    return root;
 }
 
 char* getFunctionType(char* type, table symTab) { // cria uma string com o tipo da funcao

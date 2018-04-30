@@ -57,12 +57,15 @@ void addSibling(node sibling1, node sibling2) {
     sibling1->sibling = sibling2;
 }
 
-void typeSpecDef(node up, char* newTag) {
+void typeSpecDef(node up, node newTag) {
     if(up == NULL) {
         return;
     }
-    up->child->tag = (char*)malloc((strlen(newTag) + 1) * sizeof(char));
-    strcpy(up->child->tag, newTag);
+    up->child->tag = (char*)malloc((strlen(newTag->tag) + 1) * sizeof(char));
+    strcpy(up->child->tag, newTag->tag);
+
+    up->child->pos[0] = newTag->pos[0];
+    up->child->pos[1] = newTag->pos[1];
 
     typeSpecDef(up->sibling, newTag);
 }

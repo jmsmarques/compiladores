@@ -127,7 +127,7 @@ CommaDeclarator: COMMA Declarator CommaDeclarator               {if(flag == 'T')
     |                                                           {if(flag == 'T'){ $$ = NULL;};}
     ;
 
-Declaration: TypeSpec Declarator CommaDeclarator SEMI           {if(flag == 'T'){ $$ = createNode("Declaration"); addSibling($1, $2); addSibling($$, $3); addChild($$, $1); typeSpecDef($$->sibling, $$->child->tag);};}
+Declaration: TypeSpec Declarator CommaDeclarator SEMI           {if(flag == 'T'){ $$ = createNode("Declaration"); addSibling($1, $2); addSibling($$, $3); addChild($$, $1); typeSpecDef($$->sibling, $$->child);};}
     | error SEMI                                                {printFlag = 'N'; if(flag == 'T') $$ = NULL;}
     ;
 

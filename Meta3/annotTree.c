@@ -33,13 +33,11 @@ char* checkVarType(char* string) {
 void annoteTree(node root, gTable symTab, table auxSymTab) {
     if(root && !root->type) {
         if(checkIfId(root->tag)) {
-            if(analiseFuncId(root, root->tag, symTab)) {
-                analiseVarId(root, symTab, auxSymTab);
-            }
+            analiseVarId(root, symTab, auxSymTab);
         }
         else if(strcmp(root->tag, "Call") == 0) {
             annoteTree(root->child, symTab, auxSymTab);
-            if((strcmp(root->child->type, "undef") != 0) && analiseFuncCall(root->child, root->child->tag, symTab)) { //se nao for uma funcao e for um call
+            if(analiseFuncCall(root->child, root->child->tag, symTab)) { //se nao for uma funcao e for um call
                 root->type = strdup("undef");
             } 
             else {
@@ -49,7 +47,7 @@ void annoteTree(node root, gTable symTab, table auxSymTab) {
         else if(strcmp(root->tag, "Store") == 0) {
             annoteTree(root->child, symTab, auxSymTab);
             annoteTree(root->child->sibling, symTab, auxSymTab);
-            if((strcmp(root->child->type, "undef") != 0) && analiseStore(root)) {
+            if(analiseStore(root)) {
                 root->type = strdup("undef");
             }
             else {
@@ -64,7 +62,20 @@ void annoteTree(node root, gTable symTab, table auxSymTab) {
             //printf("--->%s = %s\n", root->tag, root->type);
         }
         else if(checkIfLogicalOperation(root->tag)) {
-            root->type = strdup("int");
+            annoteTree(root->child, symTab, auxSymTab);
+            annoteTree(root->child->sibling, symTab, auxSymTab);
+            if(root->child->sibling && (strcmp(root->child->type, "undef") == 0 || strcmp(root->child->sibling->type, "undef") == 0)) {
+                operatorsApplication(root->pos[0], root->pos[1], getOperator(root->tag), root->child->type, root->child->sibling->type);
+                if((strcmp(root->tag, "Mod") == 0) || (strcmp(root->tag, "BitWiseOr") == 0) || (strcmp(root->tag, "BitWiseXor") == 0) || (strcmp(root->tag, "BitWiseAnd") == 0))
+                    root->type = strdup("undef");
+            }
+            else if(strcmp(root->child->type, "undef") == 0) {
+                operatorApplication(root->pos[0], root->pos[1], getOperator(root->tag), root->child->type);
+                if((strcmp(root->tag, "Mod") == 0) || (strcmp(root->tag, "BitWiseOr") == 0) || (strcmp(root->tag, "BitWiseXor") == 0) || (strcmp(root->tag, "BitWiseAnd") == 0))
+                    root->type = strdup("undef");
+            }
+            if(!root->type)
+                root->type = strdup("int");
         }
         else {
             root->type = checkVarType(root->tag);
@@ -74,11 +85,11 @@ void annoteTree(node root, gTable symTab, table auxSymTab) {
 
 int analiseStore(node root) {
     if(!checkIfId(root->child->tag)) { //verifica se nao e id onde vamos guardar
-        lValue(root->pos[0], root->pos[1]);
+        lValue(root->child->pos[0], root->child->pos[1]);
         return 1;
     }
     else if(validateConversion(root)) { // <-- mal muito mal
-        return 1;
+        return 0;
     }
     else {
         return 0;
@@ -100,7 +111,7 @@ int analiseFuncCall(node root, char* id, gTable symTab) { //verifica validade de
         }
         if(got != expected) {
             wrongArguments(root->pos[0], root->pos[1], removeId(root->tag), got, expected);
-            return 1;
+            return 0;
         }
     }
     return 0;
@@ -143,7 +154,10 @@ void analiseVarId(node root, gTable symTab, table auxSymTab) { //procura declara
 
     while(symTab) {
         if(strcmp(symTab->tag, aux) == 0) {
-            root->type = strdup(symTab->type);
+            if(symTab->params)
+                root->type = annoteFuncParams(symTab);
+            else 
+                root->type = strdup(symTab->type);
             free(aux);
             return;
         }
@@ -200,15 +214,13 @@ void checkOperationType(node root, gTable symTab, table auxSymTable) { //verific
         aux2 = checkVarType(root->child->sibling->type);
         if(!aux2)
             return;
-        if((strcmp(root->tag, "Comma") == 0)) {
-            root->type = strdup(aux2);
-            if(strcmp(aux1, "undef") == 0 || strcmp(aux2, "undef") == 0) {
-                operatorsApplication(root->pos[0], root->pos[1], getOperator(root->tag), aux1, aux2);
-            }
-        }
-        else if (strcmp(aux1, "undef") == 0 || strcmp(aux2, "undef") == 0) {
+        
+        if (strcmp(aux1, "undef") == 0 || strcmp(aux2, "undef") == 0) {
             root->type = strdup("undef");
             operatorsApplication(root->pos[0], root->pos[1], getOperator(root->tag), aux1, aux2);
+        }
+        else if((strcmp(root->tag, "Comma") == 0)) {
+            root->type = strdup(aux2);
         }
         else if(strcmp(aux1, "double") == 0 || strcmp(aux2, "double") == 0) {
             root->type = strdup("double");

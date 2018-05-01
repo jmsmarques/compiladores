@@ -1,9 +1,9 @@
 Line 2, col 18: Unknown symbol d
 Line 2, col 23: Operator , cannot be applied to types undef, int
+Line 3, col 9: Symbol a already defined
 Line 3, col 13: Unknown symbol b2
 Line 3, col 19: Unknown symbol x
 Line 3, col 16: Operator != cannot be applied to types undef, undef
-Line 3, col 9: Symbol a already defined
 Line 4, col 5: Unknown symbol l
 Line 4, col 8: Unknown symbol o
 Line 4, col 6: Operator , cannot be applied to types undef, undef
@@ -40,9 +40,9 @@ Line 36, col 6: Unknown symbol variable
 Line 36, col 16: Operator / cannot be applied to types undef, int
 Line 36, col 20: Operator * cannot be applied to types undef, int
 Line 37, col 5: Unknown symbol variable
+Line 37, col 25: Unknown symbol s
 Line 37, col 17: Wrong number of arguments to function getchar (got 1, required 0)
 Line 37, col 14: Operator / cannot be applied to types undef, int
-Line 37, col 25: Unknown symbol s
 Line 38, col 6: Unknown symbol variable
 Line 38, col 5: Operator ! cannot be applied to type undef
 Line 39, col 6: Unknown symbol variable
@@ -66,89 +66,38 @@ Line 43, col 13: Lvalue required
 Line 44, col 6: Unknown symbol a
 Line 44, col 11: Unknown symbol b
 Line 45, col 6: Unknown symbol printf
-Line 45, col 6: Symbol printf is not a function
-Line 45, col 13: Unknown symbol a
-Line 45, col 17: Unknown symbol b
-Line 45, col 19: Operator + cannot be applied to types undef, int
-Line 45, col 24: Unknown symbol c
-Line 45, col 29: Unknown symbol d
-Line 45, col 34: Unknown symbol x
-Line 45, col 33: Operator ! cannot be applied to type undef
-Line 45, col 30: Operator / cannot be applied to types undef, int
-Line 45, col 35: Operator % cannot be applied to types undef, int
-Line 45, col 26: Operator == cannot be applied to types undef, undef
-Line 45, col 39: Unknown symbol x
-Line 45, col 44: Unknown symbol a
-Line 45, col 41: Operator || cannot be applied to types undef, undef
-Line 45, col 46: Unknown symbol y
-Line 45, col 50: Unknown symbol b
-Line 45, col 48: Operator & cannot be applied to types undef, undef
-Line 45, col 53: Unknown symbol z
-Line 45, col 57: Unknown symbol d
-Line 45, col 55: Operator ^ cannot be applied to types undef, undef
 Line 47, col 5: Unknown symbol raca
 Line 47, col 10: Unknown symbol rrew
 Line 47, col 9: Operator , cannot be applied to types undef, undef
 Line 47, col 15: Unknown symbol oi
 Line 47, col 14: Operator , cannot be applied to types undef, undef
-Line 47, col 18: Wrong number of arguments to function putchar (got 3, required 1)
-Line 47, col 17: Operator , cannot be applied to types undef, int
 Line 47, col 26: Unknown symbol oi
 Line 47, col 29: Unknown symbol x
 Line 47, col 31: Unknown symbol d
+Line 47, col 18: Wrong number of arguments to function putchar (got 3, required 1)
+Line 47, col 17: Operator , cannot be applied to types undef, int
 Line 49, col 5: Unknown symbol printf
-Line 49, col 5: Symbol printf is not a function
-Line 49, col 12: Unknown symbol oi
-Line 49, col 15: Unknown symbol x
-Line 49, col 17: Unknown symbol y
 Line 56, col 13: Unknown symbol x
+Line 56, col 13: Conflicting types (got undef, expected int)
 Line 57, col 17: Unknown symbol x
+Line 57, col 17: Conflicting types (got undef, expected int)
 Line 58, col 17: Unknown symbol printf
-Line 58, col 17: Symbol printf is not a function
-Line 58, col 24: Unknown symbol x
 Line 59, col 17: Unknown symbol printf
-Line 59, col 17: Symbol printf is not a function
-Line 59, col 24: Unknown symbol x
 Line 60, col 17: Unknown symbol printf
-Line 60, col 17: Symbol printf is not a function
-Line 60, col 24: Unknown symbol x
 Line 61, col 17: Unknown symbol printf
-Line 61, col 17: Symbol printf is not a function
-Line 61, col 24: Unknown symbol x
 Line 66, col 13: Unknown symbol printf
-Line 66, col 13: Symbol printf is not a function
-Line 66, col 20: Unknown symbol x
 Line 67, col 13: Unknown symbol printf
-Line 67, col 13: Symbol printf is not a function
-Line 67, col 20: Unknown symbol x
 Line 68, col 13: Unknown symbol printf
-Line 68, col 13: Symbol printf is not a function
-Line 68, col 20: Unknown symbol x
 Line 69, col 17: Unknown symbol printf
-Line 69, col 17: Symbol printf is not a function
-Line 69, col 24: Unknown symbol x
 Line 72, col 17: Unknown symbol printf
-Line 72, col 17: Symbol printf is not a function
-Line 72, col 24: Unknown symbol x
 Line 79, col 13: Unknown symbol printf
-Line 79, col 13: Symbol printf is not a function
-Line 79, col 20: Unknown symbol x
 Line 81, col 12: Unknown symbol cona
+Line 81, col 12: Conflicting types (got undef, expected int)
 Line 82, col 9: Unknown symbol printf
-Line 82, col 9: Symbol printf is not a function
-Line 82, col 16: Unknown symbol x
 Line 82, col 19: Unknown symbol printf
-Line 82, col 19: Symbol printf is not a function
-Line 82, col 26: Unknown symbol x
 Line 82, col 29: Unknown symbol printf
-Line 82, col 29: Symbol printf is not a function
-Line 82, col 36: Unknown symbol x
 Line 82, col 39: Unknown symbol printf
-Line 82, col 39: Symbol printf is not a function
-Line 82, col 46: Unknown symbol x
 Line 82, col 49: Unknown symbol printf
-Line 82, col 49: Symbol printf is not a function
-Line 82, col 56: Unknown symbol x
 Line 86, col 9: Unknown symbol x
 Line 86, col 11: Operator == cannot be applied to types undef, int
 Line 86, col 19: Unknown symbol x
@@ -156,30 +105,28 @@ Line 86, col 21: Operator != cannot be applied to types undef, int
 Line 89, col 10: Unknown symbol x
 Line 89, col 9: Operator ! cannot be applied to type undef
 Line 90, col 9: Unknown symbol printf
-Line 90, col 9: Symbol printf is not a function
 Line 92, col 14: Unknown symbol oi
 Line 92, col 17: Unknown symbol wk
 Line 92, col 16: Operator , cannot be applied to types undef, undef
+Line 92, col 16: Conflicting types (got undef, expected int)
 Line 93, col 9: Unknown symbol printf
-Line 93, col 9: Symbol printf is not a function
-Line 93, col 16: Unknown symbol x
 Line 94, col 9: Unknown symbol gets
-Line 94, col 9: Symbol gets is not a function
 Line 97, col 9: Unknown symbol printf
-Line 97, col 9: Symbol printf is not a function
-Line 97, col 16: Unknown symbol x
 Line 100, col 9: Unknown symbol a
+Line 100, col 9: Conflicting types (got undef, expected int)
 Line 101, col 9: Unknown symbol i
 Line 103, col 11: Unknown symbol a
+Line 103, col 11: Conflicting types (got undef, expected int)
 Line 104, col 15: Unknown symbol b
+Line 104, col 15: Conflicting types (got undef, expected int)
 Line 105, col 13: Unknown symbol printf
-Line 105, col 13: Symbol printf is not a function
 Line 106, col 16: Unknown symbol c
+Line 106, col 16: Conflicting types (got undef, expected int)
 Line 107, col 23: Unknown symbol d
+Line 107, col 23: Conflicting types (got undef, expected int)
 Line 122, col 14: Unknown symbol b
 Line 122, col 24: Unknown symbol b
 Line 122, col 23: Operator - cannot be applied to types char, undef
-Line 123, col 5: Wrong number of arguments to function putchar (got 6, required 1)
 Line 123, col 19: Unknown symbol v
 Line 123, col 18: Operator + cannot be applied to types char, undef
 Line 123, col 21: Unknown symbol c
@@ -189,6 +136,7 @@ Line 123, col 26: Unknown symbol b
 Line 123, col 25: Operator ! cannot be applied to type undef
 Line 123, col 32: Unknown symbol b
 Line 123, col 31: Operator - cannot be applied to type undef
+Line 123, col 5: Wrong number of arguments to function putchar (got 6, required 1)
 Line 127, col 5: Symbol main already defined
 Line 144, col 5: Symbol main already defined
 Line 159, col 5: Symbol main already defined
@@ -222,15 +170,9 @@ Line 230, col 22: Unknown symbol d
 Line 230, col 20: Operator / cannot be applied to types undef, undef
 Line 230, col 10: Operator + cannot be applied to types int, undef
 Line 232, col 4: Unknown symbol printf
-Line 232, col 4: Symbol printf is not a function
-Line 232, col 11: Unknown symbol q
-Line 232, col 11: Symbol q is not a function
 Line 233, col 4: Unknown symbol printf
-Line 233, col 4: Symbol printf is not a function
 Line 234, col 4: Unknown symbol printf
-Line 234, col 4: Symbol printf is not a function
 Line 235, col 4: Unknown symbol printf
-Line 235, col 4: Symbol printf is not a function
 Line 252, col 5: Symbol main already defined
 Line 265, col 5: Symbol max already defined
 Line 277, col 5: Symbol main already defined
@@ -470,7 +412,7 @@ Program
 ........IntLit(2) - int
 ......Store - undef
 ........Id(i) - undef
-........Store - undef
+........Store - int
 ..........BitWiseXor - int
 ............Not - int
 ..............Id(i) - undef
@@ -487,30 +429,30 @@ Program
 ........Id(b) - undef
 ......Call - undef
 ........Id(printf) - undef
-........Store - undef
-..........Id(a) - undef
-..........Add - undef
-............Id(b) - undef
-............IntLit(1) - int
-........Eq - int
-..........Id(c) - undef
-..........Mod - undef
-............Div - undef
-..............Id(d) - undef
-..............Plus - int
-................Minus - int
-..................Not - int
-....................Id(x) - undef
-............IntLit(4) - int
-........Or - int
-..........Id(x) - undef
-..........Id(a) - undef
-........BitWiseAnd - undef
-..........Id(y) - undef
-..........Id(b) - undef
-........BitWiseXor - undef
-..........Id(z) - undef
-..........Id(d) - undef
+........Store
+..........Id(a)
+..........Add
+............Id(b)
+............IntLit(1)
+........Eq
+..........Id(c)
+..........Mod
+............Div
+..............Id(d)
+..............Plus
+................Minus
+..................Not
+....................Id(x)
+............IntLit(4)
+........Or
+..........Id(x)
+..........Id(a)
+........BitWiseAnd
+..........Id(y)
+..........Id(b)
+........BitWiseXor
+..........Id(z)
+..........Id(d)
 ......Comma - undef
 ........Comma - undef
 ..........Comma - undef
@@ -524,9 +466,9 @@ Program
 ..........Id(d) - undef
 ......Call - undef
 ........Id(printf) - undef
-........Id(oi) - undef
-........Id(x) - undef
-........Id(y) - undef
+........Id(oi)
+........Id(x)
+........Id(y)
 ..FuncDefinition
 ....Int
 ....Id(statements)
@@ -545,16 +487,16 @@ Program
 ................StatList
 ..................Call - undef
 ....................Id(printf) - undef
-....................Id(x) - undef
+....................Id(x)
 ..................Call - undef
 ....................Id(printf) - undef
-....................Id(x) - undef
+....................Id(x)
 ..................Call - undef
 ....................Id(printf) - undef
-....................Id(x) - undef
+....................Id(x)
 ..................Call - undef
 ....................Id(printf) - undef
-....................Id(x) - undef
+....................Id(x)
 ..................Return
 ....................IntLit(1) - int
 ................Null
@@ -563,19 +505,19 @@ Program
 ................StatList
 ..................Call - undef
 ....................Id(printf) - undef
-....................Id(x) - undef
+....................Id(x)
 ..................Call - undef
 ....................Id(printf) - undef
-....................Id(x) - undef
+....................Id(x)
 ..................Call - undef
 ....................Id(printf) - undef
-....................Id(x) - undef
+....................Id(x)
 ..................Call - undef
 ....................Id(printf) - undef
-....................Id(x) - undef
+....................Id(x)
 ................Call - undef
 ..................Id(printf) - undef
-..................Id(x) - undef
+..................Id(x)
 ............StatList
 ..............While
 ................IntLit(1) - int
@@ -583,25 +525,25 @@ Program
 ..................IntLit(0) - int
 ..............Call - undef
 ................Id(printf) - undef
-................Id(x) - undef
+................Id(x)
 ..........If
 ............Id(cona) - undef
 ............StatList
 ..............Call - undef
 ................Id(printf) - undef
-................Id(x) - undef
+................Id(x)
 ..............Call - undef
 ................Id(printf) - undef
-................Id(x) - undef
+................Id(x)
 ..............Call - undef
 ................Id(printf) - undef
-................Id(x) - undef
+................Id(x)
 ..............Call - undef
 ................Id(printf) - undef
-................Id(x) - undef
+................Id(x)
 ..............Call - undef
 ................Id(printf) - undef
-................Id(x) - undef
+................Id(x)
 ..............Return
 ................IntLit(1) - int
 ............Null
@@ -621,7 +563,7 @@ Program
 ..........Id(x) - undef
 ........Call - undef
 ..........Id(printf) - undef
-..........ChrLit('a') - int
+..........ChrLit('a')
 ........If
 ..........Comma - undef
 ............Id(oi) - undef
@@ -629,12 +571,12 @@ Program
 ..........StatList
 ............Call - undef
 ..............Id(printf) - undef
-..............Id(x) - undef
+..............Id(x)
 ............Call - undef
 ..............Id(gets) - undef
 ..........Call - undef
 ............Id(printf) - undef
-............Id(x) - undef
+............Id(x)
 ......If
 ........Id(a) - undef
 ........Id(i) - undef
@@ -646,7 +588,7 @@ Program
 ..........StatList
 ............Call - undef
 ..............Id(printf) - undef
-..............IntLit(1) - int
+..............IntLit(1)
 ............If
 ..............Id(c) - undef
 ..............While
@@ -1034,32 +976,32 @@ Program
 ..........IntLit(5) - int
 ......Call - undef
 ........Id(printf) - undef
-........Call - undef
-..........Id(q) - undef
-..........IntLit(1) - int
-..........IntLit(2) - int
-........Comma - int
-..........Comma - int
-............IntLit(3) - int
-............IntLit(3) - int
-..........IntLit(4) - int
+........Call
+..........Id(q)
+..........IntLit(1)
+..........IntLit(2)
+........Comma
+..........Comma
+............IntLit(3)
+............IntLit(3)
+..........IntLit(4)
 ......Call - undef
 ........Id(printf) - undef
-........IntLit(1) - int
-........Comma - int
-..........IntLit(2) - int
-..........IntLit(3) - int
+........IntLit(1)
+........Comma
+..........IntLit(2)
+..........IntLit(3)
 ......Call - undef
 ........Id(printf) - undef
-........Comma - int
-..........IntLit(1) - int
-..........IntLit(2) - int
-........IntLit(3) - int
+........Comma
+..........IntLit(1)
+..........IntLit(2)
+........IntLit(3)
 ......Call - undef
 ........Id(printf) - undef
-........Comma - int
-..........IntLit(3) - int
-..........IntLit(4) - int
+........Comma
+..........IntLit(3)
+..........IntLit(4)
 ..FuncDefinition
 ....Int
 ....Id(max)

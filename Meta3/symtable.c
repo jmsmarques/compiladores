@@ -179,7 +179,7 @@ int checkFuncDec(node root, gTable symTab, table auxSymTab) { //verifica declara
                 }*/
                 if(go != 2) {
                     func = createFuncTable(root, auxSymTab); //cria definicao na tabela de simbolos
-                    analiseFuncBody(root->child->sibling->sibling->sibling, symTab, func, 1);
+                    analiseFuncBody(root->child->sibling->sibling->sibling, symTab, func);
                 }
                 else {
                     //annoteFuncBody(root->child->sibling->sibling->sibling, symTab, auxSymTab);
@@ -195,8 +195,9 @@ int checkFuncDec(node root, gTable symTab, table auxSymTab) { //verifica declara
             if(!checkIfVoid(root)) {
                 aux = removeId(root->child->sibling->tag);
                 if(!checkDeclaration(symTab, aux, root)) { //verifica se variavel nao esta declarada e da erros    
-                    if(checkDecAtribution(root, symTab, auxSymTab))
-                        analiseDec(root, symTab);
+                    analiseDec(root, symTab);
+                    checkDecAtribution(root, symTab, auxSymTab);
+                    
                 }
             }
         }
@@ -206,6 +207,8 @@ int checkFuncDec(node root, gTable symTab, table auxSymTab) { //verifica declara
         }
         free(aux);
     }
+    if(strcmp(root->tag, "Call") == 0) 
+        return 1;
     return 0;
 }
 
@@ -259,7 +262,7 @@ void analiseDecF(node root, table symTab) { //verifica se funcao ja foi definida
     free(aux);
 }
 
-void analiseFuncBody(node root, gTable symTab, table auxSymTab, int flag) {
+void analiseFuncBody(node root, gTable symTab, table auxSymTab) {
     if(!root) {
         return;
     }
@@ -267,15 +270,15 @@ void analiseFuncBody(node root, gTable symTab, table auxSymTab, int flag) {
     int aux = 1;
 
     if(strcmp(root->tag, "Declaration") == 0) {
-        if(flag && checkDecAtribution(root, symTab, auxSymTab)) //anota mas nao cria nada
-            analiseDecF(root, auxSymTab);
+        analiseDecF(root, auxSymTab);
+        checkDecAtribution(root, symTab, auxSymTab);
         aux = 0;
     }
 
     annoteTree(root, symTab, auxSymTab);
-    if(aux)
-        analiseFuncBody(root->child, symTab, auxSymTab, flag);
-    analiseFuncBody(root->sibling, symTab, auxSymTab, flag);
+    if(aux && (strcmp(root->tag, "Call") != 0))
+        analiseFuncBody(root->child, symTab, auxSymTab);
+    analiseFuncBody(root->sibling, symTab, auxSymTab);
 }
 
 int checkDecAtribution(node root, gTable symTab, table auxSymTab) { //verifica se uma atribuicao numa declaracao e valida

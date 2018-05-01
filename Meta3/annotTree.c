@@ -37,22 +37,29 @@ void annoteTree(node root, gTable symTab, table auxSymTab) {
         }
         else if(strcmp(root->tag, "Call") == 0) {
             annoteTree(root->child, symTab, auxSymTab);
-            if(analiseFuncCall(root->child, root->child->tag, symTab)) { //se nao for uma funcao e for um call
-                root->type = strdup("undef");
-            } 
+            if(strcmp(root->child->type, "undef") != 0) {
+                node aux = root->child->sibling;
+                while(aux) {
+                    annoteTree(aux, symTab, auxSymTab);
+                    aux = aux->sibling;
+                }
+                free(aux);
+                if(analiseFuncCall(root->child, root->child->tag, symTab)) { //se nao for uma funcao e for um call
+                    root->type = strdup("undef");
+                } 
+                else {
+                    root->type = checkVarType(root->child->type);
+                }
+            }
             else {
-                root->type = checkVarType(root->child->type);
+                root->type = strdup("undef");
             }
         }
         else if(strcmp(root->tag, "Store") == 0) {
             annoteTree(root->child, symTab, auxSymTab);
             annoteTree(root->child->sibling, symTab, auxSymTab);
-            if(analiseStore(root)) {
-                root->type = strdup("undef");
-            }
-            else {
-                root->type = checkVarType(root->child->type);
-            }
+            analiseStore(root);
+            root->type = checkVarType(root->child->type);
         }
         else if(checkIfOperation(root->tag)) {
             //printf("-->%s\n", root->tag);
@@ -77,22 +84,31 @@ void annoteTree(node root, gTable symTab, table auxSymTab) {
             if(!root->type)
                 root->type = strdup("int");
         }
+        else if(strcmp(root->tag, "If") == 0 || strcmp(root->tag, "While") == 0) {
+            annoteTree(root->child, symTab, auxSymTab);
+            if(strcmp(root->child->type, "undef") == 0) {
+                conflictingTypes(root->child->pos[0], root->child->pos[1], root->child->type, "int");
+            }
+        }
         else {
             root->type = checkVarType(root->tag);
         }
     }       
 }
 
-int analiseStore(node root) {
+void analiseStore(node root) {
+    /*while(root->child && checkIfOperation(root->child->tag)) {
+        root = root->child;
+    }*/
     if(!checkIfId(root->child->tag)) { //verifica se nao e id onde vamos guardar
         lValue(root->child->pos[0], root->child->pos[1]);
-        return 1;
+        return;
     }
     else if(validateConversion(root)) { // <-- mal muito mal
-        return 0;
+        return;
     }
     else {
-        return 0;
+        return;
     }
 }
 
@@ -266,7 +282,7 @@ int checkIfId(char* string) { //verifica se e uma id 1 se for 0 se nao for
     }
     return 0;
 }
-
+/*
 void annotedDecOp(node root, gTable symTab, table auxSymTab) { //anota filhos caso sejam operacoes
     if(!root)
         return;
@@ -313,7 +329,7 @@ void annotedDecOp(node root, gTable symTab, table auxSymTab) { //anota filhos ca
         root->type = checkVarType(root->tag);
     }
 }
-
+*/
 void printAnnotedTree(node root, int level) {
     int aux;
     if(root == NULL) {

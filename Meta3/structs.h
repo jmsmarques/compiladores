@@ -98,6 +98,7 @@ int checkIfId(char* string);
 void annotedDecOp(node root, gTable symTab, table auxSymTab);
 void printAnnotedTree(node root, int level);
 int getFunctionNrParams(gTable symTab, char* funcName);
+char* getOperator(char* operatorTag);
 int validateConversion(node root);
 
 void errorLocation(int line, int col);

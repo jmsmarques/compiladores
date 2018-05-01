@@ -202,9 +202,13 @@ void checkOperationType(node root, gTable symTab, table auxSymTable) { //verific
             return;
         if((strcmp(root->tag, "Comma") == 0)) {
             root->type = strdup(aux2);
+            if(strcmp(aux1, "undef") == 0 || strcmp(aux2, "undef") == 0) {
+                operatorsApplication(root->pos[0], root->pos[1], getOperator(root->tag), aux1, aux2);
+            }
         }
         else if (strcmp(aux1, "undef") == 0 || strcmp(aux2, "undef") == 0) {
             root->type = strdup("undef");
+            operatorsApplication(root->pos[0], root->pos[1], getOperator(root->tag), aux1, aux2);
         }
         else if(strcmp(aux1, "double") == 0 || strcmp(aux2, "double") == 0) {
             root->type = strdup("double");
@@ -221,6 +225,9 @@ void checkOperationType(node root, gTable symTab, table auxSymTable) { //verific
     }
     else { //operadores unarios
        root->type = strdup(aux1);
+       if(strcmp(root->type, "undef") == 0) {
+           operatorApplication(root->pos[0], root->pos[1], getOperator(root->tag), aux1);
+       }
     }
     free(aux1);
     free(aux2);
@@ -229,10 +236,9 @@ void checkOperationType(node root, gTable symTab, table auxSymTable) { //verific
 int checkIfLogicalOperation(char* string) {
     if((strcmp(string, "Not") == 0) || (strcmp(string, "And") == 0) 
     || (strcmp(string, "Or") == 0) || (strcmp(string, "Mod") == 0) 
-    || (strcmp(string, "Le") == 0) || (strcmp(string, "Ge") == 0)
-    || (strcmp(string, "Eq") == 0) || (strcmp(string, "Ne") == 0)
-    || (strcmp(string, "Lt") == 0) || (strcmp(string, "Gt") == 0)
-    || (strcmp(string, "Le") == 0) || (strcmp(string, "Ge") == 0)
+    || (strcmp(string, "Ge") == 0) || (strcmp(string, "Eq") == 0) 
+    || (strcmp(string, "Ne") == 0) || (strcmp(string, "Lt") == 0) 
+    || (strcmp(string, "Gt") == 0) || (strcmp(string, "Le") == 0) 
     || (strcmp(string, "BitWiseOr") == 0) 
     || (strcmp(string, "BitWiseXor") == 0) || (strcmp(string, "BitWiseAnd") == 0)) {
         return 1;
@@ -335,6 +341,65 @@ int getFunctionNrParams(gTable symTab, char* funcName) { //retorna quantos param
             return aux;
         }
         symTab = symTab->next;
+    }
+    return aux;
+}
+
+char* getOperator(char* operatorTag) {
+    char* aux = NULL;
+    if(strcmp(operatorTag, "Comma") == 0) {
+        aux = strdup(",");
+    }
+    else if(strcmp(operatorTag, "Plus") == 0 || strcmp(operatorTag, "Add") == 0) {
+        aux = strdup("+");
+    }
+    else if(strcmp(operatorTag, "Minus") == 0 || strcmp(operatorTag, "Sub") == 0) {
+        aux = strdup("-");
+    }
+    else if(strcmp(operatorTag, "Div") == 0) {
+        aux = strdup("/");
+    }
+    else if(strcmp(operatorTag, "Mod") == 0) {
+        aux = strdup("%");
+    }
+    else if(strcmp(operatorTag, "Not") == 0) {
+        aux = strdup("!");
+    }
+    else if(strcmp(operatorTag, "Mul") == 0) {
+        aux = strdup("*");
+    }
+    else if(strcmp(operatorTag, "BitWiseOr") == 0) {
+        aux = strdup("|");
+    }
+    else if(strcmp(operatorTag, "BitWiseXor") == 0) {
+        aux = strdup("^");
+    }
+    else if(strcmp(operatorTag, "BitWiseAnd") == 0) {
+        aux = strdup("&");
+    }
+    else if(strcmp(operatorTag, "And") == 0) {
+        aux = strdup("&&");
+    }
+    else if(strcmp(operatorTag, "Or") == 0) {
+        aux = strdup("||");
+    }
+    else if(strcmp(operatorTag, "Eq") == 0) {
+        aux = strdup("==");
+    }
+    else if(strcmp(operatorTag, "Gt") == 0) {
+        aux = strdup(">");
+    }
+    else if(strcmp(operatorTag, "Lt") == 0) {
+        aux = strdup("<");
+    }
+    else if(strcmp(operatorTag, "Ge") == 0) {
+        aux = strdup(">=");
+    }
+    else if(strcmp(operatorTag, "Le") == 0) {
+        aux = strdup("<=");
+    }
+    else if(strcmp(operatorTag, "Ne") == 0) {
+        aux = strdup("!=");
     }
     return aux;
 }

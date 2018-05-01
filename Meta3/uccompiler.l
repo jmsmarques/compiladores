@@ -91,9 +91,9 @@ REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 {BITWISEXOR}                {if(flag == 'Y') printf("BITWISEXOR\n"); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return BITWISEXOR;}
 {AND}                       {if(flag == 'Y') printf("AND\n"); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return AND;}
 {ASSIGN}                    {if(flag == 'Y') printf("ASSIGN\n"); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return ASSIGN;}
-{MUL}                       {if(flag == 'Y') printf("MUL\n");  col += yyleng; if(flag != 'Y') return MUL;}
-{COMMA}                     {if(flag == 'Y') printf("COMMA\n");  col += yyleng; if(flag != 'Y') return COMMA;}
-{DIV}                       {if(flag == 'Y') printf("DIV\n");  col += yyleng; if(flag != 'Y') return DIV;}
+{MUL}                       {if(flag == 'Y') printf("MUL\n"); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return MUL;}
+{COMMA}                     {if(flag == 'Y') printf("COMMA\n"); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return COMMA;}
+{DIV}                       {if(flag == 'Y') printf("DIV\n"); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return DIV;}
 {EQ}                        {if(flag == 'Y') printf("EQ\n"); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return EQ;}
 {GE}                        {if(flag == 'Y') printf("GE\n"); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return GE;}
 {GT}                        {if(flag == 'Y') printf("GT\n"); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return GT;}
@@ -101,12 +101,12 @@ REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 {LE}                        {if(flag == 'Y') printf("LE\n"); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return LE;}
 {LPAR}                      {if(flag == 'Y') printf("LPAR\n");  col += yyleng; if(flag != 'Y') return LPAR;}
 {LT}                        {if(flag == 'Y') printf("LT\n"); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return LT;}
-{MINUS}                     {if(flag == 'Y') printf("MINUS\n");  col += yyleng; if(flag != 'Y') return MINUS;}
-{MOD}                       {if(flag == 'Y') printf("MOD\n");  col += yyleng; if(flag != 'Y') return MOD;}
+{MINUS}                     {if(flag == 'Y') printf("MINUS\n"); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return MINUS;}
+{MOD}                       {if(flag == 'Y') printf("MOD\n"); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return MOD;}
 {NE}                        {if(flag == 'Y') printf("NE\n"); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return NE;}
-{NOT}                       {if(flag == 'Y') printf("NOT\n");  col += yyleng; if(flag != 'Y') return NOT;}
+{NOT}                       {if(flag == 'Y') printf("NOT\n"); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return NOT;}
 {OR}                        {if(flag == 'Y') printf("OR\n"); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return OR;}
-{PLUS}                      {if(flag == 'Y') printf("PLUS\n"); col += yyleng; if(flag != 'Y') return PLUS;}
+{PLUS}                      {if(flag == 'Y') printf("PLUS\n"); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return PLUS;}
 {RBRACE}                    {if(flag == 'Y') printf("RBRACE\n");  col += yyleng; if(flag != 'Y') return RBRACE;}
 {RPAR}                      {if(flag == 'Y') printf("RPAR\n");  col += yyleng; if(flag != 'Y') return RPAR;}
 {SEMI}                      {if(flag == 'Y') printf("SEMI\n");  col += yyleng; if(flag != 'Y') return SEMI;}

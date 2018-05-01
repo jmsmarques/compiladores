@@ -280,7 +280,7 @@ void analiseFuncBody(node root, gTable symTab, table auxSymTab, int flag) {
 
 int checkDecAtribution(node root, gTable symTab, table auxSymTab) { //verifica se uma atribuicao numa declaracao e valida
     if(root->child->sibling->sibling) {
-        annotedDecOp(root->child->sibling->sibling, symTab, auxSymTab);
+        annoteTree(root->child->sibling->sibling, symTab, auxSymTab);
         if(strcmp(root->child->sibling->sibling->type, "double") == 0 && strcmp(lowerCase(root->child->tag), "double") != 0) {
             conflictingTypes(root->child->sibling->pos[0], root->child->sibling->pos[1], lowerCase(root->child->sibling->sibling->type), lowerCase(root->child->tag));
             return 0;

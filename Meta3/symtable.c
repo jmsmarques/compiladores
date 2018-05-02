@@ -48,7 +48,9 @@ int searchFuncDec(gTable symTab, char* tagValue, node root) { //procura declarac
             char* aux2 = NULL;
 
             aux1 = getFunctionType(lowerCase(root->child->tag), getParamList(root->child->sibling->sibling->child)); //funcao declarada
-            aux2 = getFunctionType(symTab->type, symTab->params); //funcao na tabela
+            if(symTab->params)
+                aux2 = getFunctionType(symTab->type, symTab->params); //funcao na tabela
+            else aux2 = strdup(symTab->type);
             if(strcmp(aux2, aux1) != 0) { //conflicting types
                 conflictingTypes(root->child->sibling->pos[0], root->child->sibling->pos[1], lowerCase(aux1), aux2);
                 return 2;
@@ -196,9 +198,8 @@ int checkFuncDec(node root, gTable symTab, table auxSymTab) { //verifica declara
                 aux = removeId(root->child->sibling->tag);
                 if(!checkDeclaration(symTab, aux, root)) { //verifica se variavel nao esta declarada e da erros    
                     analiseDec(root, symTab);
-                    checkDecAtribution(root, symTab, auxSymTab);
-                    
                 }
+                checkDecAtribution(root, symTab, auxSymTab);
             }
         }
         else {
@@ -367,7 +368,7 @@ int checkDeclaration(gTable symTab, char* dec, node root) { //verifica se variav
         return 0;
     }
     else if(strcmp(dec, symTab->tag) == 0) { //funcao variavel ja definida
-        if(strcmp(symTab->type, lowerCase(root->child->tag)) != 0)
+        if(symTab->params || strcmp(symTab->type, lowerCase(root->child->tag)) != 0)
             symbolAlreadyDefined(root->child->sibling->pos[0], root->child->sibling->pos[1], dec);
         return 1;
     }
@@ -407,7 +408,7 @@ int checkIfVoid(node root) { //verifica se e void
 int checkIfParamVoid(node root) { //verifica se algum parametro e void
     int nrParams = 0;
     while(root) {
-        if(strcmp(root->child->tag, "Void") == 0 && (nrParams || root->sibling)) {
+        if(strcmp(root->child->tag, "Void") == 0 && (nrParams || root->sibling || root->child->sibling)) {
             invalidVoid(root->child->pos[0], root->child->pos[1]);
             return 1;
         } 
@@ -464,10 +465,10 @@ table removeRepeatedParams(table root) { //remove parametros repetidos
 }
 
 char* getFunctionType(char* type, table symTab) { // cria uma string com o tipo da funcao
-    char* aux = (char*)malloc((strlen(type) + 2) * sizeof(char));
+    char* aux = (char*)malloc((strlen(type) + 3) * sizeof(char));
     sprintf(aux, "%s(", type);
     while(symTab) {
-        aux = (char*)realloc(aux, (strlen(aux) + strlen(symTab->type) + 2) * sizeof(char));
+        aux = (char*)realloc(aux, (strlen(aux) + strlen(symTab->type) + 3) * sizeof(char));
         sprintf(aux, "%s%s", aux, symTab->type);
         if(symTab->next) {
             sprintf(aux, "%s,", aux);

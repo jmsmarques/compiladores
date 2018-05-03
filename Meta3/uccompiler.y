@@ -12,7 +12,7 @@
 %token INT
 %token SHORT
 %token DOUBLE
-%token RETURN
+%token <info> RETURN
 %token <info> VOID
 %token <info> BITWISEAND
 %token <info> BITWISEOR
@@ -157,8 +157,8 @@ Statement: SEMI                                                 {if(flag == 'T')
     | IF LPAR Expr RPAR ErrorStatement %prec LOWER_THAN_ELSE    {if(flag == 'T'){ $$ = createNode("If"); addChild($$, checkNull($3)); addSibling($$->child, checkNull($5)); addSibling($$->child->sibling, createNode("Null"));};}
     | IF LPAR Expr RPAR ErrorStatement ELSE ErrorStatement      {if(flag == 'T'){ $$ = createNode("If"); addChild($$, checkNull($3)); addSibling($$->child, checkNull($5)); addSibling($$->child->sibling, checkNull($7));};}
     | WHILE LPAR Expr RPAR ErrorStatement                       {if(flag == 'T'){ $$ = createNode("While"); addChild($$, checkNull($3)); addSibling($$->child, checkNull($5));};}
-    | RETURN Expr SEMI                                          {if(flag == 'T'){ $$ = createNode("Return"); addChild($$, $2);};}
-    | RETURN SEMI                                               {if(flag == 'T'){ $$ = createNode("Return"); addNullChild($$);};}
+    | RETURN Expr SEMI                                          {if(flag == 'T'){ $$ = createNode("Return"); addChild($$, $2); addLinesAndCols($$, $1->line, $1->col); free($1);};}
+    | RETURN SEMI                                               {if(flag == 'T'){ $$ = createNode("Return"); addNullChild($$); addLinesAndCols($$, $1->line, $1->col); free($1);};}
     | LBRACE error RBRACE                                       {printFlag = 'N'; if(flag == 'T') $$ = NULL;}
     ;
 

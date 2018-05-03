@@ -84,7 +84,7 @@ REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 {INT}                       {if(flag == 'Y') printf("INT\n");  col += yyleng; if(flag != 'Y') return INT;}
 {SHORT}                     {if(flag == 'Y') printf("SHORT\n");  col += yyleng; if(flag != 'Y') return SHORT;}
 {DOUBLE}                    {if(flag == 'Y') printf("DOUBLE\n");  col += yyleng; if(flag != 'Y') return DOUBLE;}
-{RETURN}                    {if(flag == 'Y') printf("RETURN\n");  col += yyleng; if(flag != 'Y') return RETURN;}
+{RETURN}                    {if(flag == 'Y') printf("RETURN\n"); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return RETURN;}
 {VOID}                      {if(flag == 'Y') printf("VOID\n"); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return VOID;}
 {BITWISEAND}                {if(flag == 'Y') printf("BITWISEAND\n"); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return BITWISEAND;}
 {BITWISEOR}                 {if(flag == 'Y') printf("BITWISEOR\n"); if(flag != 'Y') yylval.info = sendInfo(yytext); col += yyleng; if(flag != 'Y') return BITWISEOR; col += yyleng;}

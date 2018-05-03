@@ -80,10 +80,10 @@ void annoteTree(node root, gTable symTab, table auxSymTab) {
                 if(strncmp(root->tag, "BitWise", 7) == 0)
                     root->type = strdup("undef");
             }
-            else if(root->child->sibling && (strcmp(root->child->type, "double") == 0 || strcmp(root->child->sibling->type, "double") == 0)) {
+            else if(root->child->sibling && ((strcmp(root->child->type, "double") == 0 || strcmp(root->child->sibling->type, "double") == 0) || checkIfFunction(root->child->type) || checkIfFunction(root->child->sibling->type))) {
                 operatorsApplication(root->pos[0], root->pos[1], getOperator(root->tag), root->child->type, root->child->sibling->type);
             }
-            else if(strcmp(root->child->type, "undef") == 0 || strcmp(root->child->type, "double") == 0) {
+            else if(strcmp(root->child->type, "undef") == 0 || strcmp(root->child->type, "double") == 0 || checkIfFunction(root->child->type)) {
                 operatorApplication(root->pos[0], root->pos[1], getOperator(root->tag), root->child->type);
             }
             if(!root->type)
@@ -92,10 +92,10 @@ void annoteTree(node root, gTable symTab, table auxSymTab) {
         else if(checkIfLogicalOperation(root->tag)) {
             annoteTree(root->child, symTab, auxSymTab);
             annoteTree(root->child->sibling, symTab, auxSymTab);
-            if(root->child->sibling && (strcmp(root->child->type, "undef") == 0 || strcmp(root->child->sibling->type, "undef") == 0)) {
+            if(root->child->sibling && ((strcmp(root->child->type, "undef") == 0 || strcmp(root->child->sibling->type, "undef") == 0) || checkIfFunction(root->child->type) || checkIfFunction(root->child->sibling->type))) {
                 operatorsApplication(root->pos[0], root->pos[1], getOperator(root->tag), root->child->type, root->child->sibling->type);
             }
-            else if(strcmp(root->child->type, "undef") == 0) {
+            else if(strcmp(root->child->type, "undef") == 0 || checkIfFunction(root->child->type)) {
                 operatorApplication(root->pos[0], root->pos[1], getOperator(root->tag), root->child->type);
             }
             if(!root->type)
@@ -103,7 +103,7 @@ void annoteTree(node root, gTable symTab, table auxSymTab) {
         }
         else if(strcmp(root->tag, "If") == 0 || strcmp(root->tag, "While") == 0) {
             annoteTree(root->child, symTab, auxSymTab);
-            if(strcmp(root->child->type, "undef") == 0) {
+            if(strcmp(root->child->type, "undef") == 0 || strcmp(root->child->type, "double") == 0 || checkIfFunction(root->child->type)) {
                 conflictingTypes(root->child->pos[0], root->child->pos[1], root->child->type, "int");
             }
         }
@@ -152,17 +152,22 @@ void analiseFuncCall(node root, char* id, gTable symTab) { //verifica validade d
     char* aux1 = NULL;
     char* params = strdup(root->type);
     rem = strlen(checkVarType(params));
-    aux1 = (char*)malloc((strlen(params) - rem + 2) * sizeof(char));
+    aux1 = (char*)malloc((strlen(params) + 1) * sizeof(char));
     strncpy(aux1, params + rem + 1, strlen(params) - 2);
     *(aux1 + strlen(params) - rem - 2) = '\0';
     token = strtok(aux1, ",");
     while(token && aux) {
         if(strcmp(aux->type, "double") == 0 && strcmp("double", token) != 0) {
-            conflictingTypes(aux->pos[0], aux->pos[1], aux->type, token);
+            if(strcmp(aux->tag, "Call") == 0) {
+                conflictingTypes(aux->child->pos[0], aux->child->pos[1], aux->type, token);
+            }
+            else
+                conflictingTypes(aux->pos[0], aux->pos[1], aux->type, token);
         }
         token = strtok(NULL, ",");
         aux = aux->sibling;
     }
+    free(aux1);
 }
 
 int analiseFuncId(node root, char* id, gTable symTab) { //verifica se id e uma funcao e retorna 0 e anota se for 
@@ -288,10 +293,12 @@ void checkOperationType(node root, gTable symTab, table auxSymTable) { //verific
         }
     }
     else { //operadores unarios
-       root->type = strdup(aux1);
-       if(strcmp(root->type, "undef") == 0) {
-           operatorApplication(root->pos[0], root->pos[1], getOperator(root->tag), aux1);
-       }
+        if(strcmp(root->child->type, "undef") == 0 || checkIfFunction(root->child->type)) {
+            root->type = strdup("undef");
+            operatorApplication(root->pos[0], root->pos[1], getOperator(root->tag), root->child->type);
+        }
+        else
+            root->type = strdup(aux1);
     }
     free(aux1);
     free(aux2);
@@ -499,6 +506,8 @@ int checkIfFunction(char* type) {
 
 void checkReturn(node root, char* got, table symTab) {
     char* expected = NULL;
+    if(!got)
+        got = strdup("void");
     while(symTab) {
         if(strcmp(symTab->tag, "return") == 0) {
             expected = strdup(symTab->type);
@@ -506,8 +515,11 @@ void checkReturn(node root, char* got, table symTab) {
         }
         symTab = symTab->next;
     }
-    if(checkIfFunction(got) || (strcmp(got, "double") == 0 && strcmp(expected, "double") != 0)) {
+    if(checkIfFunction(got) || (strcmp(got, "double") == 0 && strcmp(expected, "double") != 0) || (strcmp(got, "void") != 0 && strcmp(expected, "void") == 0)) {
         conflictingTypes(root->child->pos[0], root->child->pos[1], got, expected);
+    }
+    else if(strcmp(got, "void") == 0 && strcmp(expected, "void") != 0) {
+        conflictingTypes(root->pos[0], root->pos[1], got, expected);
     }
 }
     

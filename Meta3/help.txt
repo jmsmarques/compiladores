@@ -1,37 +1,47 @@
-Line 4, col 6: Invalid use of void type in declaration
-Line 7, col 12: Conflicting types (got void(void), expected int)
-Line 11, col 6: Unknown symbol a
-Line 11, col 5: Operator ! cannot be applied to type undef
-Line 12, col 5: Operator ! cannot be applied to type double
-Line 13, col 9: Operator ^ cannot be applied to types double, double
-Line 14, col 11: Unknown symbol a
-Line 14, col 9: Operator ^ cannot be applied to types double, undef
-Line 15, col 5: Unknown symbol a
-Line 15, col 7: Operator ^ cannot be applied to types undef, double
-Line 16, col 9: Operator && cannot be applied to types double, double
-Line 17, col 5: Unknown symbol a
-Line 17, col 7: Operator && cannot be applied to types undef, double
-Line 18, col 11: Operator = cannot be applied to types int(void), int
-Line 19, col 13: Unknown symbol teste1
-Line 19, col 11: Operator + cannot be applied to types int(void), undef
-Line 21, col 7: Operator = cannot be applied to types int, double
-Line 22, col 8: Unknown symbol cm
-Line 22, col 11: Operator ^ cannot be applied to types undef, double
-Line 22, col 11: Conflicting types (got undef, expected int)
-Line 25, col 15: Conflicting types (got double, expected int)
-Line 27, col 5: Unknown symbol p
-Line 27, col 6: Operator , cannot be applied to types undef, double
+Line 5, col 6: Invalid use of void type in declaration
+Line 8, col 2: Conflicting types (got void, expected int)
+Line 12, col 12: Conflicting types (got int, expected void)
+Line 16, col 5: Operator ! cannot be applied to type double(void)
+Line 17, col 5: Operator ! cannot be applied to type double
+Line 18, col 9: Operator ^ cannot be applied to types double, double
+Line 19, col 9: Operator ^ cannot be applied to types double, double(void)
+Line 20, col 7: Operator ^ cannot be applied to types double(void), double
+Line 21, col 9: Operator && cannot be applied to types double, double
+Line 22, col 7: Operator && cannot be applied to types double(void), double
+Line 23, col 11: Operator = cannot be applied to types int(void), int
+Line 24, col 13: Unknown symbol teste1
+Line 24, col 11: Operator + cannot be applied to types int(void), undef
+Line 26, col 7: Operator = cannot be applied to types int, double
+Line 27, col 8: Unknown symbol cm
+Line 27, col 11: Operator ^ cannot be applied to types undef, double
+Line 27, col 11: Conflicting types (got undef, expected int)
+Line 30, col 15: Conflicting types (got double, expected int)
+Line 32, col 2: Unknown symbol p
+Line 32, col 3: Operator , cannot be applied to types undef, double
+Line 33, col 4: Operator , cannot be applied to types void(double,int), double
+Line 34, col 5: Operator && cannot be applied to types void(double,int), void(double,int)
+Line 36, col 2: Operator ! cannot be applied to type void(void)
+Line 37, col 5: Operator ^ cannot be applied to types void(void), void
+Line 39, col 2: Operator + cannot be applied to type void(void)
+Line 41, col 12: Conflicting types (got double, expected int)
+Line 42, col 8: Conflicting types (got int(void), expected int)
+Line 43, col 5: Conflicting types (got void, expected int)
 ===== Global Symbol Table =====
 putchar	int(int)
 getchar	int(void)
 teste	int(void)
 f7	void(double,int)
 f9	void(void)
+a	double(void)
 f3	int(void)
+vb	void(void)
 main	int(void)
 
 ===== Function f3 Symbol Table =====
 return	int
+
+===== Function vb Symbol Table =====
+return	void
 
 ===== Function main Symbol Table =====
 return	int
@@ -60,6 +70,12 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Void
+..FuncDeclaration
+....Double
+....Id(a)
+....ParamList
+......ParamDeclaration
+........Void
 ..Declaration
 ....Void
 ....Id(a)
@@ -71,7 +87,17 @@ Program
 ........Void
 ....FuncBody
 ......Return
-........Id(f9) - void(void)
+........Call - void
+..........Id(f9) - void(void)
+..FuncDefinition
+....Void
+....Id(vb)
+....ParamList
+......ParamDeclaration
+........Void
+....FuncBody
+......Return
+........IntLit(1) - int
 ..FuncDefinition
 ....Int
 ....Id(main)
@@ -80,23 +106,23 @@ Program
 ........Void
 ....FuncBody
 ......Not - int
-........Id(a) - undef
+........Id(a) - double(void)
 ......Not - int
 ........RealLit(1.1) - double
 ......BitWiseXor - int
 ........RealLit(1.1) - double
 ........RealLit(1.1) - double
-......BitWiseXor - undef
+......BitWiseXor - int
 ........RealLit(1.1) - double
-........Id(a) - undef
-......BitWiseXor - undef
-........Id(a) - undef
-........RealLit(1.1) - double
-......And - int
-........RealLit(1.1) - double
+........Id(a) - double(void)
+......BitWiseXor - int
+........Id(a) - double(void)
 ........RealLit(1.1) - double
 ......And - int
-........Id(a) - undef
+........RealLit(1.1) - double
+........RealLit(1.1) - double
+......And - int
+........Id(a) - double(void)
 ........RealLit(1.1) - double
 ......Store - undef
 ........Id(teste) - int(void)
@@ -127,12 +153,50 @@ Program
 ........Call - void
 ..........Id(f7) - void(double,int)
 ..........Id(l) - double
-..........Id(l) - double
-......Comma - int
-........RealLit(1.1) - double
+..........Call - double
+............Id(a) - double(void)
+......Comma - double
 ........IntLit(1) - int
+........RealLit(1.1) - double
 ......Comma - undef
 ........Id(p) - undef
 ........RealLit(1.1) - double
+......Comma - undef
+........Id(f7) - void(double,int)
+........RealLit(1.1) - double
+......And - int
+........Id(f7) - void(double,int)
+........Id(f7) - void(double,int)
+......Not - int
+........Call - void
+..........Id(f9) - void(void)
 ......Not - int
 ........Id(f9) - void(void)
+......BitWiseXor - int
+........Id(f9) - void(void)
+........Call - void
+..........Id(f9) - void(void)
+......BitWiseOr - int
+........Call - void
+..........Id(f9) - void(void)
+........Call - void
+..........Id(f9) - void(void)
+......Plus - undef
+........Id(f9) - void(void)
+......Minus - void
+........Call - void
+..........Id(f9) - void(void)
+......If
+........Add - double
+..........Call - double
+............Id(a) - double(void)
+..........Call - int
+............Id(teste) - int(void)
+........Null
+........Null
+......If
+........Id(main) - int(void)
+........Null
+........Null
+......Return
+........Null

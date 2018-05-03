@@ -107,6 +107,11 @@ void annoteTree(node root, gTable symTab, table auxSymTab) {
                 conflictingTypes(root->child->pos[0], root->child->pos[1], root->child->type, "int");
             }
         }
+        else if(strcmp(root->tag, "Return") == 0) {
+            annoteTree(root->child, symTab, auxSymTab);
+            checkReturn(root, root->child->type, auxSymTab);
+            
+        }
         else {
             root->type = checkVarType(root->tag);
         }
@@ -139,6 +144,24 @@ void analiseFuncCall(node root, char* id, gTable symTab) { //verifica validade d
     }
     if(got != expected) {
         wrongArguments(root->pos[0], root->pos[1], removeId(root->tag), got, expected);
+        return;
+    }
+    int rem;
+    aux = root->sibling;
+    char* token = NULL;
+    char* aux1 = NULL;
+    char* params = strdup(root->type);
+    rem = strlen(checkVarType(params));
+    aux1 = (char*)malloc((strlen(params) - rem + 2) * sizeof(char));
+    strncpy(aux1, params + rem + 1, strlen(params) - 2);
+    *(aux1 + strlen(params) - rem - 2) = '\0';
+    token = strtok(aux1, ",");
+    while(token && aux) {
+        if(strcmp(aux->type, "double") == 0 && strcmp("double", token) != 0) {
+            conflictingTypes(aux->pos[0], aux->pos[1], aux->type, token);
+        }
+        token = strtok(NULL, ",");
+        aux = aux->sibling;
     }
 }
 
@@ -244,12 +267,12 @@ void checkOperationType(node root, gTable symTab, table auxSymTable) { //verific
             root->type = strdup("undef");
             operatorsApplication(root->pos[0], root->pos[1], getOperator(root->tag), root->child->type, root->child->sibling->type);
         }
-        else if((strcmp(root->tag, "Comma") == 0)) {
-            root->type = strdup(aux2);
-        }
         else if(checkIfFunction(root->child->type) || checkIfFunction(root->child->sibling->type)) {
             root->type = strdup("undef");
             operatorsApplication(root->pos[0], root->pos[1], getOperator(root->tag), root->child->type, root->child->sibling->type);
+        }
+        else if((strcmp(root->tag, "Comma") == 0)) {
+            root->type = strdup(aux2);
         }
         else if(strcmp(aux1, "double") == 0 || strcmp(aux2, "double") == 0) {
             root->type = strdup("double");
@@ -448,3 +471,43 @@ int checkIfFunction(char* type) {
     }
     return 0;
 }
+
+/*char** analiseParams(char* params) {
+    char* result[7] = (char**)malloc(sizeof(char*));
+    char** nav = result;
+    char* aux = NULL;
+    char* aux1 = NULL;
+    int nrParams = 1;
+    int rem;
+    
+    rem = strlen(checkVarType(params));
+    aux1 = (char*)malloc((strlen(params) - rem + 1) * sizeof(char));
+    strncpy(aux1, params + rem + 1, strlen(params) - 1);
+    *(aux1 + strlen(params) - rem - 1) = '\0';
+    aux = strtok(aux1, ",");
+    while(aux) {
+        strcpy(*result, aux);
+        aux = strtok(NULL, ",");
+        result = (char**)realloc(result, nrParams = sizeof(char*));
+        nav++;
+        nrParams++;
+    }
+    
+
+    return result;
+}*/
+
+void checkReturn(node root, char* got, table symTab) {
+    char* expected = NULL;
+    while(symTab) {
+        if(strcmp(symTab->tag, "return") == 0) {
+            expected = strdup(symTab->type);
+            break;
+        }
+        symTab = symTab->next;
+    }
+    if(checkIfFunction(got) || (strcmp(got, "double") == 0 && strcmp(expected, "double") != 0)) {
+        conflictingTypes(root->child->pos[0], root->child->pos[1], got, expected);
+    }
+}
+    

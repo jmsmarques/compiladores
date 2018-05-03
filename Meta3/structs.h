@@ -102,6 +102,7 @@ int getFunctionNrParams(gTable symTab, char* funcName);
 char* getOperator(char* operatorTag);
 int validateConversion(node root);
 int checkIfFunction(char* type);
+void checkReturn(node root, char* got, table symTab);
 
 void errorLocation(int line, int col);
 void conflictingTypes(int line, int col, char* got, char* expected);

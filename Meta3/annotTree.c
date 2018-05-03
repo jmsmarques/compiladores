@@ -157,7 +157,8 @@ void analiseFuncCall(node root, char* id, gTable symTab) { //verifica validade d
     *(aux1 + strlen(params) - rem - 2) = '\0';
     token = strtok(aux1, ",");
     while(token && aux) {
-        if(strcmp(aux->type, "double") == 0 && strcmp("double", token) != 0) {
+        if((strcmp(aux->type, "double") == 0 && strcmp("double", token) != 0)
+        || (strcmp(aux->type, "void") == 0 && strcmp("void", token) != 0)) {
             if(strcmp(aux->tag, "Call") == 0) {
                 conflictingTypes(aux->child->pos[0], aux->child->pos[1], aux->type, token);
             }
@@ -258,12 +259,10 @@ void checkOperationType(node root, gTable symTab, table auxSymTable) { //verific
     char* aux1 = NULL;
     char* aux2 = NULL;
 
-    //annotedDecOp(root->child, symTab, auxSymTab);
     aux1 = checkVarType(root->child->type);     
     if(!aux1)
         return;
     if(root->child->sibling) {
-        //annotedDecOp(root->child->sibling, symTab, auxSymTab);
         aux2 = checkVarType(root->child->sibling->type);
         if(!aux2)
             return;
@@ -440,9 +439,6 @@ char* getOperator(char* operatorTag) {
 }
 
 int validateConversion(node root) { //verifica se uma conversao e valida
-    //int aux1, aux2, i;
-    //char types[4][7] = {"double", "int", "short", "char"};
-
     if(strcmp(root->child->sibling->type, "double") == 0 && strcmp(root->child->type, "double") != 0) {
         operatorsApplication(root->pos[0], root->pos[1], getOperator(root->tag), lowerCase(root->child->type), lowerCase(root->child->sibling->type));
         return 1;
@@ -450,26 +446,6 @@ int validateConversion(node root) { //verifica se uma conversao e valida
     else {
         return 0;
     }
-
-    //printf("%s %s\n", root->tag, root->type);
-    //printf("%s %s\n", root->sibling->tag, root->sibling->type);
-    /*for(i = 0; i < 4; i++) {
-        if(strcmp(root->type, types[i]) == 0)
-            aux1 = i;
-        if(strcmp(root->sibling->type, types[i]) == 0)
-            aux2 = i;
-    }
-    
-    if(aux1 <= aux2)
-        return 0;
-    else {
-        node aux = root->sibling;
-        //printf("---> %d ---> %d\n", root->pos[0], root->pos[1]);
-        while(aux->pos[0] == 0)
-            aux = aux->child;
-        conflictingTypes(aux->pos[0], aux->pos[1], lowerCase(root->sibling->type), lowerCase(root->type));
-        return 1;
-    }*/
 }
 
 int checkIfFunction(char* type) {
@@ -478,31 +454,6 @@ int checkIfFunction(char* type) {
     }
     return 0;
 }
-
-/*char** analiseParams(char* params) {
-    char* result[7] = (char**)malloc(sizeof(char*));
-    char** nav = result;
-    char* aux = NULL;
-    char* aux1 = NULL;
-    int nrParams = 1;
-    int rem;
-    
-    rem = strlen(checkVarType(params));
-    aux1 = (char*)malloc((strlen(params) - rem + 1) * sizeof(char));
-    strncpy(aux1, params + rem + 1, strlen(params) - 1);
-    *(aux1 + strlen(params) - rem - 1) = '\0';
-    aux = strtok(aux1, ",");
-    while(aux) {
-        strcpy(*result, aux);
-        aux = strtok(NULL, ",");
-        result = (char**)realloc(result, nrParams = sizeof(char*));
-        nav++;
-        nrParams++;
-    }
-    
-
-    return result;
-}*/
 
 void checkReturn(node root, char* got, table symTab) {
     char* expected = NULL;

@@ -1,340 +1,275 @@
-int main(void, char) {
-    int a, b, c; d = 2, a = 'a';
-    int a = b2 != x;
+int x(void, char) { 
+int a, b, c; d = 2, a = 'a'; 
+int a = b2 != x; 
+} 
+
+double lmao(char in,int,void,double, int); 
+
+int main(char x, int y, int z) { 
+int x = 1, y = 2, z; 
+int a,b,c,d,e; 
+if (x > y && z > y || z != x) { 
+while (1){ 
+    return 1; 
+} 
+} 
+else { 
+return 0; 
+} 
+} 
+
+int expressions(void) {
+int i = 2,a = 3 ,b = 4,c,d; 
+int variable = 1; 
+double x; 
++variable; 
+char x,y; 
+int a,b; 
+x ^ y;
+variable = 2,3 & a = 2;
+variable = variable + 2;
+variable = variable - 2;
+(variable) == 2;
+(variable) > 2;
+(variable) < 2;
+(variable) >= 2;
+(variable) <= 2;
+(variable) | 2;
+(variable) & 2;
+(variable) != 2;
+(variable) && 2;
+(variable) || 2; 
+variable ^ 2;
+variable = variable % 2;
+variable = variable * 2;
+variable = variable / 2;
+variable = !variable;
++variable;
+-variable;
++variable = 2;
+i = (!i ^ 1)  + (a + b | c % d);
+i = (a ^ 1) + !(a * b || a % c) && (a);
+(a  = b);
+(a = b + 1, c == d/+-!x%4, x || a,y & b, z ^ d);
+
+putchar(x,variable);
+a(1,2,getchar(),a(1,2));
+(1,2,a,b,x,y);
+putchar();
 }
 
-double main(char in,int,void,double, int); 
+int statements(void) { 
 
-int main(int x, int y, int z) { 
-    int x = 1, y = 2, z; 
-    int a,b,c,d,e; 
-    if (x > y && z > y || z != x) { 
-        while (1){ 
-            return 1; 
-        } 
+int x = 1; 
+
+while(1,2) { 
+
+if (x) { 
+    if (x) { 
+        putchar(x); 
+        return 1; 
+    } 
+    else if (1) { 
+        putchar(x); 
     } 
     else { 
-        return 0;
-    }
-}
+        putchar(x);  
+    } 
+} 
+else { 
+    while(1) { 
+        return 0; 
+    } 
+} 
+} 
+if (x == 1 && x != 1){ 
+return 1; 
+} 
+if (!x) { 
+putchar('o'); 
+} 
+else if (oi,wk){ 
+gets(); 
+} 
 
-int expressions(void) { 
-    (variable) == 2, 
-    (variable) != 2; 
-    (variable) > 2; 
-    (variable) < 2; 
-    (variable) >= 2; 
-    (variable) <= 2; 
-    (variable) | 2; 
-    (variable) & 2; 
-    (variable) && 2; 
-    (variable) || 2;  
-    variable ^ 2; 
-    (variable) % 2; 
-    (variable) * 2 / 2; 
-    (variable) / 2 * 2; 
-    variable / +getchar(s); 
-    !variable; 
-    +variable; 
-    -variable;
+if (a) { 
+i; 
+} 
+} 
 
-    +variable = 2; 
-    i = (!i ^ 1) = (a + b | c % d); 
-    (a  = b); 
-    (printf(a = b + 1, c == d/+-!x%4, x || a,y & b, z ^ d)); 
-
-    raca,rrew,oi,putchar(oi,x,d); 
-
-    printf(oi,x,y); 
-}
-
-int statements(void) {
-    
-    while(1) {
-        
-        if (x) {
-            if (x) {
-                printf(x);
-                printf(x);
-                printf(x);
-                printf(x);
-
-                return 1;
-            }
-            if (1) {
-            printf(x);
-            printf(x);
-            printf(x);
-                printf(x);
-            }
-            else {
-                printf(x); 
-            }
-        }
-        else {
-            while(1) {
-                return 0;
-            }
-            printf(x);
-        }
-        if(cona) {
-        printf(x);printf(x);printf(x);printf(x);printf(x);
-            return 1;
-        }
-    }
-    if (x == 1 && x != 1){
-        return 1;
-    }
-    if (!x){
-        printf('a');
-    }
-    else if (oi,wk){
-        printf(x);
-        gets();
-    }
-    else{
-        printf(x);
-    }
-
-    if (a) {
-        i;
-    }
-    while(a){
-        while(b){
-            printf(1);
-            if(c){
-                while(d){
-            }
-        }
-    }
-}}
 
 int oi(int tudo,int bem){ 
-    char a; 
-    char b, c = 'a'; 
-    double d,e,f; 
-    e = 4; 
-    f = d+e; 
-}
+char a; 
+char b, c = 'd'; 
+double d,e,f; 
+e = 4; 
+f = d+e; 
+} 
 
-int x(int x){ 
-    char a = b, r = a -b;  
-    putchar(x=a,a+v,c-d,!b,+a,-b); 
-}
+int huehue(int x){ 
+char a = x, r = a -b;  
+putchar(x=a,a+v,c-d,!b,+a,-b); 
+} 
 
-int a;
-int main(int argc, char argv) {
-  int a, b;
-  if(a){
-    ;
-    ;
-  }
-  else{
-    if(a){
-    }
-    else{
-      a=1;
-      ;
-    }
-  }
-}
+int meta3(int xd, char lmao, double ups, short huehue) { 
 
-void test(int a){}
-int main(int){
+double v = 2.4; 
+xd == huehue; 
+xd > huehue; 
+xd < huehue; 
+xd >= huehue; 
+xd <= huehue; 
+xd | huehue; 
+xd & huehue; 
+xd != huehue; 
+xd && huehue; 
+xd || huehue;  
+xd ^ huehue; 
+xd = xd % huehue; 
+xd = xd * huehue; 
+xd = xd / huehue; 
+!xd; 
++xd; 
+-xd; 
++xd = huehue; 
+} 
 
-    test((2,3),1);
-    if(b){
-        if(c){
-            a = 2;
-            ;
-        }
-        ;
-        if(b){
-            if(e){}
-        }
-    }
-}
+int f2(char, char); 
+int f2(char, int); 
 
-int main(void){
+int f3 (char x); 
+int f3 (char x); 
 
-    int a,b,c,d,e;
+int f3 (char x) { 
+} 
 
-    funcao();
-    funcao(a);
-    funcao(a,b);
-    funcao((a,b));
-    
-    !+a;
-    -!a;
+int f3 (char x) { 
+
+} 
+
+int f(char x, void); 
+
+int f(char x, int y) { 
+char x = 2.3; 
+} 
 
 
-    (a+b)*a+b = b/a>(a*(c-d));
-}
+int b(char, void); 
 
-int main(void){
+int b(char c, void d) { 
+int x = 'a'; 
+} 
 
-        if(a){
-        a = 0;
-    }
+int f(char a, int b); 
 
+int f(int a, int b) { 
+void b; 
+int n; 
+int n; 
 
-    if(a){
-        a = 0;
-    }
-    else{
-        a=0;
-    }
+int b; 
+int c, b; 
+} 
 
-
-    if(a){
-        a = 0;a = 0;a = 0;a = 0;a = 0;a = 0;
-    }
-    else{
-        a=0;a = 0;a = 0;a = 0;a = 0;a = 0;a = 0;
-    }
+int f(char a, int b) { 
+} 
 
 
-    if(a){
-        {}{}{}{};;;;;;{}{}
-    }
+int k; 
+char k; 
 
-    if(a){
-        {a=0;a=0;}
-        {a=0;a=0;}
-        {a=0;a=0;}
-        {a=0;a==0;}
-    }
+int v; 
 
+int f(char y) { 
+char x = y; 
+} 
 
-    while(a){{{{{
-        a =0; ;;;;;;;
-    }}}}}
+int f3(int x, double x); 
 
-    while(a){}
+int a;  
+void a; 
 
-    return a;
+int teste(void) { 
+int b = b; 
+} 
 
-    return;
-    -oio/+ioi;
-    ;;
-}
+void a; 
 
-int fu(void){
-    e = (a + b) * c / d;       ( 30 * 15 ) / 5;
+void k(void) { 
+return 5; 
+} 
 
-   e = ((a + b) * c) / d;     (30 * 15 ) / 5;
+int b(void) { 
+return rekt(); 
+} 
 
-   e = (a + b) * (c / d);    (30) * (15/5);
+void rekt(void) { 
 
-   e = a + (b * c) / d;       20 + (150/5);
+} 
 
-   printf(q(1,2),((3,3),4));
-   printf(1,(2,3));
-   printf((1,2),3);
-   printf((3,4));
-}
+int a; 
 
-int max(int num1, int num2) {
+void main(void) { 
+int c; 
+int c; 
+int m; 
 
-   int result;
+} 
 
-   if (num1 > num2)
-      result = num1;
-   else
-      result = num2;
+void rekt(void) { 
 
-   return result;
-}
+} 
 
-int max(int num1, int num2);
+int teste; 
+char teste; 
+void teste; 
 
-int main (void) {
+int help(int x, int y); 
 
-   int a = 100;
-   int b = 200;
-   int ret;
+int help(double x); 
 
-   ret = max(a, b);
+void help(int x, char y){ 
+void upsu; 
+char h; 
+} 
 
-   printf(a);
+int help(int x, int y){ 
+int wgdsg; 
+char gsfrgs; 
+void teste; 
 
-   return 0;
-}
+} 
 
-int max(int num1, int num2) {
+void f(void); 
 
-   int result;
+void f(void a, void) { 
 
-   if (num1 > num2)
-      result = num1;
-   else
-      result = num2;
+} 
 
-   return result;
-}
+double b = sadsjadhsi; 
 
-int main(int a)
-{
-    int firstNumber, secondNumber, sumOfTwoNumbers;
-    scanf(firstNumber,secondNumber);
-    sumOfTwoNumbers = firstNumber + secondNumber;
-    printf( firstNumber, secondNumber, sumOfTwoNumbers);
+int b(void) { 
+int b; 
+} 
 
-    return 0;
-}
+void f(void a, void) { 
+void b = 2.3; 
+} 
 
-int main(int a)
-{
-    int base, exponent;
-    while (exponent != 0)
-    {
-        result = result * base;
-        exponent=exponent-1;
-    }
+int a; 
+void a; 
+int a; 
 
-    printf(result);
+int a (void) { 
+} 
 
-    return 0;
-}
+int asd(void a) { 
 
-int a;
+} 
 
-int main(int n)
-{
-    int reversedNumber = 0, remainder;
+int asd(void a) { 
 
-    while(n != 0)
-    {
-        remainder = n%10;
-        reversedNumber = reversedNumber*10 + remainder;
-        n =n/10;
-    }
+} 
 
-    printf(reversedNumber);
-
-    return 0;
-}
-
-int main(void)
-{
-   int number1, number2;
-   printf(number1);
-   scanf(number2);
-
-   if(number1 == number2)
-   {
-       printf(number1);
-   }
-
-   else if (number1 > number2)
-   {
-       printf(number1);
-   }
-
-   else
-   {
-       printf(number2);
-   }
-
-   return 0;
-}
+void b; 
+int b = asd(b); 

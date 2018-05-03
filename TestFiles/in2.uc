@@ -1,20 +1,54 @@
-char c;
-int c;
-void lol(void);
-double main(int , char c){
-	char c;
-	int c;
-	//int lol();
-	lol(c);
-	return 0;
+int a; 
+int a; 
+double a; 
+
+void a(int, int); 
+
+void M(int a, char a); 
+
+void M(int a, void); 
+
+void L; 
+
+int s(int a, char b){ 
+double a; 
+int b; 
+char m; 
+void f; 
+char m; 
+int m; 
+} 
+
+int s(int,char); 
+
+void s(void a); 
+
+int A(int , char e){ 
+int m = 2.5; 
+} 
+
+double A(int, char); 
+
+void M(int a, char a) { 
+int what; 
+} 
+
+int lol(void a, char b); 
+
+int lol(void a, char b) { 
+
+} 
+
+int lmao(char a, double b, int c, void v); 
+
+int lmao(char a, double b, int c, void v) { 
+
+} 
+
+int add (int a) {
+return a+1;
 }
-void lol(int,void,int a){
-	int b;
-	char a,b,c,d=2,e;
-	c = c == a < d > e >= b <= !e & a | e || e && a;
-	;
-	a = a * 2 + b,2 - 9 / 2 % 1;
-	lol(a,b);
+
+int teste(void) {
+int b = add(2);
 }
-int main(double f);
-int main(char b,char );	

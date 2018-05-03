@@ -175,21 +175,12 @@ int checkFuncDec(node root, gTable symTab, table auxSymTab) { //verifica declara
                 if(!go) { //verifica se funcao ja foi declarada (V se nao tiver sido)
                     analiseFuncDec(root, symTab, auxSymTab); //cria declaracao na tabela global
                 }
-                /*else {
-                    printf("%s\n", aux);
-                    //checkIfRepeatedParams(root->child->sibling->sibling->child);
-                }*/
                 if(go != 2) {
                     func = createFuncTable(root, auxSymTab); //cria definicao na tabela de simbolos
                     analiseFuncBody(root->child->sibling->sibling->sibling, symTab, func);
                 }
-                else {
-                    //annoteFuncBody(root->child->sibling->sibling->sibling, symTab, auxSymTab);
-                }
             }
             else { //funcao ja definida
-                //analiseFuncBody(root->child->sibling->sibling->sibling, symTab, aux1, 0);
-                //annoteFuncBody(root->child->sibling->sibling->sibling, symTab, auxSymTab);
                 symbolAlreadyDefined(root->child->sibling->pos[0], root->child->sibling->pos[1], aux);
             }
         }
@@ -317,8 +308,6 @@ void printGTable(gTable root) {
 void printParams(table param) {
     if(param) {
         printf("%s", param->type);
-        /*if(strcmp(param->tag, "") != 0)
-            printf(" %s", param->tag);*/
         if(param->next) {
             printf(",");
         }
@@ -449,7 +438,6 @@ table removeRepeatedParams(table root) { //remove parametros repetidos
                         aux2 = aux2->next;
                     }
                     aux2->next = aux1->next;
-                    //free(aux1);
                     aux1 = aux2->next;
                     break;
                 }

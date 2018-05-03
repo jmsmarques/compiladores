@@ -112,7 +112,7 @@ DeclarationsAndStatements: DeclarationsAndStatements Statement  {if(flag == 'T')
 FunctionDeclaration: TypeSpec FunctionDeclarator SEMI           {if(flag == 'T'){ $$ = createNode("FuncDeclaration"); addChild($$, $1); addSibling($1, $2);};}
     ;
 
-FunctionDeclarator: ID LPAR ParameterList RPAR                  {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1->id); addLinesAndCols($$, $1->line, $1->col); free($1); addSibling($$, $3);};}
+FunctionDeclarator: ID LPAR ParameterList RPAR                  {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1->id); addLinesAndCols($$, $1->line, $1->col); free($1->id); free($1); addSibling($$, $3);};}
     ;
 
 ParameterList: ParameterDeclaration                             {if(flag == 'T'){ $$ = createNode("ParamList"); addChild($$, $1);};}
@@ -133,13 +133,13 @@ Declaration: TypeSpec Declarator CommaDeclarator SEMI           {if(flag == 'T')
 
 TypeSpec: CHAR                                                  {if(flag == 'T'){ $$ = createNode("Char");};}
     | INT                                                       {if(flag == 'T'){ $$ = createNode("Int");};}
-    | VOID                                                      {if(flag == 'T'){ $$ = createNode("Void"); addLinesAndCols($$, $1->line, $1->col); free($1);};}
+    | VOID                                                      {if(flag == 'T'){ $$ = createNode("Void"); addLinesAndCols($$, $1->line, $1->col); free($1->id); free($1);};}
     | SHORT                                                     {if(flag == 'T'){ $$ = createNode("Short");};}
     | DOUBLE                                                    {if(flag == 'T'){ $$ = createNode("Double");};}
     ;
 
-Declarator: ID                                                  {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1->id); addLinesAndCols($$, $1->line, $1->col); free($1);};}
-    | ID ASSIGN Expr                                            {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1->id); addLinesAndCols($$, $1->line, $1->col); free($1); addSibling($$, $3);};}
+Declarator: ID                                                  {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1->id); addLinesAndCols($$, $1->line, $1->col); free($1->id); free($1);};}
+    | ID ASSIGN Expr                                            {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1->id); addLinesAndCols($$, $1->line, $1->col); free($1->id); free($1); addSibling($$, $3);};}
     ;
 
 MultStatement: ErrorStatement MultStatement                     {if(flag == 'T'){ addSibling($1, $2); if($1 != NULL){ $$ = $1;} else{ $$ = $2;};};}
@@ -157,8 +157,8 @@ Statement: SEMI                                                 {if(flag == 'T')
     | IF LPAR Expr RPAR ErrorStatement %prec LOWER_THAN_ELSE    {if(flag == 'T'){ $$ = createNode("If"); addChild($$, checkNull($3)); addSibling($$->child, checkNull($5)); addSibling($$->child->sibling, createNode("Null"));};}
     | IF LPAR Expr RPAR ErrorStatement ELSE ErrorStatement      {if(flag == 'T'){ $$ = createNode("If"); addChild($$, checkNull($3)); addSibling($$->child, checkNull($5)); addSibling($$->child->sibling, checkNull($7));};}
     | WHILE LPAR Expr RPAR ErrorStatement                       {if(flag == 'T'){ $$ = createNode("While"); addChild($$, checkNull($3)); addSibling($$->child, checkNull($5));};}
-    | RETURN Expr SEMI                                          {if(flag == 'T'){ $$ = createNode("Return"); addChild($$, $2); addLinesAndCols($$, $1->line, $1->col); free($1);};}
-    | RETURN SEMI                                               {if(flag == 'T'){ $$ = createNode("Return"); addNullChild($$); addLinesAndCols($$, $1->line, $1->col); free($1);};}
+    | RETURN Expr SEMI                                          {if(flag == 'T'){ $$ = createNode("Return"); addChild($$, $2); addLinesAndCols($$, $1->line, $1->col); free($1->id); free($1);};}
+    | RETURN SEMI                                               {if(flag == 'T'){ $$ = createNode("Return"); addNullChild($$); addLinesAndCols($$, $1->line, $1->col); free($1->id); free($1);};}
     | LBRACE error RBRACE                                       {printFlag = 'N'; if(flag == 'T') $$ = NULL;}
     ;
 
@@ -180,15 +180,15 @@ Expr: Expr ASSIGN Expr                                          {if(flag == 'T')
     | Expr GE Expr                                              {if(flag == 'T'){ $$ = createNode("Ge"); addChild($$, $1); addSibling($1, $3); addLinesAndCols($$, $2->line, $2->col); free($2);};}
     | Expr LT Expr                                              {if(flag == 'T'){ $$ = createNode("Lt"); addChild($$, $1); addSibling($1, $3); addLinesAndCols($$, $2->line, $2->col); free($2);};}
     | Expr GT Expr                                              {if(flag == 'T'){ $$ = createNode("Gt"); addChild($$, $1); addSibling($1, $3); addLinesAndCols($$, $2->line, $2->col); free($2);};}
-    | PLUS Expr     %prec UNITARY                               {if(flag == 'T'){ $$ = createNode("Plus"); addChild($$, $2); addLinesAndCols($$, $1->line, $1->col); free($1);};}
-    | MINUS Expr    %prec UNITARY                               {if(flag == 'T'){ $$ = createNode("Minus"); addChild($$, $2); addLinesAndCols($$, $1->line, $1->col); free($1);};}
-    | NOT Expr      %prec UNITARY                               {if(flag == 'T'){ $$ = createNode("Not"); addChild($$, $2); addLinesAndCols($$, $1->line, $1->col); free($1);};}
-    | ID LPAR RPAR                                              {if(flag == 'T'){ $$ = createNode("Call"); addChild($$, createNodeTerminal("Id", $1->id)); addLinesAndCols($$->child, $1->line, $1->col); free($1);};}
-    | ID LPAR Expr1 RPAR                                        {if(flag == 'T'){ $$ = createNode("Call"); addChild($$, createNodeTerminal("Id", $1->id)); addLinesAndCols($$->child, $1->line, $1->col); free($1); addSibling($$->child, $3);};}
-    | ID                                                        {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1->id); addLinesAndCols($$, $1->line, $1->col); free($1);};}
-    | INTLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("IntLit", $1->id); addLinesAndCols($$, $1->line, $1->col); free($1);};}
-    | CHRLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("ChrLit", $1->id); addLinesAndCols($$, $1->line, $1->col); free($1);};}
-    | REALLIT                                                   {if(flag == 'T'){ $$ = createNodeTerminal("RealLit", $1->id); addLinesAndCols($$, $1->line, $1->col); free($1);};}
+    | PLUS Expr     %prec UNITARY                               {if(flag == 'T'){ $$ = createNode("Plus"); addChild($$, $2); addLinesAndCols($$, $1->line, $1->col); free($1->id); free($1);};}
+    | MINUS Expr    %prec UNITARY                               {if(flag == 'T'){ $$ = createNode("Minus"); addChild($$, $2); addLinesAndCols($$, $1->line, $1->col); free($1->id); free($1);};}
+    | NOT Expr      %prec UNITARY                               {if(flag == 'T'){ $$ = createNode("Not"); addChild($$, $2); addLinesAndCols($$, $1->line, $1->col); free($1->id); free($1);};}
+    | ID LPAR RPAR                                              {if(flag == 'T'){ $$ = createNode("Call"); addChild($$, createNodeTerminal("Id", $1->id)); addLinesAndCols($$->child, $1->line, $1->col); free($1->id); free($1);};}
+    | ID LPAR Expr1 RPAR                                        {if(flag == 'T'){ $$ = createNode("Call"); addChild($$, createNodeTerminal("Id", $1->id)); addLinesAndCols($$->child, $1->line, $1->col); free($1->id); free($1); addSibling($$->child, $3);};}
+    | ID                                                        {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1->id); addLinesAndCols($$, $1->line, $1->col); free($1->id); free($1);};}
+    | INTLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("IntLit", $1->id); addLinesAndCols($$, $1->line, $1->col); free($1->id); free($1);};}
+    | CHRLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("ChrLit", $1->id); addLinesAndCols($$, $1->line, $1->col); free($1->id); free($1);};}
+    | REALLIT                                                   {if(flag == 'T'){ $$ = createNodeTerminal("RealLit", $1->id); addLinesAndCols($$, $1->line, $1->col); free($1->id); free($1);};}
     | LPAR Expr RPAR                                            {if(flag == 'T'){ $$ = $2;};}
     | ID LPAR error RPAR                                        {printFlag = 'N'; if(flag == 'T') $$ = NULL;}
     | LPAR error RPAR                                           {printFlag = 'N'; if(flag == 'T') $$ = NULL;}
@@ -212,15 +212,15 @@ Expr1: Expr1 ASSIGN Expr1                                       {if(flag == 'T')
     | Expr1 GE Expr1                                            {if(flag == 'T'){ $$ = createNode("Ge"); addChild($$, $1); addSibling($1, $3); addLinesAndCols($$, $2->line, $2->col); free($2);};}
     | Expr1 LT Expr1                                            {if(flag == 'T'){ $$ = createNode("Lt"); addChild($$, $1); addSibling($1, $3); addLinesAndCols($$, $2->line, $2->col); free($2);};}
     | Expr1 GT Expr1                                            {if(flag == 'T'){ $$ = createNode("Gt"); addChild($$, $1); addSibling($1, $3); addLinesAndCols($$, $2->line, $2->col); free($2);};}
-    | PLUS Expr1        %prec UNITARY                           {if(flag == 'T'){ $$ = createNode("Plus"); addChild($$, $2); addLinesAndCols($$, $1->line, $1->col); free($1);};}
-    | MINUS Expr1       %prec UNITARY                           {if(flag == 'T'){ $$ = createNode("Minus"); addChild($$, $2); addLinesAndCols($$, $1->line, $1->col); free($1);};}
-    | NOT Expr1         %prec UNITARY                           {if(flag == 'T'){ $$ = createNode("Not"); addChild($$, $2); addLinesAndCols($$, $1->line, $1->col); free($1);};}
-    | ID LPAR RPAR                                              {if(flag == 'T'){ $$ = createNode("Call"); addChild($$, createNodeTerminal("Id", $1->id)); addLinesAndCols($$->child, $1->line, $1->col); free($1);};}
-    | ID LPAR Expr1 RPAR                                        {if(flag == 'T'){ $$ = createNode("Call"); addChild($$, createNodeTerminal("Id", $1->id)); addLinesAndCols($$->child, $1->line, $1->col); free($1); addSibling($$->child, $3);};}
-    | ID                                                        {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1->id); addLinesAndCols($$, $1->line, $1->col); free($1);};}
-    | INTLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("IntLit", $1->id); addLinesAndCols($$, $1->line, $1->col); free($1);};}
-    | CHRLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("ChrLit", $1->id); addLinesAndCols($$, $1->line, $1->col); free($1);};}
-    | REALLIT                                                   {if(flag == 'T'){ $$ = createNodeTerminal("RealLit", $1->id); addLinesAndCols($$, $1->line, $1->col); free($1);};}
+    | PLUS Expr1        %prec UNITARY                           {if(flag == 'T'){ $$ = createNode("Plus"); addChild($$, $2); addLinesAndCols($$, $1->line, $1->col); free($1->id); free($1);};}
+    | MINUS Expr1       %prec UNITARY                           {if(flag == 'T'){ $$ = createNode("Minus"); addChild($$, $2); addLinesAndCols($$, $1->line, $1->col); free($1->id); free($1);};}
+    | NOT Expr1         %prec UNITARY                           {if(flag == 'T'){ $$ = createNode("Not"); addChild($$, $2); addLinesAndCols($$, $1->line, $1->col); free($1->id); free($1);};}
+    | ID LPAR RPAR                                              {if(flag == 'T'){ $$ = createNode("Call"); addChild($$, createNodeTerminal("Id", $1->id)); addLinesAndCols($$->child, $1->line, $1->col); free($1->id); free($1);};}
+    | ID LPAR Expr1 RPAR                                        {if(flag == 'T'){ $$ = createNode("Call"); addChild($$, createNodeTerminal("Id", $1->id)); addLinesAndCols($$->child, $1->line, $1->col); free($1->id); free($1); addSibling($$->child, $3);};}
+    | ID                                                        {if(flag == 'T'){ $$ = createNodeTerminal("Id", $1->id); addLinesAndCols($$, $1->line, $1->col); free($1->id); free($1);};}
+    | INTLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("IntLit", $1->id); addLinesAndCols($$, $1->line, $1->col); free($1->id); free($1);};}
+    | CHRLIT                                                    {if(flag == 'T'){ $$ = createNodeTerminal("ChrLit", $1->id); addLinesAndCols($$, $1->line, $1->col); free($1->id); free($1);};}
+    | REALLIT                                                   {if(flag == 'T'){ $$ = createNodeTerminal("RealLit", $1->id); addLinesAndCols($$, $1->line, $1->col); free($1->id); free($1);};}
     | LPAR Expr RPAR                                            {if(flag == 'T'){ $$ = $2;};}
     | ID LPAR error RPAR                                        {printFlag = 'N'; if(flag == 'T') $$ = NULL;}
     | LPAR error RPAR                                           {printFlag = 'N'; if(flag == 'T') $$ = NULL;}

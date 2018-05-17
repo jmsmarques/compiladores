@@ -39,6 +39,7 @@ typedef struct _g_sym_table{
 
 int yylex(void);
 void yyerror (char *s);
+void semanticAnalysis();
 idInfo sendInfo(char* info);
 
 node createNode(char* tagValue);

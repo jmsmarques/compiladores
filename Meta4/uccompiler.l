@@ -123,6 +123,11 @@ REALLIT     ({REALLITA}|{REALLITB}|{REALLITC})
 %%
 int main(int argc, char** argv) {
     if(argc > 1) {
+        if(argv[1][0] == '-' && argv[1][1] == '1') {
+            flag = 'N';
+            yylex();
+            return 0;
+        }
         if(argv[1][0] == '-' && argv[1][1] == 'l') {
             flag = 'Y';
             yylex();
@@ -139,11 +144,30 @@ int main(int argc, char** argv) {
             yylex_destroy();
             return 0;
         }
+        else if(argv[1][0] == '-' && argv[1][1] == '3') {
+            printTableFlag = 'N';
+            semanticAnalysis();
+        }
         else if(argv[1][0] == '-' && argv[1][1] == 's') {
             printTableFlag = 'Y';
+            semanticAnalysis();
         }
     }
 
+    
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}
+
+void yyerror (char *s) {
+    sinError = 'Y';
+    printf("Line %d, col %d: %s: %s\n", line, col - (int)strlen(yytext), s, yytext);
+}
+
+void semanticAnalysis() {
     flag = 'T';
     printFlag = 'N';
     yyparse();
@@ -160,16 +184,6 @@ int main(int argc, char** argv) {
             printAnnotedTree(root, 0);
         }
     }
-    return 0;
-}
-
-int yywrap() {
-    return 1;
-}
-
-void yyerror (char *s) {
-    sinError = 'Y';
-    printf("Line %d, col %d: %s: %s\n", line, col - (int)strlen(yytext), s, yytext);
 }
 
 idInfo sendInfo(char* info) {

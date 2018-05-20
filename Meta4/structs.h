@@ -39,7 +39,7 @@ typedef struct _g_sym_table{
 
 int yylex(void);
 void yyerror (char *s);
-void semanticAnalysis();
+int semanticAnalysis();
 idInfo sendInfo(char* info);
 
 node createNode(char* tagValue);
@@ -116,10 +116,16 @@ void symbolNotFunction(int line, int col, char* token);
 void unknownSymbol(int line, int col, char* token);
 void wrongArguments(int line, int col, char* token, int got, int expected);
 
+//code generation functions
+void codeGeneration(node root, gTable symTab, table auxSymTab);
+void generateCode(node root, gTable symTab, table auxSymTab);
+char* getLlvmType(char* string); //returns type in llvm language
+
 extern char flag;
 extern char printFlag;
 extern table auxSymTab;
 extern gTable symTab;
 extern node root;
+extern char codeGenFlag;
 
 #endif

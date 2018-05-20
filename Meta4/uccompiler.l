@@ -8,6 +8,7 @@
 char flag = 'N';
 char printTableFlag = 'N';
 char sinError = 'N';
+char codeGenFlag = 'Y';
 int col = 1;
 int line = 1;
 int aux_line = 1;
@@ -146,15 +147,17 @@ int main(int argc, char** argv) {
         }
         else if(argv[1][0] == '-' && argv[1][1] == '3') {
             printTableFlag = 'N';
-            semanticAnalysis();
+            codeGenFlag = 'N';
         }
         else if(argv[1][0] == '-' && argv[1][1] == 's') {
             printTableFlag = 'Y';
-            semanticAnalysis();
+            codeGenFlag = 'N';
         }
     }
-
     
+    if(semanticAnalysis())
+        codeGeneration(root, symTab, auxSymTab);
+
     return 0;
 }
 
@@ -167,7 +170,7 @@ void yyerror (char *s) {
     printf("Line %d, col %d: %s: %s\n", line, col - (int)strlen(yytext), s, yytext);
 }
 
-void semanticAnalysis() {
+int semanticAnalysis() {
     flag = 'T';
     printFlag = 'N';
     yyparse();
@@ -183,7 +186,13 @@ void semanticAnalysis() {
             printTable(auxSymTab);
             printAnnotedTree(root, 0);
         }
+        if(codeGenFlag == 'N')
+            return 0; //failed at semantic analisys
     }
+    else 
+        return 0; //failed at syntatic analisys
+    
+    return 1; //passed in semantic analisys
 }
 
 idInfo sendInfo(char* info) {

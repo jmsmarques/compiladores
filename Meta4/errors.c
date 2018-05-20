@@ -1,6 +1,7 @@
 #include "structs.h"
 
 void errorLocation(int line, int col) {
+    codeGenFlag = 'N'; //marks program to not generate code
     printf("Line %d, col %d: ", line, col);
 }
 

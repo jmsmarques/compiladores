@@ -1,0 +1,1 @@
+clang-3.8 -S -emit-llvm cheat.c

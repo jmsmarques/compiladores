@@ -42,6 +42,7 @@ void yyerror (char *s);
 int semanticAnalysis();
 idInfo sendInfo(char* info);
 
+//ast creation functions
 node createNode(char* tagValue);
 node createNodeEmpty();
 node createNodeTerminal(char* tagValue, char* value);
@@ -54,6 +55,7 @@ void freeTree(node root);
 node checkNull(node no);
 void addLinesAndCols(node root, int line, int col);
 
+//symbol table creation functions
 void printTable(table root);
 void printGTable(gTable root);
 void printParams(table param);
@@ -85,6 +87,7 @@ table removeRepeatedParams(table root);
 char* getFunctionType(char* type, table symTab);
 void annoteFuncBody(node root, gTable symTab, table auxSymTab);
 
+//annotation functions
 char* checkVarType(char* string);
 void checkOperationType(node root, gTable symTab, table auxSymTable);
 void annoteTree(node root, gTable symTab, table auxSymTab);
@@ -105,6 +108,7 @@ int validateConversion(node root);
 int checkIfFunction(char* type);
 void checkReturn(node root, char* got, table symTab);
 
+//errors functions
 void errorLocation(int line, int col);
 void conflictingTypes(int line, int col, char* got, char* expected);
 void invalidVoid(int line, int col);
@@ -117,9 +121,14 @@ void unknownSymbol(int line, int col, char* token);
 void wrongArguments(int line, int col, char* token, int got, int expected);
 
 //code generation functions
-void codeGeneration(node root, gTable symTab, table auxSymTab);
-void generateCode(node root, gTable symTab, table auxSymTab);
+void codeGeneration(node root, gTable symTab, table auxSymTab); //function that runs the ast and calls the function that generates code for each node
+int generateCode(node root, gTable symTab, table auxSymTab); //functions that generates code
+void genGlobalDeclaration(node root); //generates code for a global declaration
+char* genDecAtribution(node root); //generates code for a declaration atribution
 char* getLlvmType(char* string); //returns type in llvm language
+char getLlvmSize(char* string); //return nr of bytes of a type
+char* extractLiteral(char* id); //extracts literal value from string ...Lit(value)
+char* reduceString(char* string, int len, int end); //aux function for extractLiteral()
 
 extern char flag;
 extern char printFlag;

@@ -380,7 +380,7 @@ int checkFuncVarDec(table symTab, char* dec, node root) {
 }
 
 char* removeId(char* id) {
-    char* aux = (char*)malloc((strlen(id) - 3) * sizeof(char));;
+    char* aux = (char*)malloc((strlen(id) - 3) * sizeof(char));
     strncpy(aux, id + 3, (strlen(id) - 4) * sizeof(char));
     *(aux + strlen(id) - 4) = '\0';
     return aux;

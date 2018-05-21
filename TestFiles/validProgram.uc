@@ -1,5 +1,5 @@
 int a; 
-int a1;
+char a1 = '4';
 char a2;
 double a3 = 1.1;
 char jot(int, char, double);
@@ -30,4 +30,10 @@ void f9(int j1, char j2, double j3) {
     int c1, c2;
     double c3 = 1.2;
     c1 = c2 * 5;
+}
+
+double factorial(int);
+
+double factorial(int x) {
+    return x * factorial(x-1);
 }

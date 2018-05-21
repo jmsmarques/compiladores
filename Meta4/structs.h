@@ -125,6 +125,9 @@ void codeGeneration(node root, gTable symTab, table auxSymTab); //function that 
 int generateCode(node root, gTable symTab, table auxSymTab); //functions that generates code
 void genGlobalDeclaration(node root); //generates code for a global declaration
 char* genDecAtribution(node root); //generates code for a declaration atribution
+void genFuncDef(node root); //generates code for a function
+void genFuncDec(node root); //generates code for the first line of a definition
+void genFuncParams(node root); //transforms func params to code
 char* getLlvmType(char* string); //returns type in llvm language
 char getLlvmSize(char* string); //return nr of bytes of a type
 char* extractLiteral(char* id); //extracts literal value from string ...Lit(value)

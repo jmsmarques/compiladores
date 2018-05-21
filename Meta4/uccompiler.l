@@ -155,8 +155,11 @@ int main(int argc, char** argv) {
         }
     }
     
-    if(semanticAnalysis())
+    if(semanticAnalysis()) {
+        printf("declare i32 @getchar()\n");
+        printf("declare i32 @putchar(i32)\n");
         codeGeneration(root, symTab, auxSymTab);
+    }
 
     return 0;
 }

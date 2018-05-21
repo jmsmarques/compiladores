@@ -1,10 +1,13 @@
 int a; 
 char a1 = '4';
 char a2;
+short a5 = 1;
 double a3 = 1.1;
 char jot(int, char, double);
 int f7(int, int, int);
 void f9(int, char, double);
+char hue(int, double);
+
 
 int main(void) {
     int a; 
@@ -30,6 +33,11 @@ void f9(int j1, char j2, double j3) {
     int c1, c2;
     double c3 = 1.2;
     c1 = c2 * 5;
+    return;
+}
+
+int empty(void) {
+    return 0;
 }
 
 double factorial(int);

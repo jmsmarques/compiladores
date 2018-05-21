@@ -32,6 +32,10 @@ void f9(int j1, char j2, double j3) {
     c1 = c2 * 5;
 }
 
+int empty(void) {
+    return 0;
+}
+
 double factorial(int);
 
 double factorial(int x) {

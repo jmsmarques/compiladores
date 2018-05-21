@@ -3,6 +3,7 @@ target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-pc-linux-gnu"
 
 @a1 = global i8 52, align 1
+@a5 = global i16 1, align 2
 @a3 = global double 1.100000e+00, align 8
 @a = common global i32 0, align 4
 @a2 = common global i8 0, align 1
@@ -64,6 +65,11 @@ define void @f9(i32 %j1, i8 signext %j2, double %j3) #0 {
   %5 = mul nsw i32 %4, 5
   store i32 %5, i32* %c1, align 4
   ret void
+}
+
+; Function Attrs: nounwind uwtable
+define i32 @empty() #0 {
+  ret i32 0
 }
 
 ; Function Attrs: nounwind uwtable

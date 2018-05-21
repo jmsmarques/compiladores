@@ -1,2 +1,2 @@
-llc assembly.ll
-cc -o assembly assembly.s
+llc result.ll
+cc -o result result.s

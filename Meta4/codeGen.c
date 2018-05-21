@@ -16,10 +16,10 @@ int generateCode(node root, gTable symTab, table auxSymTab) {
         genGlobalDeclaration(root);   
     }
     else if(strcmp(root->tag, "FuncDeclaration") == 0) {
-        printf("declare\n");
+        //printf("declare\n");
     }
     else if(strcmp(root->tag, "FuncDefinition") == 0) {
-        printf("define\n");
+        genFuncDef(root);
     }
     else {
         return 1;
@@ -28,18 +28,70 @@ int generateCode(node root, gTable symTab, table auxSymTab) {
 }
 
 void genGlobalDeclaration(node root) {
-    char* code = NULL;
+    /*char* code = NULL;
     char* type = getLlvmType(root->child->tag);
     
     code = (char*)malloc((strlen(root->child->sibling->tag) + strlen(type) + 30) * sizeof(char));
+    */
     if(!root->child->sibling->sibling) { //if declaration doesnt have definition
-        sprintf(code, "@%s = common global %s 0, align %c", removeId(root->child->sibling->tag), type, getLlvmSize(root->child->tag));
+        //sprintf(code, "@%s = common global %s 0, align %c", removeId(root->child->sibling->tag), type, getLlvmSize(root->child->tag));
+        printf("@%s = common global %s 0, align %c\n", removeId(root->child->sibling->tag), getLlvmType(root->child->tag), getLlvmSize(root->child->tag));
     }
     else { //declaration has definition
-sprintf(code, "@%s = global %s %s, align %c", removeId(root->child->sibling->tag), type, genDecAtribution(root->child->sibling->sibling), getLlvmSize(root->child->tag));
+        //sprintf(code, "@%s = global %s %s, align %c", removeId(root->child->sibling->tag), type, genDecAtribution(root->child->sibling->sibling), getLlvmSize(root->child->tag));
+        printf("@%s = global %s %s, align %c\n", removeId(root->child->sibling->tag), getLlvmType(root->child->tag), genDecAtribution(root->child->sibling->sibling), getLlvmSize(root->child->tag));
     }
+    /*printf("%s\n", code);
+    free(code);*/
+}
+
+void genFuncDef(node root) {
+    genFuncDec(root);
+    if(strcmp(root->child->tag, "Void") == 0) {
+        printf("ret %s\n", getLlvmType(root->child->tag));
+    }
+    else {
+        printf("ret %s %d\n", getLlvmType(root->child->tag), 5);
+    }
+    
+    printf("}\n");
+}
+
+void genFuncDec(node root) {
+    /*char* code = NULL;
+    char* aux = genFuncParams(root->child->sibling->sibling);
+    code = (char*)malloc((7 + strlen(root->child->sibling->tag) + strlen(aux)) * sizeof(char));
+    sprintf(code, "define %s @%s(%s) #0 {", getLlvmType(root->child->tag), removeId(root->child->sibling->tag), aux);
+
     printf("%s\n", code);
-    free(code);
+    free(code);*/
+    printf("define %s @%s(", getLlvmType(root->child->tag), removeId(root->child->sibling->tag));
+    genFuncParams(root->child->sibling->sibling->child);
+    printf(") {\n");
+}
+
+void genFuncParams(node root) {
+    /*char* params = NULL;
+
+    params = (char*)malloc((strlen(root->child->sibling->tag) + 6) * sizeof(char));
+    sprintf(params, "%s %s", getLlvmType(root->child->tag), removeId(root->child->sibling->tag));
+    while(root) {
+        params = (char*)realloc(params, (strlen(params) + strlen(root->child->sibling->tag) + 7) * sizeof(char));
+        sprintf(params, "%s, %s %s", params, getLlvmType(root->child->tag), removeId(root->child->sibling->tag));
+        root = root->sibling;
+    }
+    
+    return params;*/
+    if(strcmp(root->child->tag, "Void") == 0)
+        return;
+
+    printf("%s %%%s", getLlvmType(root->child->tag), removeId(root->child->sibling->tag));
+    root = root->sibling;
+    while(root) {
+        printf(", %s %%%s", getLlvmType(root->child->tag), removeId(root->child->sibling->tag));
+        root = root->sibling;
+    }
+    return;
 }
 
 char* genDecAtribution(node root) {

@@ -10,7 +10,7 @@ char hue(int, double);
 
 
 int main(void) {
-    int a; 
+    int a = 1; 
     int b;
     char c;
     return a;

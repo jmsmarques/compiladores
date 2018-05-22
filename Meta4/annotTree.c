@@ -200,6 +200,7 @@ void analiseVarId(node root, gTable symTab, table auxSymTab) { //procura declara
     while(auxSymTab) {
         if(strcmp(auxSymTab->tag, aux) == 0) {
             root->type = strdup(auxSymTab->type);
+            root->scope = '%';
             free(aux);
             return;
         }
@@ -212,6 +213,7 @@ void analiseVarId(node root, gTable symTab, table auxSymTab) { //procura declara
                 root->type = annoteFuncParams(symTab);
             else 
                 root->type = strdup(symTab->type);
+            root->scope = '@';
             free(aux);
             return;
         }

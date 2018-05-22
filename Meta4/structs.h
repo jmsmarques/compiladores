@@ -17,6 +17,7 @@ typedef struct _tree_node{
     char* tag;
     char* type;
     int pos[2];
+    char scope;
     node child;
     node sibling;
 }tree_node;
@@ -125,8 +126,9 @@ void codeGeneration(node root, gTable symTab, table auxSymTab); //function that 
 int generateCode(node root, gTable symTab, table auxSymTab); //functions that generates code
 void genGlobalDeclaration(node root); //generates code for a global declaration
 char* genDecAtribution(node root); //generates code for a declaration atribution
+void genFuncBody(node root, int tabs); //generates code for a function body
 void genFuncDef(node root); //generates code for a function
-void genFuncDec(node root); //generates code for the first line of a definition
+void genFuncDec(node root, char* type); //generates code for the first line of a definition
 void genFuncParams(node root); //transforms func params to code
 char* getLlvmType(char* string); //returns type in llvm language
 char getLlvmSize(char* string); //return nr of bytes of a type

@@ -49,10 +49,24 @@ void genGlobalDeclaration(node root) {
 void genFuncBody(node root, int tabs) {
     if(!root)
         return;
+    for(int n = 0; n < tabs; n++)
+        printf("\t");
+    if(strcmp(root->tag, "Declaration") == 0) {
+        printf("%%%s alloca %s, align %c\n", removeId(root->child->sibling->tag), getLlvmType(root->child->tag), getLlvmSize(root->child->tag));
+    }
+    else if(strcmp(root->tag, "Call") == 0) {
 
-    if(strcmp(root->tag, "Return") == 0) {
-        for(int n = 0; n < tabs; n++)
-            printf("\t");
+    }
+    else if(strcmp(root->tag, "Store") == 0) {
+        
+    }
+    else if(strcmp(root->tag, "If") == 0) {
+        
+    }
+    else if(strcmp(root->tag, "While") == 0) {
+        
+    }
+    else if(strcmp(root->tag, "Return") == 0) {
         if(strcmp(root->child->tag, "Null") != 0) {
             if(checkIfId(root->child->tag))
                 printf("ret %s %c%s\n", getLlvmType(root->child->type), root->child->scope, extractLiteral(root->child->tag));

@@ -11,18 +11,29 @@ declare i32 @f7(i32, i32, i32)
 declare void @f9(i32, i8, double)
 
 define i32 @main() {
+%a alloca i32, align 4
+%b alloca i32, align 4
+%c alloca i8, align 1
 	ret i32 %a
 }
 
 define i32 @f7(i32 %l1, i32 %l2, i32 %l3) {
+%g1 alloca i32, align 4
+%g2 alloca i8, align 1
 	ret i32 1
 }
 
 define i8 @jot(i32 %h0, i8 %h1, double %h2) {
+%b1 alloca i32, align 4
+%b2 alloca i32, align 4
+%b3 alloca double, align 8
 	ret i32 103
 }
 
 define void @f9(i32 %j1, i8 %j2, double %j3) {
+%c1 alloca i32, align 4
+%c2 alloca i32, align 4
+%c3 alloca double, align 8
 ret void
 }
 

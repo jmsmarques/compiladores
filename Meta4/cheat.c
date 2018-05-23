@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 int a; 
 char a1 = '4';
 char a2;
@@ -8,17 +10,27 @@ int f7(int, int, int);
 void f9(int, char, double);
 char hue(int, double);
 
-
 int main(void) {
     int a = 1; 
-    int b;
+    int b = -5;
     char c;
+    putchar('a');
     return a;
 }
 
 int f7(int l1, int l2, int l3) {
     int g1;
+    int g3;
     char g2;
+    if(g1 < 1) {
+        g2 = 'b';
+    }
+    else {
+        return 2;
+    }
+    if(g3 != g1) {
+        g1 = 2;
+    }
     return 1;
 }
 

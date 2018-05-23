@@ -16,8 +16,8 @@ int generateCode(node root, gTable symTab, table auxSymTab) {
         genGlobalDeclaration(root);   
     }
     else if(strcmp(root->tag, "FuncDeclaration") == 0) {
-        genFuncDec(root, "declare");
-        printf("\n\n");
+        //genFuncDec(root, "declare");
+        //printf("\n\n");
     }
     else if(strcmp(root->tag, "FuncDefinition") == 0) {
         genFuncDef(root);
@@ -46,46 +46,79 @@ void genGlobalDeclaration(node root) {
     free(code);*/
 }
 
-void genFuncBody(node root, int tabs) {
+void genFuncBody(node root, int tabs, int variable, char* funcType) {
     if(!root)
         return;
-    for(int n = 0; n < tabs; n++)
-        printf("\t");
     if(strcmp(root->tag, "Declaration") == 0) {
-        printf("%%%s alloca %s, align %c\n", removeId(root->child->sibling->tag), getLlvmType(root->child->tag), getLlvmSize(root->child->tag));
+        doTabs(tabs);
+        printf("%%%s = alloca %s, align %c\n", removeId(root->child->sibling->tag), getLlvmType(root->child->tag), getLlvmSize(root->child->tag));
     }
     else if(strcmp(root->tag, "Call") == 0) {
 
     }
     else if(strcmp(root->tag, "Store") == 0) {
-        
+        variable = genStore(root, variable, tabs);
     }
-    else if(strcmp(root->tag, "If") == 0) {
+    /*else if(strcmp(root->tag, "If") == 0) {
+        doTabs(tabs);
+        if(strcmp(root->child->sibling->sibling->tag, "Null") == 0) {
+            generateCondition(root->child, tabs);
+            doTabs(tabs);
+            printf("br i1 %%ifcond, label %%then, label %%else\n");
+            doTabs(tabs);
+            printf("then:\n");
+            //analisar codigo dentro do if
+            doTabs(tabs);
+            printf("else:\n");
+            //analisar codigo dentro do else
+            doTabs(tabs);
+            printf("ifcont:\n");
+            tabs++;
+            //continuacao do codigo
+        }
+        else {
+            generateCondition(root->child, tabs);
+            doTabs(tabs);
+            printf("br i1 %%ifcond, label %%then\n");
+            doTabs(tabs);
+            printf("then:\n");
+            //analisar codigo dentro do if
+            doTabs(tabs);
+            printf("ifcont:\n");
+            tabs++;
+            //continuacao do codigo
+        }
         
-    }
+    }*/
     else if(strcmp(root->tag, "While") == 0) {
         
     }
     else if(strcmp(root->tag, "Return") == 0) {
+        doTabs(tabs);
         if(strcmp(root->child->tag, "Null") != 0) {
-            if(checkIfId(root->child->tag))
-                printf("ret %s %c%s\n", getLlvmType(root->child->type), root->child->scope, extractLiteral(root->child->tag));
-            else 
-                printf("ret %s %s\n", getLlvmType(root->child->type), extractLiteral(root->child->tag));
+            if(checkIfId(root->child->tag)) {
+                printf("%%%d = load %s, %s* %c%s, align %c\n", variable, funcType, funcType, 
+                root->child->scope, extractLiteral(root->child->tag), getLlvmSize(root->child->type));
+                printf("ret %s %%%d\n", funcType, variable);
+                variable++;
+            }
+            else {
+                printf("ret %s %s\n", funcType, extractLiteral(root->child->tag));
+            }
         }
         else
             printf("ret void\n");
     }
     else {
-        genFuncBody(root->child, tabs);
+        genFuncBody(root->child, tabs, variable, funcType);
     }
-    genFuncBody(root->sibling, tabs);
+    genFuncBody(root->sibling, tabs, variable, funcType);
 }
 
 void genFuncDef(node root) {
     genFuncDec(root, "define");
     printf(" {\n");
-    genFuncBody(root->child->sibling->sibling->sibling->child, 1);
+    genFuncBody(root->child->sibling->sibling->sibling->child, 1, 1, getLlvmType(root->child->tag));
     if(strcmp(root->child->tag, "Void") == 0) {
         printf("ret void\n");
     }
@@ -134,6 +167,20 @@ void genFuncParams(node root) {
         root = root->sibling;
     }
     return;
+}
+
+void generateCondition(node root, int tabs) {
+    if(strcmp(root->tag, "And") == 0) {
+        //recursive
+    }
+    else if(strcmp(root->tag, "Or") == 0) {
+        //recursive
+    }
+    else {
+        printf("%%ifcond = icmp ");
+        genLogicOperation(root->tag);
+        printf(" %s %s, %s\n", getLlvmType(root->type), genVariable(root->child), genVariable(root->child->sibling));
+    }
 }
 
 char* genDecAtribution(node root) {
@@ -221,4 +268,62 @@ char* reduceString(char* string, int len, int end) {
     *(aux + strlen(string) - end) = '\0';
 
     return aux;
+}
+
+void genLogicOperation(char* operatorTag) {
+    if(strcmp(operatorTag, "Eq") == 0) {
+        printf("eq");
+    }
+    else if(strcmp(operatorTag, "Gt") == 0) {
+        printf("sgt");
+    }
+    else if(strcmp(operatorTag, "Lt") == 0) {
+        printf("slt");
+    }
+    else if(strcmp(operatorTag, "Ge") == 0) {
+        printf("sge");
+    }
+    else if(strcmp(operatorTag, "Le") == 0) {
+        printf("sle");
+    }
+    else if(strcmp(operatorTag, "Ne") == 0) {
+        printf("ne");
+    }
+}
+
+char* genVariable(node root) {
+    char* aux = NULL;
+    if(checkIfId(root->tag)) {
+        aux = (char*)malloc(strlen(root->tag) * sizeof(char));
+        sprintf(aux, "%c%s", root->scope, removeId(root->tag));
+    }
+    else {
+        aux = extractLiteral(root->tag);
+    }
+
+    return aux;
+}
+
+void doTabs(int nr) {
+    for(int n = 0; n < nr; n++)
+        printf("\t");
+}
+
+int genStore(node root, int variable, int tabs) {
+    doTabs(tabs);
+    if(checkIfId(root->child->sibling->tag)) {
+        printf("%%%d = load %s, %s* %s, align %c\n", variable, getLlvmType(root->child->type), 
+        getLlvmType(root->child->type), genVariable(root->child->sibling), getLlvmSize(root->child->type));
+        doTabs(tabs);
+        printf("store %s %%%d, %s* %s, align %c\n", getLlvmType(root->child->type), 
+        variable, getLlvmType(root->child->type), genVariable(root->child),
+        getLlvmSize(root->child->type));
+        variable++;
+    }
+    else {
+        printf("store %s %s, %s* %s, align %c\n", getLlvmType(root->child->type), 
+        genVariable(root->child->sibling), getLlvmType(root->child->type), genVariable(root->child),
+        getLlvmSize(root->child->type));
+    }
+    return variable;
 }

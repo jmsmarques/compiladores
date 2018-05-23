@@ -126,14 +126,19 @@ void codeGeneration(node root, gTable symTab, table auxSymTab); //function that 
 int generateCode(node root, gTable symTab, table auxSymTab); //functions that generates code
 void genGlobalDeclaration(node root); //generates code for a global declaration
 char* genDecAtribution(node root); //generates code for a declaration atribution
-void genFuncBody(node root, int tabs); //generates code for a function body
+void genFuncBody(node root, int tabs, int variable, char* funcType); //generates code for a function body
 void genFuncDef(node root); //generates code for a function
 void genFuncDec(node root, char* type); //generates code for the first line of a definition
 void genFuncParams(node root); //transforms func params to code
+void generateCondition(node root, int tabs); //generates code for condition inside a if or while
 char* getLlvmType(char* string); //returns type in llvm language
 char getLlvmSize(char* string); //return nr of bytes of a type
 char* extractLiteral(char* id); //extracts literal value from string ...Lit(value)
 char* reduceString(char* string, int len, int end); //aux function for extractLiteral()
+void genLogicOperation(char* op); //prints a comparision in llvm
+char* genVariable(node root); //generates a variable with its scope or a constant
+void doTabs(int nr); //does tabs
+int genStore(node root, int variable, int tabs); //generates code for a store
 
 extern char flag;
 extern char printFlag;

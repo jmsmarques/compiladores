@@ -191,6 +191,7 @@ int checkFuncDec(node root, gTable symTab, table auxSymTab) { //verifica declara
                     analiseDec(root, symTab);
                 }
                 checkDecAtribution(root, symTab, auxSymTab);
+                root->child->sibling->scope = '@';
             }
         }
         else {
@@ -265,6 +266,7 @@ void analiseFuncBody(node root, gTable symTab, table auxSymTab) {
         analiseDecF(root, auxSymTab);
         checkDecAtribution(root, symTab, auxSymTab);
         aux = 0;
+        root->child->sibling->scope = '%';
     }
 
     annoteTree(root, symTab, auxSymTab);

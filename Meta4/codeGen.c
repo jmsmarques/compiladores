@@ -298,12 +298,16 @@ char* genVariable(node root) {
     char* aux = NULL;
 
     if(strcmp(root->tag, "Minus") == 0) {
-        aux = (char*)malloc((strlen(root->child->tag)) * sizeof(char));
-        sprintf(aux, "-%s", genVariable(root->child));
+        if(checkIfId(root->child->tag)) {
+            return genVariable(root->child);
+        }
+        else {
+            aux = (char*)malloc((strlen(root->child->tag)) * sizeof(char));
+            sprintf(aux, "-%s", genVariable(root->child));
+        }
     }
     else if(strcmp(root->tag, "Plus") == 0) {
-        aux = (char*)malloc((strlen(root->tag)) * sizeof(char));
-        sprintf(aux, "+%s", genVariable(root->child));
+        return genVariable(root->child);
     }
     else if(checkIfId(root->tag)) {
         aux = (char*)malloc((strlen(root->tag) + 8) * sizeof(char));

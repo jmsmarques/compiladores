@@ -17,7 +17,6 @@ define i32 @main() #0 {
   store i32 0, i32* %1, align 4
   store i32 1, i32* %a, align 4
   store i32 -5, i32* %b, align 4
-  store i32 -5, i32* %b, align 4
   %2 = call i32 @putchar(i32 97)
   %3 = load i32, i32* %a, align 4
   ret i32 %3
@@ -81,7 +80,8 @@ define signext i8 @jot(i32 %h0, i8 signext %h1, double %h2) #0 {
   store double %h2, double* %3, align 8
   store double 1.200000e+00, double* %b3, align 8
   %4 = load i32, i32* %b2, align 4
-  store i32 %4, i32* %b1, align 4
+  %5 = sub nsw i32 0, %4
+  store i32 %5, i32* %b1, align 4
   ret i8 103
 }
 

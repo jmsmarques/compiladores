@@ -38,7 +38,7 @@ int f7(int l1, int l2, int l3) {
 char jot(int h0, char h1, double h2) {
     int b1, b2;
     double b3 = 1.2;
-    b1 = b2;
+    b1 = -b2;
     return 'g';
 }
 

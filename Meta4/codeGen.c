@@ -52,15 +52,17 @@ void genFuncBody(node root, int tabs, int variable, char* funcType) {
     if(strcmp(root->tag, "Declaration") == 0) {
         doTabs(tabs);
         printf("%%%s = alloca %s, align %c\n", removeId(root->child->sibling->tag), getLlvmType(root->child->tag), getLlvmSize(root->child->tag));
+        if(root->child->sibling->sibling)
+            variable = genStore(root->child->sibling, getLlvmType(root->child->tag), variable, tabs);
     }
     else if(strcmp(root->tag, "Call") == 0) {
 
     }
     else if(strcmp(root->tag, "Store") == 0) {
-        variable = genStore(root, variable, tabs);
+        variable = genStore(root->child, getLlvmType(root->type), variable, tabs);
     }
-    /*else if(strcmp(root->tag, "If") == 0) {
-        doTabs(tabs);
+    else if(strcmp(root->tag, "If") == 0) {
+     /*   doTabs(tabs);
         if(strcmp(root->child->sibling->sibling->tag, "Null") == 0) {
             generateCondition(root->child, tabs);
             doTabs(tabs);
@@ -88,8 +90,8 @@ void genFuncBody(node root, int tabs, int variable, char* funcType) {
             tabs++;
             //continuacao do codigo
         }
-        
-    }*/
+     */   
+    }
     else if(strcmp(root->tag, "While") == 0) {
         
     }
@@ -99,6 +101,7 @@ void genFuncBody(node root, int tabs, int variable, char* funcType) {
             if(checkIfId(root->child->tag)) {
                 printf("%%%d = load %s, %s* %c%s, align %c\n", variable, funcType, funcType, 
                 root->child->scope, extractLiteral(root->child->tag), getLlvmSize(root->child->type));
+                doTabs(tabs);
                 printf("ret %s %%%d\n", funcType, variable);
                 variable++;
             }
@@ -293,8 +296,17 @@ void genLogicOperation(char* operatorTag) {
 
 char* genVariable(node root) {
     char* aux = NULL;
-    if(checkIfId(root->tag)) {
-        aux = (char*)malloc(strlen(root->tag) * sizeof(char));
+
+    if(strcmp(root->tag, "Minus") == 0) {
+        aux = (char*)malloc((strlen(root->child->tag)) * sizeof(char));
+        sprintf(aux, "-%s", genVariable(root->child));
+    }
+    else if(strcmp(root->tag, "Plus") == 0) {
+        aux = (char*)malloc((strlen(root->tag)) * sizeof(char));
+        sprintf(aux, "+%s", genVariable(root->child));
+    }
+    else if(checkIfId(root->tag)) {
+        aux = (char*)malloc((strlen(root->tag) + 8) * sizeof(char));
         sprintf(aux, "%c%s", root->scope, removeId(root->tag));
     }
     else {
@@ -309,21 +321,28 @@ void doTabs(int nr) {
         printf("\t");
 }
 
-int genStore(node root, int variable, int tabs) {
+int genStore(node root, char* type, int variable, int tabs) {
     doTabs(tabs);
-    if(checkIfId(root->child->sibling->tag)) {
-        printf("%%%d = load %s, %s* %s, align %c\n", variable, getLlvmType(root->child->type), 
-        getLlvmType(root->child->type), genVariable(root->child->sibling), getLlvmSize(root->child->type));
+    if(checkIfId(root->sibling->tag)) {
+        printf("%%%d = load %s, %s* %s, align %c\n", variable, type, 
+        type, genVariable(root->sibling), getLlvmSize(root->type));
         doTabs(tabs);
-        printf("store %s %%%d, %s* %s, align %c\n", getLlvmType(root->child->type), 
-        variable, getLlvmType(root->child->type), genVariable(root->child),
-        getLlvmSize(root->child->type));
+        printf("store %s %%%d, %s* %s, align %c\n", type, 
+        variable, type, genVariable(root),
+        getLlvmSize(root->type));
         variable++;
     }
     else {
-        printf("store %s %s, %s* %s, align %c\n", getLlvmType(root->child->type), 
-        genVariable(root->child->sibling), getLlvmType(root->child->type), genVariable(root->child),
-        getLlvmSize(root->child->type));
+        printf("store %s %s, %s* %s, align %c\n", type, 
+        genVariable(root->sibling), type, genVariable(root),
+        getLlvmSize(root->type));
     }
     return variable;
+}
+
+int checkIfUnary(char* string) {
+    if(strcmp(string, "Minus") == 0 || strcmp(string, "Plus") == 0)
+        return 1;
+    else
+        return 0;
 }

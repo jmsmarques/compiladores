@@ -12,7 +12,8 @@ char hue(int, double);
 
 int main(void) {
     int a = 1; 
-    int b = -5;
+    int b;
+    b = -5;
     char c;
     putchar('a');
     return a;

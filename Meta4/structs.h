@@ -138,7 +138,8 @@ char* reduceString(char* string, int len, int end); //aux function for extractLi
 void genLogicOperation(char* op); //prints a comparision in llvm
 char* genVariable(node root); //generates a variable with its scope or a constant
 void doTabs(int nr); //does tabs
-int genStore(node root, int variable, int tabs); //generates code for a store
+int genStore(node root, char* type, int variable, int tabs); //generates code for a store
+int checkIfUnary(char* string); //checks if its a unary + or -
 
 extern char flag;
 extern char printFlag;

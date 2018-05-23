@@ -141,6 +141,7 @@ void doTabs(int nr); //does tabs
 int genStore(node root, char* type, int variable, int tabs); //generates code for a store
 int genMinusConversion(int variable, int tabs, char* type); //converts a variable to -variable
 int checkIfUnary(node root); //checks if its a unary sign before an id
+int genCall(node root, int variable, int tabs); //generates code for a function call
 
 extern char flag;
 extern char printFlag;

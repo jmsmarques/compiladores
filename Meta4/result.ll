@@ -11,8 +11,9 @@ define i32 @main() {
 	%b = alloca i32, align 4
 	store i32 -5, i32* %b, align 4
 	%c = alloca i8, align 1
-	%1 = load i32, i32* %a, align 4
-	ret i32 %1
+	%1 = call i32 @putchar(i32 97)
+	%2 = load i32, i32* %a, align 4
+	ret i32 %2
 }
 
 define i32 @f7(i32 %l1, i32 %l2, i32 %l3) {

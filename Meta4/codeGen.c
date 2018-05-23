@@ -56,7 +56,7 @@ void genFuncBody(node root, int tabs, int variable, char* funcType) {
             variable = genStore(root->child->sibling, getLlvmType(root->child->tag), variable, tabs);
     }
     else if(strcmp(root->tag, "Call") == 0) {
-
+        variable = genCall(root, variable, tabs);            
     }
     else if(strcmp(root->tag, "Store") == 0) {
         variable = genStore(root->child, getLlvmType(root->type), variable, tabs);
@@ -373,4 +373,19 @@ int checkIfUnary(node root) {
         }
     }
     return 0;
+}
+
+int genCall(node root, int variable, int tabs) {
+    node params = root->child->sibling;
+    doTabs(tabs);
+    printf("%%%d = call %s @%s(", variable, getLlvmType(root->type), removeId(root->child->tag));
+    while(params) {
+        printf("%s %s", getLlvmType(params->type), genVariable(params));
+        if(params->sibling)
+            printf(",");
+        params = params->sibling;
+    }
+    printf(")\n");
+    variable++;
+    return variable;
 }

@@ -74,14 +74,31 @@ define signext i8 @jot(i32 %h0, i8 signext %h1, double %h2) #0 {
   %3 = alloca double, align 8
   %b1 = alloca i32, align 4
   %b2 = alloca i32, align 4
+  %b5 = alloca i8, align 1
+  %b6 = alloca i8, align 1
+  %c3 = alloca i16, align 2
   %b3 = alloca double, align 8
+  %b4 = alloca double, align 8
   store i32 %h0, i32* %1, align 4
   store i8 %h1, i8* %2, align 1
   store double %h2, double* %3, align 8
-  store double 1.200000e+00, double* %b3, align 8
-  %4 = load i32, i32* %b2, align 4
-  %5 = sub nsw i32 0, %4
-  store i32 %5, i32* %b1, align 4
+  %4 = load i8, i8* %b6, align 1
+  %5 = sext i8 %4 to i32
+  %6 = sub nsw i32 0, %5
+  %7 = trunc i32 %6 to i8
+  store i8 %7, i8* %b5, align 1
+  %8 = load double, double* %b4, align 8
+  %9 = fsub double -0.000000e+00, %8
+  store double %9, double* %b3, align 8
+  %10 = load i32, i32* %b2, align 4
+  %11 = sub nsw i32 0, %10
+  store i32 %11, i32* %b1, align 4
+  store i16 -1, i16* %c3, align 2
+  %12 = load i16, i16* %c3, align 2
+  %13 = sext i16 %12 to i32
+  %14 = sub nsw i32 0, %13
+  %15 = trunc i32 %14 to i16
+  store i16 %15, i16* %c3, align 2
   ret i8 103
 }
 

@@ -220,16 +220,16 @@ char getLlvmSize(char* string) {
 
     string = lowerCase(string);
 
-    if(strncmp(string, "int", 3) == 0) {
+    if(strncmp(string, "int", 3) == 0 || strncmp(string, "i32", 3) == 0) {
         aux = '4';
     }
     else if(strncmp(string, "double", 6) == 0) {
         aux = '8';
     }
-    else if(strncmp(string, "char", 4) == 0) {
+    else if(strncmp(string, "char", 4) == 0 || strncmp(string, "i8", 2) == 0) {
         aux = '1';
     }
-    else if(strncmp(string, "short", 5) == 0) {
+    else if(strncmp(string, "short", 5) == 0 || strncmp(string, "i16", 3) == 0) {
         aux = '2';
     }
   
@@ -327,26 +327,50 @@ void doTabs(int nr) {
 
 int genStore(node root, char* type, int variable, int tabs) {
     doTabs(tabs);
-    if(checkIfId(root->sibling->tag)) {
+    if(checkIfId(root->sibling->tag) || checkIfUnary(root->sibling)) {
         printf("%%%d = load %s, %s* %s, align %c\n", variable, type, 
-        type, genVariable(root->sibling), getLlvmSize(root->type));
+        type, genVariable(root->sibling), getLlvmSize(type));
+
+        if(checkIfUnary(root->sibling) && strcmp(type, "i32") != 0) {
+            variable = genMinusConversion(variable, tabs, type);
+        }
+
         doTabs(tabs);
         printf("store %s %%%d, %s* %s, align %c\n", type, 
-        variable, type, genVariable(root),
-        getLlvmSize(root->type));
+        variable, type, genVariable(root), getLlvmSize(type));
         variable++;
     }
     else {
-        printf("store %s %s, %s* %s, align %c\n", type, 
-        genVariable(root->sibling), type, genVariable(root),
-        getLlvmSize(root->type));
+        printf("store %s %s, %s* %s, align %c\n", type, genVariable(root->sibling), 
+        type, genVariable(root), getLlvmSize(type));
     }
     return variable;
 }
 
-int checkIfUnary(char* string) {
-    if(strcmp(string, "Minus") == 0 || strcmp(string, "Plus") == 0)
-        return 1;
-    else
-        return 0;
+int genMinusConversion(int variable, int tabs, char* type) {
+    variable++;
+    if(strcmp(type, "double") == 0) {
+        doTabs(tabs);
+        printf("%%%d = fsub double -0.000000e+00, %%%d\n", variable, variable - 1);
+    }
+    else {
+        doTabs(tabs);
+        printf("%%%d = sext %s %%%d to i32\n", variable, type, variable - 1);
+        variable++;
+        doTabs(tabs);
+        printf("%%%d = sub nsw i32 0, %%%d\n", variable, variable - 1);
+        variable++;
+        doTabs(tabs);
+        printf("%%%d = trunc i32 %%%d to %s\n", variable, variable - 1, type);
+    }
+    return variable;
+}
+
+int checkIfUnary(node root) {
+    if(strcmp(root->tag, "Minus") == 0 || strcmp(root->tag, "Plus") == 0) {
+        if(checkIfId(root->child->tag)) {
+            return 1;
+        }
+    }
+    return 0;
 }

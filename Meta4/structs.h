@@ -139,7 +139,8 @@ void genLogicOperation(char* op); //prints a comparision in llvm
 char* genVariable(node root); //generates a variable with its scope or a constant
 void doTabs(int nr); //does tabs
 int genStore(node root, char* type, int variable, int tabs); //generates code for a store
-int checkIfUnary(char* string); //checks if its a unary + or -
+int genMinusConversion(int variable, int tabs, char* type); //converts a variable to -variable
+int checkIfUnary(node root); //checks if its a unary sign before an id
 
 extern char flag;
 extern char printFlag;

@@ -37,8 +37,14 @@ int f7(int l1, int l2, int l3) {
 
 char jot(int h0, char h1, double h2) {
     int b1, b2;
-    double b3 = 1.2;
+    char b5, b6;
+    short c3;
+    double b3, b4;
+    b5 = -b6;
+    b3 = -b4;
     b1 = -b2;
+    c3 = -1;
+    c3 = -c3;
     return 'g';
 }
 

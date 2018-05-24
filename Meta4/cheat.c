@@ -13,9 +13,17 @@ char hue(int, double);
 int main(void) {
     int a = 1; 
     int b;
+    short l;
     b = -5;
-    char c;
-    putchar('a');
+    char c = 'o';
+    putchar('h');
+    putchar('e');
+    putchar('l');
+    putchar('l');
+    putchar(c);
+    putchar(10);
+    f9(b, a, a);
+    //jot(1, 'a', 2);
     return a;
 }
 

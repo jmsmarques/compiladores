@@ -377,15 +377,63 @@ int checkIfUnary(node root) {
 
 int genCall(node root, int variable, int tabs) {
     node params = root->child->sibling;
+    char* aux = strdup("");
     doTabs(tabs);
-    printf("%%%d = call %s @%s(", variable, getLlvmType(root->type), removeId(root->child->tag));
     while(params) {
-        printf("%s %s", getLlvmType(params->type), genVariable(params));
+        if(checkIfId(params->tag)) {
+            variable = genVarToTemp(params, getLlvmType(params->type), "i32"/*mudar isto*/,variable, tabs);
+            aux = (char*)realloc(aux, (strlen(params->type) + strlen(params->tag)) * sizeof(char));
+            sprintf(aux, "%s%s %%%d", aux, "i32"/*mudar isto -> getLlvmType(params->type)*/, variable);
+            variable++;
+            doTabs(tabs);
+        }
+        else {
+            aux = (char*)realloc(aux, (strlen(params->type) + strlen(params->tag)) * sizeof(char));
+            sprintf(aux, "%s%s %s", aux, getLlvmType(params->type), genVariable(params)); //esta mal
+        }
+        
         if(params->sibling)
-            printf(",");
+            sprintf(aux, "%s,", aux);
         params = params->sibling;
     }
-    printf(")\n");
+    printf("%%%d = call %s @%s(%s)\n", variable, getLlvmType(root->type), removeId(root->child->tag), aux);
     variable++;
+    free(aux);
     return variable;
+}
+
+int genVarToTemp(node root, char* type, char* newType, int variable, int tabs) {
+    printf("%%%d = load %s, %s* %s, align %c\n", variable, type, 
+    type, genVariable(root), getLlvmSize(type));
+    
+    if(cmpSize(type, newType) == -1) {
+        doTabs(tabs);
+        variable++;
+        printf("%%%d = sext %s %%%d to %s\n", variable, type, variable - 1, newType);
+    }
+    else if(cmpSize(type, newType) == 1) {
+        doTabs(tabs);
+        variable++;
+        printf("%%%d = trunc %s %%%d to %s\n", variable, type, variable - 1, newType);
+    }
+    return variable;
+}
+
+int cmpSize(char* size1, char* size2) {
+    if(strcmp(size1, size2) == 0) { //same size
+        return 0;
+    }
+    if(strcmp(size1, "i32") == 0 && strcmp(size2, "i32") != 0) { //size1 bigger than size2
+        return 1; 
+    }
+    else if(strcmp(size1, "i16") == 0 && (strcmp(size2, "i8") == 0) ) { //size1 bigger than size2
+        return 1; 
+    }
+    else if(strcmp(size1, "i8") == 0 && strcmp(size2, "i8") != 0) { //size1 smaller than size2
+        return -1; 
+    }
+    else if(strcmp(size1, "i16") == 0 && strcmp(size2, "i32") == 0) { //size1 smaller than size2
+        return -1; 
+    }
+    return 0;
 }

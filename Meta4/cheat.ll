@@ -13,16 +13,49 @@ define i32 @main() #0 {
   %1 = alloca i32, align 4
   %a = alloca i32, align 4
   %b = alloca i32, align 4
+  %l = alloca i16, align 2
   %c = alloca i8, align 1
   store i32 0, i32* %1, align 4
   store i32 1, i32* %a, align 4
   store i32 -5, i32* %b, align 4
-  %2 = call i32 @putchar(i32 97)
-  %3 = load i32, i32* %a, align 4
-  ret i32 %3
+  store i8 111, i8* %c, align 1
+  %2 = call i32 @putchar(i32 104)
+  %3 = call i32 @putchar(i32 101)
+  %4 = call i32 @putchar(i32 108)
+  %5 = call i32 @putchar(i32 108)
+  %6 = load i8, i8* %c, align 1
+  %7 = sext i8 %6 to i32
+  %8 = call i32 @putchar(i32 %7)
+  %9 = call i32 @putchar(i32 10)
+  %10 = load i32, i32* %b, align 4
+  %11 = load i32, i32* %a, align 4
+  %12 = trunc i32 %11 to i8
+  %13 = load i32, i32* %a, align 4
+  %14 = sitofp i32 %13 to double
+  call void @f9(i32 %10, i8 signext %12, double %14)
+  %15 = load i32, i32* %a, align 4
+  ret i32 %15
 }
 
 declare i32 @putchar(i32) #1
+
+; Function Attrs: nounwind uwtable
+define void @f9(i32 %j1, i8 signext %j2, double %j3) #0 {
+  %1 = alloca i32, align 4
+  %2 = alloca i8, align 1
+  %3 = alloca double, align 8
+  %c1 = alloca i32, align 4
+  %c2 = alloca i32, align 4
+  %c3 = alloca double, align 8
+  store i32 %j1, i32* %1, align 4
+  store i8 %j2, i8* %2, align 1
+  store double %j3, double* %3, align 8
+  store double 1.200000e+00, double* %c3, align 8
+  %4 = load i32, i32* %c2, align 4
+  %5 = mul nsw i32 %4, 5
+  store i32 %5, i32* %c1, align 4
+  ret void
+}
 
 ; Function Attrs: nounwind uwtable
 define i32 @f7(i32 %l1, i32 %l2, i32 %l3) #0 {
@@ -100,24 +133,6 @@ define signext i8 @jot(i32 %h0, i8 signext %h1, double %h2) #0 {
   %15 = trunc i32 %14 to i16
   store i16 %15, i16* %c3, align 2
   ret i8 103
-}
-
-; Function Attrs: nounwind uwtable
-define void @f9(i32 %j1, i8 signext %j2, double %j3) #0 {
-  %1 = alloca i32, align 4
-  %2 = alloca i8, align 1
-  %3 = alloca double, align 8
-  %c1 = alloca i32, align 4
-  %c2 = alloca i32, align 4
-  %c3 = alloca double, align 8
-  store i32 %j1, i32* %1, align 4
-  store i8 %j2, i8* %2, align 1
-  store double %j3, double* %3, align 8
-  store double 1.200000e+00, double* %c3, align 8
-  %4 = load i32, i32* %c2, align 4
-  %5 = mul nsw i32 %4, 5
-  store i32 %5, i32* %c1, align 4
-  ret void
 }
 
 ; Function Attrs: nounwind uwtable

@@ -13,49 +13,22 @@ define i32 @main() #0 {
   %1 = alloca i32, align 4
   %a = alloca i32, align 4
   %b = alloca i32, align 4
-  %l = alloca i16, align 2
   %c = alloca i8, align 1
   store i32 0, i32* %1, align 4
-  store i32 1, i32* %a, align 4
+  store i32 -111, i32* %a, align 4
   store i32 -5, i32* %b, align 4
   store i8 111, i8* %c, align 1
   %2 = call i32 @putchar(i32 104)
   %3 = call i32 @putchar(i32 101)
   %4 = call i32 @putchar(i32 108)
   %5 = call i32 @putchar(i32 108)
-  %6 = load i8, i8* %c, align 1
-  %7 = sext i8 %6 to i32
-  %8 = call i32 @putchar(i32 %7)
-  %9 = call i32 @putchar(i32 10)
-  %10 = load i32, i32* %b, align 4
-  %11 = load i32, i32* %a, align 4
-  %12 = trunc i32 %11 to i8
-  %13 = load i32, i32* %a, align 4
-  %14 = sitofp i32 %13 to double
-  call void @f9(i32 %10, i8 signext %12, double %14)
-  %15 = load i32, i32* %a, align 4
-  ret i32 %15
+  %6 = call i32 @putchar(i32 127)
+  %7 = call i32 @putchar(i32 10)
+  %8 = load i32, i32* %a, align 4
+  ret i32 %8
 }
 
 declare i32 @putchar(i32) #1
-
-; Function Attrs: nounwind uwtable
-define void @f9(i32 %j1, i8 signext %j2, double %j3) #0 {
-  %1 = alloca i32, align 4
-  %2 = alloca i8, align 1
-  %3 = alloca double, align 8
-  %c1 = alloca i32, align 4
-  %c2 = alloca i32, align 4
-  %c3 = alloca double, align 8
-  store i32 %j1, i32* %1, align 4
-  store i8 %j2, i8* %2, align 1
-  store double %j3, double* %3, align 8
-  store double 1.200000e+00, double* %c3, align 8
-  %4 = load i32, i32* %c2, align 4
-  %5 = mul nsw i32 %4, 5
-  store i32 %5, i32* %c1, align 4
-  ret void
-}
 
 ; Function Attrs: nounwind uwtable
 define i32 @f7(i32 %l1, i32 %l2, i32 %l3) #0 {
@@ -136,21 +109,24 @@ define signext i8 @jot(i32 %h0, i8 signext %h1, double %h2) #0 {
 }
 
 ; Function Attrs: nounwind uwtable
-define i32 @empty() #0 {
-  ret i32 0
+define void @f9(i32 %j1, i8 signext %j2, double %j3) #0 {
+  %1 = alloca i32, align 4
+  %2 = alloca i8, align 1
+  %3 = alloca double, align 8
+  %c1 = alloca i32, align 4
+  %c2 = alloca i32, align 4
+  %c3 = alloca double, align 8
+  store i32 %j1, i32* %1, align 4
+  store i8 %j2, i8* %2, align 1
+  store double %j3, double* %3, align 8
+  store double 1.200000e+00, double* %c3, align 8
+  store i32 5, i32* %c1, align 4
+  ret void
 }
 
 ; Function Attrs: nounwind uwtable
-define double @factorial(i32 %x) #0 {
-  %1 = alloca i32, align 4
-  store i32 %x, i32* %1, align 4
-  %2 = load i32, i32* %1, align 4
-  %3 = sitofp i32 %2 to double
-  %4 = load i32, i32* %1, align 4
-  %5 = sub nsw i32 %4, 1
-  %6 = call double @factorial(i32 %5)
-  %7 = fmul double %3, %6
-  ret double %7
+define i32 @empty() #0 {
+  ret i32 0
 }
 
 attributes #0 = { nounwind uwtable "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2" "unsafe-fp-math"="false" "use-soft-float"="false" }

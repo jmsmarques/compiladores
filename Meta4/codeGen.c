@@ -95,7 +95,7 @@ void genFuncBody(node root, int tabs, int variable, char* funcType) {
     else if(strcmp(root->tag, "While") == 0) {
         
     }
-    else if(strcmp(root->tag, "Return") == 0) {
+    else if(strcmp(root->tag, "Return") == 0) { //esta mal int nao consegue retornar short
         doTabs(tabs);
         if(strcmp(root->child->tag, "Null") != 0) {
             if(checkIfId(root->child->tag)) {
@@ -255,7 +255,8 @@ char* extractLiteral(char* string) {
         len = 8;
         aux = reduceString(string, len, len + 2);
         //transforms char to ascii
-        int transform = *aux;
+        
+        int transform = trasformToAscii(aux);
         sprintf(aux, "%d", transform);
     }
     else if(strncmp(string, "Id", 2) == 0) {
@@ -331,7 +332,7 @@ int genStore(node root, char* type, int variable, int tabs) {
         printf("%%%d = load %s, %s* %s, align %c\n", variable, type, 
         type, genVariable(root->sibling), getLlvmSize(type));
 
-        if(checkIfUnary(root->sibling) && strcmp(type, "i32") != 0) {
+        if(checkIfUnary(root->sibling)) {
             variable = genMinusConversion(variable, tabs, type);
         }
 
@@ -352,6 +353,10 @@ int genMinusConversion(int variable, int tabs, char* type) {
     if(strcmp(type, "double") == 0) {
         doTabs(tabs);
         printf("%%%d = fsub double -0.000000e+00, %%%d\n", variable, variable - 1);
+    }
+    else if(strcmp(type, "i32") == 0) {
+        doTabs(tabs);
+        printf("%%%d = sub nsw i32 0, %%%d\n", variable, variable - 1);
     }
     else {
         doTabs(tabs);
@@ -380,7 +385,7 @@ int genCall(node root, int variable, int tabs) {
     char* aux = strdup("");
     doTabs(tabs);
     while(params) {
-        if(checkIfId(params->tag)) {
+        if(checkIfId(params->tag) || checkIfUnary(params)) {
             variable = genVarToTemp(params, getLlvmType(params->type), "i32"/*mudar isto*/,variable, tabs);
             aux = (char*)realloc(aux, (strlen(params->type) + strlen(params->tag)) * sizeof(char));
             sprintf(aux, "%s%s %%%d", aux, "i32"/*mudar isto -> getLlvmType(params->type)*/, variable);
@@ -406,6 +411,10 @@ int genVarToTemp(node root, char* type, char* newType, int variable, int tabs) {
     printf("%%%d = load %s, %s* %s, align %c\n", variable, type, 
     type, genVariable(root), getLlvmSize(type));
     
+    if(checkIfUnary(root)) {
+        variable = genMinusConversion(variable, tabs, type);
+    }
+
     if(cmpSize(type, newType) == -1) {
         doTabs(tabs);
         variable++;
@@ -436,4 +445,47 @@ int cmpSize(char* size1, char* size2) {
         return -1; 
     }
     return 0;
+}
+
+int trasformToAscii(char* string) {
+    int transform = 0;
+
+    if(*string == '\\' && *(string + 1) == 'n') {
+        transform = 10;
+    }
+    else if(*string == '\\' && *(string + 1) == 't') {
+        transform = 9;
+    }
+    else if(*string == '\\' && *(string + 1) == '"') {
+        transform = 34;
+    }
+    else if(*string == '\\' && *(string + 1) == '\'') {
+        transform = 39;
+    }
+    else if(*string == '\\' && *(string + 1) == '\\') {
+        transform = 92;
+    }
+    else if(*string == '\\') {
+        int aux;
+        int aux1 = 0;
+        printf("\n%s\n", string);
+        printf("\n%lu\n", strlen(string));
+        aux = *(string + 3) - 48;
+        printf("\n-->%d\n", aux);
+        aux1 += aux;
+
+        aux = *(string + 2);
+        aux1 += aux * 10;
+
+        aux = *(string + 1);
+        aux1 += aux * 100;
+
+        printf("\n%d\n",aux1);
+    }
+    else {
+        transform = *string;
+    }
+
+
+    return transform;
 }

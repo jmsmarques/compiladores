@@ -6,22 +6,36 @@ declare i32 @putchar(i32)
 @a5 = global i16 1, align 2
 @a3 = global double 1.1, align 8
 define i32 @main() {
-	%a = alloca i32, align 4
-	store i32 1, i32* %a, align 4
+	%a = alloca i16, align 2
+	store i16 -111, i16* %a, align 2
 	%b = alloca i32, align 4
 	store i32 -5, i32* %b, align 4
 	%c = alloca i8, align 1
-	store i8 111, i8* %c, align 1
+	store i8 108, i8* %c, align 1
 	%1 = call i32 @putchar(i32 104)
 	%2 = call i32 @putchar(i32 101)
-	%3 = call i32 @putchar(i32 108)
-	%4 = call i32 @putchar(i32 108)
-	%5 = load i8, i8* %c, align 1
-	%6 = sext i8 %5 to i32
-	%7 = call i32 @putchar(i32 %6)
-	%8 = call i32 @putchar(i32 10)
-	%9 = load i32, i32* %a, align 4
-	ret i32 %9
+	%3 = load i8, i8* %c, align 1
+	%4 = sext i8 %3 to i32
+	%5 = call i32 @putchar(i32 %4)
+	%6 = load i8, i8* %c, align 1
+	%7 = sext i8 %6 to i32
+	%8 = call i32 @putchar(i32 %7)
+	%9 = load i16, i16* %a, align 2
+	%10 = sext i16 %9 to i32
+	%11 = sub nsw i32 0, %10
+	%12 = trunc i32 %11 to i16
+	%13 = sext i16 %12 to i32
+	%14 = call i32 @putchar(i32 %13)
+	
+\123
+
+4
+
+-->3
+
+5403
+%15 = call i32 @putchar(i32 0)
+	ret i32 1
 }
 
 define i32 @f7(i32 %l1, i32 %l2, i32 %l3) {
@@ -48,13 +62,14 @@ define i8 @jot(i32 %h0, i8 %h1, double %h2) {
 	%6 = fsub double -0.000000e+00, %5
 	store double %6, double* %b3, align 8
 	%7 = load i32, i32* %b2, align 4
-	store i32 %7, i32* %b1, align 4
+	%8 = sub nsw i32 0, %7
+	store i32 %8, i32* %b1, align 4
 	store i16 -1, i16* %c3, align 2
-	%8 = load i16, i16* %c3, align 2
-	%9 = sext i16 %8 to i32
-	%10 = sub nsw i32 0, %9
-	%11 = trunc i32 %10 to i16
-	store i16 %11, i16* %c3, align 2
+	%9 = load i16, i16* %c3, align 2
+	%10 = sext i16 %9 to i32
+	%11 = sub nsw i32 0, %10
+	%12 = trunc i32 %11 to i16
+	store i16 %12, i16* %c3, align 2
 	ret i8 103
 }
 

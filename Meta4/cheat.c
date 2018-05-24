@@ -1,5 +1,4 @@
 #include <stdio.h>
-
 int a; 
 char a1 = '4';
 char a2;
@@ -11,18 +10,17 @@ void f9(int, char, double);
 char hue(int, double);
 
 int main(void) {
-    int a = 1; 
+    int a = -111; 
+    //a = -a;
     int b;
-    short l;
     b = -5;
     char c = 'o';
     putchar('h');
     putchar('e');
     putchar('l');
     putchar('l');
-    putchar(c);
+    putchar('\177');
     putchar(10);
-    f9(b, a, a);
     //jot(1, 'a', 2);
     return a;
 }
@@ -59,16 +57,10 @@ char jot(int h0, char h1, double h2) {
 void f9(int j1, char j2, double j3) {
     int c1, c2;
     double c3 = 1.2;
-    c1 = c2 * 5;
+    c1 = 5;
     return;
 }
 
 int empty(void) {
     return 0;
-}
-
-double factorial(int);
-
-double factorial(int x) {
-    return x * factorial(x-1);
 }

@@ -144,6 +144,7 @@ int checkIfUnary(node root); //checks if its a unary sign before an id
 int genCall(node root, int variable, int tabs); //generates code for a function call
 int genVarToTemp(node root, char* type, char* newType, int variable, int tabs); //generates a temp value for a variable
 int cmpSize(char* size1, char* size2); //compares sizes of 1 and 2 returns 1 if 1 is bigger 0 if equal -1 else
+int trasformToAscii(char* string); //transforms a string with a char to ascii code
 
 extern char flag;
 extern char printFlag;

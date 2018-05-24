@@ -12,29 +12,26 @@ define i32 @main() {
 	store i32 -5, i32* %b, align 4
 	%c = alloca i8, align 1
 	store i8 108, i8* %c, align 1
-	%1 = call i32 @putchar(i32 104)
-	%2 = call i32 @putchar(i32 101)
-	%3 = load i8, i8* %c, align 1
-	%4 = sext i8 %3 to i32
-	%5 = call i32 @putchar(i32 %4)
+	%d = alloca i8, align 1
+	store i8 9, i8* %d, align 1
+	%1 = load i8, i8* %d, align 1
+	%2 = sext i8 %1 to i32
+	%3 = call i32 @putchar(i32 %2)
+	%4 = call i32 @putchar(i32 104)
+	%5 = call i32 @putchar(i32 101)
 	%6 = load i8, i8* %c, align 1
 	%7 = sext i8 %6 to i32
 	%8 = call i32 @putchar(i32 %7)
-	%9 = load i16, i16* %a, align 2
-	%10 = sext i16 %9 to i32
-	%11 = sub nsw i32 0, %10
-	%12 = trunc i32 %11 to i16
+	%9 = load i8, i8* %c, align 1
+	%10 = sext i8 %9 to i32
+	%11 = call i32 @putchar(i32 %10)
+	%12 = load i16, i16* %a, align 2
 	%13 = sext i16 %12 to i32
-	%14 = call i32 @putchar(i32 %13)
-	
-\123
-
-4
-
--->3
-
-5403
-%15 = call i32 @putchar(i32 0)
+	%14 = sub nsw i32 0, %13
+	%15 = trunc i32 %14 to i16
+	%16 = sext i16 %15 to i32
+	%17 = call i32 @putchar(i32 %16)
+	%18 = call i32 @putchar(i32 127)
 	ret i32 1
 }
 

@@ -468,24 +468,39 @@ int trasformToAscii(char* string) {
     else if(*string == '\\') {
         int aux;
         int aux1 = 0;
-        printf("\n%s\n", string);
-        printf("\n%lu\n", strlen(string));
-        aux = *(string + 3) - 48;
-        printf("\n-->%d\n", aux);
-        aux1 += aux;
+        int size = strlen(string) - 1;
+        int el = 0;
 
-        aux = *(string + 2);
-        aux1 += aux * 10;
-
-        aux = *(string + 1);
-        aux1 += aux * 100;
-
-        printf("\n%d\n",aux1);
+        for(; size > 0; size--) {
+            aux = *(string + size) - 48;
+            aux1 += aux * powAux(10, el);
+            el++;
+        }
+        el = 0;
+        while(aux1 != 0) {
+            transform += (aux1 % 10)* powAux(8, el);
+            el++;
+            aux1 /= 10;
+        }
     }
     else {
         transform = *string;
     }
 
-
     return transform;
+}
+
+int powAux(int nr, int el) {
+    int result = nr;
+
+    if(el == 0) {
+        result = 1;
+    }
+    else {
+        for(int n = 1; n < el; n++) {
+            result *= nr;
+        }
+    }
+
+    return result;
 }

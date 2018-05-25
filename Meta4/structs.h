@@ -125,7 +125,6 @@ void wrongArguments(int line, int col, char* token, int got, int expected);
 void codeGeneration(node root, gTable symTab, table auxSymTab); //function that runs the ast and calls the function that generates code for each node
 int generateCode(node root, gTable symTab, table auxSymTab); //functions that generates code
 void genGlobalDeclaration(node root); //generates code for a global declaration
-char* genDecAtribution(node root); //generates code for a declaration atribution
 void genFuncBody(node root, int tabs, int variable, char* funcType); //generates code for a function body
 void genFuncDef(node root); //generates code for a function
 void genFuncDec(node root, char* type); //generates code for the first line of a definition
@@ -143,9 +142,13 @@ int genMinusConversion(int variable, int tabs, char* type); //converts a variabl
 int checkIfUnary(node root); //checks if its a unary sign before an id
 int genCall(node root, int variable, int tabs); //generates code for a function call
 int genVarToTemp(node root, char* type, char* newType, int variable, int tabs); //generates a temp value for a variable
+int genArithmetic(node root, int variable, int tabs, char* type); //generates arithmetic code
+//aux
+int convertSize(char* type, char* newType, int variable, int tabs); //converts sizes
 int cmpSize(char* size1, char* size2); //compares sizes of 1 and 2 returns 1 if 1 is bigger 0 if equal -1 else
 int trasformToAscii(char* string); //transforms a string with a char to ascii code
 int powAux(int nr, int el); //power function
+int checkIfLiteral(node root); //check if node is literal
 
 extern char flag;
 extern char printFlag;

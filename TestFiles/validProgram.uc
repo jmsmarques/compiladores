@@ -9,18 +9,21 @@ void f9(int, char, double);
 char hue(int, double);
 
 int main(void) {
-    int a = 1; 
+    short a = -111; 
+    //a = -a;
     int b;
     b = -5;
-    char c = 'o';
+    char c = 'l';
+    char d = '\t';
+    putchar(d);
     putchar('h');
     putchar('e');
-    putchar('l');
-    putchar('l');
     putchar(c);
-    putchar(10);
+    putchar(c);
+    putchar(-a);
+    putchar('\n');
     //jot(1, 'a', 2);
-    return a;
+    return 1;
 }
 
 int f7(int l1, int l2, int l3) {
@@ -53,9 +56,10 @@ char jot(int h0, char h1, double h2) {
 }
 
 void f9(int j1, char j2, double j3) {
-    int c1, c2;
+    int c1, c2 = 3;
+    short c4 = 2;
     double c3 = 1.2;
-    c1 = 5;
+    c3 = 5 + c2 * c4 / c1;
     return;
 }
 

@@ -31,7 +31,7 @@ define i32 @main() {
 	%15 = trunc i32 %14 to i16
 	%16 = sext i16 %15 to i32
 	%17 = call i32 @putchar(i32 %16)
-	%18 = call i32 @putchar(i32 127)
+	%18 = call i32 @putchar(i32 10)
 	ret i32 1
 }
 
@@ -73,11 +73,21 @@ define i8 @jot(i32 %h0, i8 %h1, double %h2) {
 define void @f9(i32 %j1, i8 %j2, double %j3) {
 	%c1 = alloca i32, align 4
 	%c2 = alloca i32, align 4
+	store i32 3, i32* %c2, align 4
+	%c4 = alloca i16, align 2
+	store i16 2, i16* %c4, align 2
 	%c3 = alloca double, align 8
 	store double 1.2, double* %c3, align 8
-	store i32 5, i32* %c1, align 4
+	%1 = load i32, i32* %c2, align 4
+	%2 = load i16, i16* %c4, align 2
+	%3 = sext i16 %2 to i32
+	%4 = mul i32 %1, %3
+	%5 = load i32, i32* %c1, align 4
+	%6 = sdiv i32 %4, %5
+	%7 = add i32 5, %6
+	%8 = sitofp i32 %7 to double
+	store double %8, double* %c3, align 8
 	ret void
-ret void
 }
 
 define i32 @empty() {

@@ -40,7 +40,7 @@ void genGlobalDeclaration(node root) {
     }
     else { //declaration has definition
         //sprintf(code, "@%s = global %s %s, align %c", removeId(root->child->sibling->tag), type, genDecAtribution(root->child->sibling->sibling), getLlvmSize(root->child->tag));
-        printf("@%s = global %s %s, align %c\n", removeId(root->child->sibling->tag), getLlvmType(root->child->tag), genDecAtribution(root->child->sibling->sibling), getLlvmSize(root->child->tag));
+        printf("@%s = global %s %s, align %c\n", removeId(root->child->sibling->tag), getLlvmType(root->child->tag), extractLiteral(root->child->sibling->sibling->tag), getLlvmSize(root->child->tag));
     }
     /*printf("%s\n", code);
     free(code);*/
@@ -109,8 +109,10 @@ void genFuncBody(node root, int tabs, int variable, char* funcType) {
                 printf("ret %s %s\n", funcType, extractLiteral(root->child->tag));
             }
         }
-        else
-            printf("ret void\n");
+        else {
+            if(root->sibling)
+                printf("ret void\n");
+        }
     }
     else {
         genFuncBody(root->child, tabs, variable, funcType);
@@ -123,6 +125,7 @@ void genFuncDef(node root) {
     printf(" {\n");
     genFuncBody(root->child->sibling->sibling->sibling->child, 1, 1, getLlvmType(root->child->tag));
     if(strcmp(root->child->tag, "Void") == 0) {
+        doTabs(1);
         printf("ret void\n");
     }
     
@@ -184,10 +187,6 @@ void generateCondition(node root, int tabs) {
         genLogicOperation(root->tag);
         printf(" %s %s, %s\n", getLlvmType(root->type), genVariable(root->child), genVariable(root->child->sibling));
     }
-}
-
-char* genDecAtribution(node root) {
-    return extractLiteral(root->tag);
 }
 
 char* getLlvmType(char* string) {
@@ -327,14 +326,15 @@ void doTabs(int nr) {
 }
 
 int genStore(node root, char* type, int variable, int tabs) {
-    doTabs(tabs);
-    if(checkIfId(root->sibling->tag) || checkIfUnary(root->sibling)) {
-        printf("%%%d = load %s, %s* %s, align %c\n", variable, type, 
+    if(!checkIfLiteral(root->sibling)) {
+        /*printf("%%%d = load %s, %s* %s, align %c\n", variable, type, 
         type, genVariable(root->sibling), getLlvmSize(type));
 
         if(checkIfUnary(root->sibling)) {
             variable = genMinusConversion(variable, tabs, type);
-        }
+        }*/
+
+        variable = genArithmetic(root->sibling, variable, tabs, type);
 
         doTabs(tabs);
         printf("store %s %%%d, %s* %s, align %c\n", type, 
@@ -342,6 +342,7 @@ int genStore(node root, char* type, int variable, int tabs) {
         variable++;
     }
     else {
+        doTabs(tabs);
         printf("store %s %s, %s* %s, align %c\n", type, genVariable(root->sibling), 
         type, genVariable(root), getLlvmSize(type));
     }
@@ -415,7 +416,18 @@ int genVarToTemp(node root, char* type, char* newType, int variable, int tabs) {
         variable = genMinusConversion(variable, tabs, type);
     }
 
-    if(cmpSize(type, newType) == -1) {
+    variable = convertSize(type, newType, variable, tabs);
+
+    return variable;
+}
+
+int convertSize(char* type, char* newType, int variable, int tabs) {
+    if(strcmp(newType, "double") == 0 && strcmp(type, "double") != 0) {
+        doTabs(tabs);
+        variable++;
+        printf("%%%d = sitofp %s %%%d to %s\n", variable, type, variable - 1, newType);
+    }
+    else if(cmpSize(type, newType) == -1) {
         doTabs(tabs);
         variable++;
         printf("%%%d = sext %s %%%d to %s\n", variable, type, variable - 1, newType);
@@ -425,8 +437,135 @@ int genVarToTemp(node root, char* type, char* newType, int variable, int tabs) {
         variable++;
         printf("%%%d = trunc %s %%%d to %s\n", variable, type, variable - 1, newType);
     }
+
     return variable;
 }
+
+int genArithmetic(node root, int variable, int tabs, char* type) {
+    char* aux1 = NULL;
+    char* aux2 = NULL;
+    if(strcmp(root->tag, "Add") == 0) {
+        if(checkIfLiteral(root->child)) {
+            aux1 = genVariable(root->child);
+        }
+        else {
+            aux1 = (char*)malloc(4 * sizeof(char));
+            variable = genArithmetic(root->child, variable, tabs, getLlvmType(root->type));
+            //variable = convertSize(root->child->type, type, variable, tabs);
+            sprintf(aux1, "%%%d", variable);
+            variable++;
+        }
+        if(checkIfLiteral(root->child->sibling)) {
+            aux2 = genVariable(root->child->sibling);
+        }
+        else {
+            aux2 = (char*)malloc(4 * sizeof(char));
+            variable = genArithmetic(root->child->sibling, variable, tabs, getLlvmType(root->type));
+            //variable = convertSize(root->child->sibling->type, "i32", variable, tabs);
+            sprintf(aux2, "%%%d", variable);
+            variable++;
+        }
+        doTabs(tabs);
+        printf("%%%d = add %s %s, %s\n", variable, getLlvmType(root->type), aux1, aux2);
+        variable = convertSize(getLlvmType(root->type), type, variable, tabs);
+        free(aux1);
+        free(aux2);
+    }
+    else if(strcmp(root->tag, "Sub") == 0) {
+        if(checkIfLiteral(root->child)) {
+            aux1 = genVariable(root->child);
+        }
+        else {
+            aux1 = (char*)malloc(4 * sizeof(char));
+            variable = genArithmetic(root->child, variable, tabs, getLlvmType(root->type));
+            //variable = convertSize(root->child->type, type, variable, tabs);
+            sprintf(aux1, "%%%d", variable);
+            variable++;
+        }
+        if(checkIfLiteral(root->child->sibling)) {
+            aux2 = genVariable(root->child->sibling);
+        }
+        else {
+            aux2 = (char*)malloc(4 * sizeof(char));
+            variable = genArithmetic(root->child->sibling, variable, tabs, getLlvmType(root->type));
+            //variable = convertSize(root->child->sibling->type, type, variable, tabs);
+            sprintf(aux2, "%%%d", variable);
+            variable++;
+        }
+        doTabs(tabs);
+        printf("%%%d = sub %s %s, %s\n", variable, getLlvmType(root->type), aux1, aux2);
+        variable = convertSize(getLlvmType(root->type), type, variable, tabs);
+        free(aux1);
+        free(aux2);
+    }
+    else if(strcmp(root->tag, "Mul") == 0) {
+        if(checkIfLiteral(root->child)) {
+            aux1 = genVariable(root->child);
+        }
+        else {
+            aux1 = (char*)malloc(4 * sizeof(char));
+            variable = genArithmetic(root->child, variable, tabs, getLlvmType(root->type));
+            //variable = convertSize(root->child->type, type, variable, tabs);
+            sprintf(aux1, "%%%d", variable);
+            variable++;
+        }
+        if(checkIfLiteral(root->child->sibling)) {
+            aux2 = genVariable(root->child->sibling);
+        }
+        else {
+            aux2 = (char*)malloc(4 * sizeof(char));
+            variable = genArithmetic(root->child->sibling, variable, tabs, getLlvmType(root->type));
+            //variable = convertSize(root->child->sibling->type, type, variable, tabs);
+            sprintf(aux2, "%%%d", variable);
+            variable++;
+        }
+        doTabs(tabs);
+        printf("%%%d = mul %s %s, %s\n", variable, getLlvmType(root->type), aux1, aux2);
+        variable = convertSize(getLlvmType(root->type), type, variable, tabs);
+        free(aux1);
+        free(aux2);
+    }
+    else if(strcmp(root->tag, "Div") == 0) {
+        if(checkIfLiteral(root->child)) {
+            aux1 = genVariable(root->child);
+        }
+        else {
+            aux1 = (char*)malloc(4 * sizeof(char));
+            variable = genArithmetic(root->child, variable, tabs, getLlvmType(root->type));
+            //variable = convertSize(root->child->type, type, variable, tabs);
+            sprintf(aux1, "%%%d", variable);
+            variable++;
+        }
+        if(checkIfLiteral(root->child->sibling)) {
+            aux2 = genVariable(root->child->sibling);
+        }
+        else {
+            aux2 = (char*)malloc(4 * sizeof(char));
+            variable = genArithmetic(root->child->sibling, variable, tabs, getLlvmType(root->type));
+            //variable = convertSize(root->child->sibling->type, type, variable, tabs);
+            sprintf(aux2, "%%%d", variable);
+            variable++;
+        }
+        doTabs(tabs);
+        printf("%%%d = sdiv %s %s, %s\n", variable, getLlvmType(root->type), aux1, aux2);
+        variable = convertSize(getLlvmType(root->type), type, variable, tabs);
+        free(aux1);
+        free(aux2);
+    }
+    else if(strcmp(root->tag, "Mod") == 0) {
+       
+    }
+    else {
+        if(checkIfId(root->tag) || checkIfUnary(root)) {
+            doTabs(tabs);
+            variable = genVarToTemp(root, getLlvmType(root->type), type, variable, tabs);
+        }
+    }
+
+    return variable;
+}
+
+//aux functions
 
 int cmpSize(char* size1, char* size2) {
     if(strcmp(size1, size2) == 0) { //same size
@@ -503,4 +642,16 @@ int powAux(int nr, int el) {
     }
 
     return result;
+}
+
+int checkIfLiteral(node root) {
+    if(strncmp(root->tag, "Real", 4) == 0 || strncmp(root->tag, "Int", 3) == 0 || strncmp(root->tag, "Chr", 3) == 0) {
+        return 1;
+    }
+    else if(strcmp(root->tag, "Minus") == 0 || strcmp(root->tag, "Plus") == 0) {
+        return checkIfLiteral(root->child);
+    }
+    else {
+        return 0;
+    }
 }

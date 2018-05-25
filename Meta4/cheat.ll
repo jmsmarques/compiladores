@@ -13,19 +13,23 @@ define i32 @main() #0 {
   %1 = alloca i32, align 4
   %a = alloca i32, align 4
   %b = alloca i32, align 4
+  %d = alloca double, align 8
   %c = alloca i8, align 1
   store i32 0, i32* %1, align 4
   store i32 -111, i32* %a, align 4
   store i32 -5, i32* %b, align 4
+  %2 = load i32, i32* %b, align 4
+  %3 = sitofp i32 %2 to double
+  store double %3, double* %d, align 8
   store i8 111, i8* %c, align 1
-  %2 = call i32 @putchar(i32 104)
-  %3 = call i32 @putchar(i32 101)
-  %4 = call i32 @putchar(i32 108)
-  %5 = call i32 @putchar(i32 108)
-  %6 = call i32 @putchar(i32 127)
-  %7 = call i32 @putchar(i32 10)
-  %8 = load i32, i32* %a, align 4
-  ret i32 %8
+  %4 = call i32 @putchar(i32 104)
+  %5 = call i32 @putchar(i32 101)
+  %6 = call i32 @putchar(i32 108)
+  %7 = call i32 @putchar(i32 108)
+  %8 = call i32 @putchar(i32 127)
+  %9 = call i32 @putchar(i32 10)
+  %10 = load i32, i32* %a, align 4
+  ret i32 %10
 }
 
 declare i32 @putchar(i32) #1
@@ -115,12 +119,23 @@ define void @f9(i32 %j1, i8 signext %j2, double %j3) #0 {
   %3 = alloca double, align 8
   %c1 = alloca i32, align 4
   %c2 = alloca i32, align 4
+  %c4 = alloca i16, align 2
   %c3 = alloca double, align 8
   store i32 %j1, i32* %1, align 4
   store i8 %j2, i8* %2, align 1
   store double %j3, double* %3, align 8
+  store i32 3, i32* %c2, align 4
+  store i16 2, i16* %c4, align 2
   store double 1.200000e+00, double* %c3, align 8
-  store i32 5, i32* %c1, align 4
+  %4 = load i32, i32* %c2, align 4
+  %5 = load i16, i16* %c4, align 2
+  %6 = sext i16 %5 to i32
+  %7 = mul nsw i32 %4, %6
+  %8 = load i32, i32* %c1, align 4
+  %9 = sdiv i32 %7, %8
+  %10 = add nsw i32 5, %9
+  %11 = trunc i32 %10 to i16
+  store i16 %11, i16* %c4, align 2
   ret void
 }
 

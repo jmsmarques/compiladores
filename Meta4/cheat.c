@@ -14,6 +14,7 @@ int main(void) {
     //a = -a;
     int b;
     b = -5;
+    double d = b;
     char c = 'o';
     putchar('h');
     putchar('e');
@@ -55,9 +56,10 @@ char jot(int h0, char h1, double h2) {
 }
 
 void f9(int j1, char j2, double j3) {
-    int c1, c2;
+    int c1, c2 = 3;
+    short c4 = 2;
     double c3 = 1.2;
-    c1 = 5;
+    c4 = 5 + c2 * c4 / c1;
     return;
 }
 

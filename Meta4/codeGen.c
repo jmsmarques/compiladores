@@ -36,11 +36,14 @@ void genGlobalDeclaration(node root) {
     */
     if(!root->child->sibling->sibling) { //if declaration doesnt have definition
         //sprintf(code, "@%s = common global %s 0, align %c", removeId(root->child->sibling->tag), type, getLlvmSize(root->child->tag));
-        printf("@%s = common global %s 0, align %c\n", removeId(root->child->sibling->tag), getLlvmType(root->child->tag), getLlvmSize(root->child->tag));
+        printf("@%s = common global %s 0, align %c\n", removeId(root->child->sibling->tag),
+        getLlvmType(root->child->tag), getLlvmSize(root->child->tag));
     }
     else { //declaration has definition
         //sprintf(code, "@%s = global %s %s, align %c", removeId(root->child->sibling->tag), type, genDecAtribution(root->child->sibling->sibling), getLlvmSize(root->child->tag));
-        printf("@%s = global %s %s, align %c\n", removeId(root->child->sibling->tag), getLlvmType(root->child->tag), extractLiteral(root->child->sibling->sibling->tag), getLlvmSize(root->child->tag));
+        printf("@%s = global %s %s, align %c\n", removeId(root->child->sibling->tag), getLlvmType(root->child->tag), 
+        extractLiteral(root->child->sibling->sibling->tag, root->child->sibling->sibling->type), 
+        getLlvmSize(root->child->tag));
     }
     /*printf("%s\n", code);
     free(code);*/
@@ -62,56 +65,30 @@ void genFuncBody(node root, int tabs, int variable, char* funcType) {
         variable = genStore(root->child, getLlvmType(root->type), variable, tabs);
     }
     else if(strcmp(root->tag, "If") == 0) {
-     /*   doTabs(tabs);
-        if(strcmp(root->child->sibling->sibling->tag, "Null") == 0) {
-            generateCondition(root->child, tabs);
-            doTabs(tabs);
-            printf("br i1 %%ifcond, label %%then, label %%else\n");
-            doTabs(tabs);
-            printf("then:\n");
-            //analisar codigo dentro do if
-            doTabs(tabs);
-            printf("else:\n");
-            //analisar codigo dentro do else
-            doTabs(tabs);
-            printf("ifcont:\n");
-            tabs++;
-            //continuacao do codigo
-        }
-        else {
-            generateCondition(root->child, tabs);
-            doTabs(tabs);
-            printf("br i1 %%ifcond, label %%then\n");
-            doTabs(tabs);
-            printf("then:\n");
-            //analisar codigo dentro do if
-            doTabs(tabs);
-            printf("ifcont:\n");
-            tabs++;
-            //continuacao do codigo
-        }
-     */   
+        variable = generateIf(root, variable, tabs, funcType);
     }
     else if(strcmp(root->tag, "While") == 0) {
-        
+        variable = generateWhile(root, variable, tabs, funcType);
     }
     else if(strcmp(root->tag, "Return") == 0) { //esta mal int nao consegue retornar short
-        doTabs(tabs);
         if(strcmp(root->child->tag, "Null") != 0) {
+            doTabs(tabs);
             if(checkIfId(root->child->tag)) {
                 printf("%%%d = load %s, %s* %c%s, align %c\n", variable, funcType, funcType, 
-                root->child->scope, extractLiteral(root->child->tag), getLlvmSize(root->child->type));
+                root->child->scope, extractLiteral(root->child->tag, funcType), getLlvmSize(root->child->type));
                 doTabs(tabs);
                 printf("ret %s %%%d\n", funcType, variable);
                 variable++;
             }
             else {
-                printf("ret %s %s\n", funcType, extractLiteral(root->child->tag));
+                printf("ret %s %s\n", funcType, extractLiteral(root->child->tag, funcType));
             }
         }
         else {
-            if(root->sibling)
+            if(root->sibling) {
+                doTabs(tabs);
                 printf("ret void\n");
+            }
         }
     }
     else {
@@ -175,20 +152,6 @@ void genFuncParams(node root) {
     return;
 }
 
-void generateCondition(node root, int tabs) {
-    if(strcmp(root->tag, "And") == 0) {
-        //recursive
-    }
-    else if(strcmp(root->tag, "Or") == 0) {
-        //recursive
-    }
-    else {
-        printf("%%ifcond = icmp ");
-        genLogicOperation(root->tag);
-        printf(" %s %s, %s\n", getLlvmType(root->type), genVariable(root->child), genVariable(root->child->sibling));
-    }
-}
-
 char* getLlvmType(char* string) {
     char* aux = NULL;
     if(!string)
@@ -235,7 +198,7 @@ char getLlvmSize(char* string) {
     return aux;
 }
 
-char* extractLiteral(char* string) {
+char* extractLiteral(char* string, char* type) {
     char* aux = NULL;
     int len = 0;
 
@@ -249,6 +212,9 @@ char* extractLiteral(char* string) {
     else if(strncmp(string, "Int", 3) == 0) {
         len = 7;
         aux = reduceString(string, len, len + 1);
+        if(strcmp(type, "double") == 0) {
+            sprintf(aux, "%s.0", aux);
+        }
     }
     else if(strncmp(string, "Chr", 3) == 0) {
         len = 8;
@@ -257,6 +223,9 @@ char* extractLiteral(char* string) {
         
         int transform = trasformToAscii(aux);
         sprintf(aux, "%d", transform);
+        if(strcmp(type, "double") == 0) {
+            sprintf(aux, "%s.0", aux);
+        }
     }
     else if(strncmp(string, "Id", 2) == 0) {
         aux = removeId(string);
@@ -294,27 +263,27 @@ void genLogicOperation(char* operatorTag) {
     }
 }
 
-char* genVariable(node root) {
+char* genVariable(node root, char* type) {
     char* aux = NULL;
 
     if(strcmp(root->tag, "Minus") == 0) {
         if(checkIfId(root->child->tag)) {
-            return genVariable(root->child);
+            return genVariable(root->child, type);
         }
         else {
             aux = (char*)malloc((strlen(root->child->tag)) * sizeof(char));
-            sprintf(aux, "-%s", genVariable(root->child));
+            sprintf(aux, "-%s", genVariable(root->child, type));
         }
     }
     else if(strcmp(root->tag, "Plus") == 0) {
-        return genVariable(root->child);
+        return genVariable(root->child, type);
     }
     else if(checkIfId(root->tag)) {
         aux = (char*)malloc((strlen(root->tag) + 8) * sizeof(char));
         sprintf(aux, "%c%s", root->scope, removeId(root->tag));
     }
     else {
-        aux = extractLiteral(root->tag);
+        aux = extractLiteral(root->tag, type); //falta tratar doubles
     }
 
     return aux;
@@ -334,17 +303,17 @@ int genStore(node root, char* type, int variable, int tabs) {
             variable = genMinusConversion(variable, tabs, type);
         }*/
 
-        variable = genArithmetic(root->sibling, variable, tabs, type);
+        variable = genExpr(root->sibling, variable, tabs, type);
 
         doTabs(tabs);
         printf("store %s %%%d, %s* %s, align %c\n", type, 
-        variable, type, genVariable(root), getLlvmSize(type));
+        variable, type, genVariable(root, type), getLlvmSize(type));
         variable++;
     }
     else {
         doTabs(tabs);
-        printf("store %s %s, %s* %s, align %c\n", type, genVariable(root->sibling), 
-        type, genVariable(root), getLlvmSize(type));
+        printf("store %s %s, %s* %s, align %c\n", type, genVariable(root->sibling, type), 
+        type, genVariable(root, type), getLlvmSize(type));
     }
     return variable;
 }
@@ -395,7 +364,7 @@ int genCall(node root, int variable, int tabs) {
         }
         else {
             aux = (char*)realloc(aux, (strlen(params->type) + strlen(params->tag)) * sizeof(char));
-            sprintf(aux, "%s%s %s", aux, getLlvmType(params->type), genVariable(params)); //esta mal
+            sprintf(aux, "%s%s %s", aux, getLlvmType(params->type), genVariable(params, root->type)); //esta mal
         }
         
         if(params->sibling)
@@ -410,7 +379,7 @@ int genCall(node root, int variable, int tabs) {
 
 int genVarToTemp(node root, char* type, char* newType, int variable, int tabs) {
     printf("%%%d = load %s, %s* %s, align %c\n", variable, type, 
-    type, genVariable(root), getLlvmSize(type));
+    type, genVariable(root, type), getLlvmSize(type));
     
     if(checkIfUnary(root)) {
         variable = genMinusConversion(variable, tabs, type);
@@ -441,119 +410,121 @@ int convertSize(char* type, char* newType, int variable, int tabs) {
     return variable;
 }
 
-int genArithmetic(node root, int variable, int tabs, char* type) {
+int genExpr(node root, int variable, int tabs, char* type) {
     char* aux1 = NULL;
     char* aux2 = NULL;
-    if(strcmp(root->tag, "Add") == 0) {
+    char* operation = NULL;
+    if((strcmp(root->tag, "Add") == 0) || (strcmp(root->tag, "Sub") == 0) || (strcmp(root->tag, "Mul") == 0)
+    || (strcmp(root->tag, "Div") == 0) || (strcmp(root->tag, "Mod") == 0) || (strcmp(root->tag, "BitWiseXor") == 0)
+    || (strcmp(root->tag, "BitWiseOr") == 0) || (strcmp(root->tag, "BitWiseAnd") == 0)) {
+        operation = genOperationCommand(root->tag, root->type);
         if(checkIfLiteral(root->child)) {
-            aux1 = genVariable(root->child);
+            aux1 = genVariable(root->child, root->type);
         }
         else {
             aux1 = (char*)malloc(4 * sizeof(char));
-            variable = genArithmetic(root->child, variable, tabs, getLlvmType(root->type));
+            variable = genExpr(root->child, variable, tabs, getLlvmType(root->type));
             //variable = convertSize(root->child->type, type, variable, tabs);
             sprintf(aux1, "%%%d", variable);
             variable++;
         }
         if(checkIfLiteral(root->child->sibling)) {
-            aux2 = genVariable(root->child->sibling);
+            aux2 = genVariable(root->child->sibling, root->type);
         }
         else {
             aux2 = (char*)malloc(4 * sizeof(char));
-            variable = genArithmetic(root->child->sibling, variable, tabs, getLlvmType(root->type));
-            //variable = convertSize(root->child->sibling->type, "i32", variable, tabs);
-            sprintf(aux2, "%%%d", variable);
-            variable++;
-        }
-        doTabs(tabs);
-        printf("%%%d = add %s %s, %s\n", variable, getLlvmType(root->type), aux1, aux2);
-        variable = convertSize(getLlvmType(root->type), type, variable, tabs);
-        free(aux1);
-        free(aux2);
-    }
-    else if(strcmp(root->tag, "Sub") == 0) {
-        if(checkIfLiteral(root->child)) {
-            aux1 = genVariable(root->child);
-        }
-        else {
-            aux1 = (char*)malloc(4 * sizeof(char));
-            variable = genArithmetic(root->child, variable, tabs, getLlvmType(root->type));
-            //variable = convertSize(root->child->type, type, variable, tabs);
-            sprintf(aux1, "%%%d", variable);
-            variable++;
-        }
-        if(checkIfLiteral(root->child->sibling)) {
-            aux2 = genVariable(root->child->sibling);
-        }
-        else {
-            aux2 = (char*)malloc(4 * sizeof(char));
-            variable = genArithmetic(root->child->sibling, variable, tabs, getLlvmType(root->type));
+            variable = genExpr(root->child->sibling, variable, tabs, getLlvmType(root->type));
             //variable = convertSize(root->child->sibling->type, type, variable, tabs);
             sprintf(aux2, "%%%d", variable);
             variable++;
         }
         doTabs(tabs);
-        printf("%%%d = sub %s %s, %s\n", variable, getLlvmType(root->type), aux1, aux2);
+        printf("%%%d = %s %s %s, %s\n", variable, operation, getLlvmType(root->type), aux1, aux2);
         variable = convertSize(getLlvmType(root->type), type, variable, tabs);
         free(aux1);
         free(aux2);
     }
-    else if(strcmp(root->tag, "Mul") == 0) {
+    else if(checkIfLogicalOperation(root->tag)) {
+        char* realType = checkType(root->child->type, root->child->sibling->type);
+        operation = genOperationCommand(root->tag, realType);
         if(checkIfLiteral(root->child)) {
-            aux1 = genVariable(root->child);
+            aux1 = genVariable(root->child, realType);
         }
         else {
             aux1 = (char*)malloc(4 * sizeof(char));
-            variable = genArithmetic(root->child, variable, tabs, getLlvmType(root->type));
+            variable = genExpr(root->child, variable, tabs, getLlvmType(realType));
             //variable = convertSize(root->child->type, type, variable, tabs);
             sprintf(aux1, "%%%d", variable);
             variable++;
         }
         if(checkIfLiteral(root->child->sibling)) {
-            aux2 = genVariable(root->child->sibling);
+            aux2 = genVariable(root->child->sibling, realType);
         }
         else {
             aux2 = (char*)malloc(4 * sizeof(char));
-            variable = genArithmetic(root->child->sibling, variable, tabs, getLlvmType(root->type));
+            variable = genExpr(root->child->sibling, variable, tabs, getLlvmType(realType));
             //variable = convertSize(root->child->sibling->type, type, variable, tabs);
             sprintf(aux2, "%%%d", variable);
             variable++;
         }
         doTabs(tabs);
-        printf("%%%d = mul %s %s, %s\n", variable, getLlvmType(root->type), aux1, aux2);
-        variable = convertSize(getLlvmType(root->type), type, variable, tabs);
+        printf("%%%d = %s %s %s, %s\n", variable, operation, getLlvmType(realType), aux1, aux2);
+        variable = convertSize("i1", type, variable, tabs);
         free(aux1);
         free(aux2);
     }
-    else if(strcmp(root->tag, "Div") == 0) {
+    else if(strcmp(root->tag, "And") == 0) {
+        int label1, label2;
+        char* realType = checkType(root->child->type, root->child->sibling->type);
         if(checkIfLiteral(root->child)) {
-            aux1 = genVariable(root->child);
+            aux1 = genVariable(root->child, realType);
         }
         else {
             aux1 = (char*)malloc(4 * sizeof(char));
-            variable = genArithmetic(root->child, variable, tabs, getLlvmType(root->type));
-            //variable = convertSize(root->child->type, type, variable, tabs);
+            variable = genExpr(root->child, variable, tabs, getLlvmType(realType));
             sprintf(aux1, "%%%d", variable);
             variable++;
         }
+
+        if(strcmp(root->child->type, "double") == 0) {
+            printf("%%%d = fcmp une double %s, 0.0\n", variable, aux1);
+        }
+        else {
+            printf("%%%d = icmp ne i32 %s, 0\n", variable, aux1);
+        }
+
+        label1 = variable + 1;
+        printf("br i1 %s, label %%%d, label %%%d\n", variable, variable, label1, label2);
+        variable += 2;
+
+        printf("\n%%%d:\n", label1);
+
         if(checkIfLiteral(root->child->sibling)) {
-            aux2 = genVariable(root->child->sibling);
+            aux2 = genVariable(root->child->sibling, realType);
         }
         else {
             aux2 = (char*)malloc(4 * sizeof(char));
-            variable = genArithmetic(root->child->sibling, variable, tabs, getLlvmType(root->type));
-            //variable = convertSize(root->child->sibling->type, type, variable, tabs);
+            variable = genExpr(root->child->sibling, variable, tabs, getLlvmType(realType));
             sprintf(aux2, "%%%d", variable);
             variable++;
         }
-        doTabs(tabs);
-        printf("%%%d = sdiv %s %s, %s\n", variable, getLlvmType(root->type), aux1, aux2);
-        variable = convertSize(getLlvmType(root->type), type, variable, tabs);
-        free(aux1);
-        free(aux2);
+
+        if(strcmp(root->child->sibling->type, "double") == 0) {
+            printf("%%%d = fcmp une double %s, 0.0\n", variable, aux2);
+        }
+        else {
+            printf("%%%d = icmp ne i32 %s, 0\n", variable, aux2);
+        }
+
+        printf("br i1 %s, label %%%d, label %%%d\n", variable, label1, label2);
+
+        printf("\n%%%d:\n", label2); //true condition
+
+        printf("\n%%%d:\n", variable); //continue condition
+    
     }
-    else if(strcmp(root->tag, "Mod") == 0) {
-       
+    else if(strcmp(root->tag, "Or") == 0) {
+
     }
     else {
         if(checkIfId(root->tag) || checkIfUnary(root)) {
@@ -565,6 +536,133 @@ int genArithmetic(node root, int variable, int tabs, char* type) {
     return variable;
 }
 
+int generateIf(node root, int variable, int tabs, char* funcType) {
+    variable = genExpr(root->child, variable, tabs, "i1");
+    printf("br i1 %%%d, label %%%d, label %%%d\n", variable);
+    printf("\n%%%d:\n");
+    genFuncBody(root->child->sibling, tabs, variable, funcType);
+    printf(); //continue
+    if(strcmp(root->child->sibling->sibling->tag, "Null") != 0) { //else
+        printf("\n%%%d:\n");
+        genFuncBody(root->child->sibling->sibling, tabs, variable, funcType);
+        printf(); //continue
+    }
+    else { //no else
+        printf("\n%%%d:\n");
+    }
+
+    return variable;
+}
+
+int generateWhile(node root, int variable, int tabs, char* funcType) {
+    printf("br label %%%d\n");
+    printf("\n%%%d:\n");
+    printf("br i1 %%%d, label %%%d, label %%%d\n", variable);
+    printf("\n%%%d:\n");
+    genFuncBody(root->child->sibling, tabs, variable, funcType);
+    printf("br label %%%d\n");
+    printf("\n%%%d:\n"); //continue
+
+    return variable;
+}
+
+char* genOperationCommand(char* op, char* type) {
+    char* result = NULL;
+    if(strcmp(op, "Add") == 0) {
+        if(strcmp(type, "double") == 0) {
+            result = strdup("fadd");
+        }
+        else {
+            result = strdup("add");
+        }
+    }
+    else if(strcmp(op, "Sub") == 0) {
+        if(strcmp(type, "double") == 0) {
+            result = strdup("fsub");
+        }
+        else {
+            result = strdup("sub");
+        }
+    }
+    else if(strcmp(op, "Mul") == 0) {
+        if(strcmp(type, "double") == 0) {
+            result = strdup("fmul");
+        }
+        else {
+            result = strdup("mul");
+        }
+    }
+    else if(strcmp(op, "Div") == 0) {
+        if(strcmp(type, "double") == 0) {
+            result = strdup("fdiv");
+        }
+        else {
+            result = strdup("sdiv");
+        }
+    }
+    else if(strcmp(op, "Mod") == 0) {
+        result = strdup("srem");
+    }
+    else if(strcmp(op, "BitWiseAnd") == 0) {
+        result = strdup("and");
+    }
+    else if(strcmp(op, "BitWiseOr") == 0) {
+        result = strdup("or");
+    }
+    else if(strcmp(op, "BitWiseXor") == 0) {
+        result = strdup("xor");
+    }
+    else if(strcmp(op, "Eq") == 0) {
+        if(strcmp(type, "double") == 0) {
+            result = strdup("fcmp oeq");
+        }
+        else {
+            result = strdup("icmp eq");
+        }
+    }
+    else if(strcmp(op, "Ne") == 0) {
+        if(strcmp(type, "double") == 0) {
+            result = strdup("fcmp one");
+        }
+        else {
+            result = strdup("icmp ne");
+        }
+    }
+    else if(strcmp(op, "Le") == 0) {
+        if(strcmp(type, "double") == 0) {
+            result = strdup("fcmp ole");
+        }
+        else {
+            result = strdup("icmp sle");
+        }
+    }
+    else if(strcmp(op, "Ge") == 0) {
+        if(strcmp(type, "double") == 0) {
+            result = strdup("fcmp oge");
+        }
+        else {
+            result = strdup("icmp sge");
+        }
+    }
+    else if(strcmp(op, "Lt") == 0) {
+        if(strcmp(type, "double") == 0) {
+            result = strdup("fcmp olt");
+        }
+        else {
+            result = strdup("icmp slt");
+        }
+    }
+    else if(strcmp(op, "Gt") == 0) {
+        if(strcmp(type, "double") == 0) {
+            result = strdup("fcmp ogt");
+        }
+        else {
+            result = strdup("icmp sgt");
+        }
+    }
+    return result;
+}
+
 //aux functions
 
 int cmpSize(char* size1, char* size2) {
@@ -574,10 +672,16 @@ int cmpSize(char* size1, char* size2) {
     if(strcmp(size1, "i32") == 0 && strcmp(size2, "i32") != 0) { //size1 bigger than size2
         return 1; 
     }
-    else if(strcmp(size1, "i16") == 0 && (strcmp(size2, "i8") == 0) ) { //size1 bigger than size2
+    else if(strcmp(size1, "i16") == 0 && (strcmp(size2, "i8") == 0 || strcmp(size2, "i1") == 0) ) { //size1 bigger than size2
         return 1; 
     }
-    else if(strcmp(size1, "i8") == 0 && strcmp(size2, "i8") != 0) { //size1 smaller than size2
+    else if(strcmp(size1, "i8") == 0 && (strcmp(size2, "i1") == 0) ) { //size1 bigger than size2
+        return 1; 
+    }
+    else if(strcmp(size1, "i1") == 0 && strcmp(size2, "i1") != 0) { //size1 smaller than size2
+        return -1; 
+    }
+    else if(strcmp(size1, "i8") == 0 && (strcmp(size2, "i8") != 0 || strcmp(size2, "i1") != 0)) { //size1 smaller than size2
         return -1; 
     }
     else if(strcmp(size1, "i16") == 0 && strcmp(size2, "i32") == 0) { //size1 smaller than size2
@@ -654,4 +758,21 @@ int checkIfLiteral(node root) {
     else {
         return 0;
     }
+}
+
+char* checkType(char* type1, char* type2) {
+    char* type;
+    if(strcmp(type1, "double") == 0 || strcmp(type2, "double") == 0) {
+        type = strdup("double");
+    }
+    else if (strcmp(type1, "int") == 0 || strcmp(type2, "int") == 0) {
+        type = strdup("int");
+    }
+    else if (strcmp(type1, "short") == 0 || strcmp(type2, "short") == 0) {
+        type = strdup("short");
+    }
+    else {
+        type = strdup("char");
+    }
+    return type;
 }

@@ -1,5 +1,5 @@
 #include <stdio.h>
-int a; 
+int a = 1; 
 char a1 = '4';
 char a2;
 short a5 = 1;
@@ -13,6 +13,7 @@ int main(void) {
     int a = -111; 
     //a = -a;
     int b;
+    int l = 5;
     b = -5;
     double d = b;
     char c = 'o';
@@ -20,9 +21,22 @@ int main(void) {
     putchar('e');
     putchar('l');
     putchar('l');
-    putchar('\177');
+    putchar('o');
     putchar(10);
     //jot(1, 'a', 2);
+
+    a = d || a;
+
+    if(d || a) {
+        putchar('i');
+    }
+    if(b && a) {
+        putchar('i');
+    }
+
+    while(l) {
+        l = l - 1;
+    }
     return a;
 }
 
@@ -59,7 +73,7 @@ void f9(int j1, char j2, double j3) {
     int c1, c2 = 3;
     short c4 = 2;
     double c3 = 1.2;
-    c4 = 5 + c2 * c4 / c1;
+    c4 = 5 + c2 * c3 / c1;
     return;
 }
 

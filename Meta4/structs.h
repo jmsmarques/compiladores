@@ -129,26 +129,29 @@ void genFuncBody(node root, int tabs, int variable, char* funcType); //generates
 void genFuncDef(node root); //generates code for a function
 void genFuncDec(node root, char* type); //generates code for the first line of a definition
 void genFuncParams(node root); //transforms func params to code
-void generateCondition(node root, int tabs); //generates code for condition inside a if or while
 char* getLlvmType(char* string); //returns type in llvm language
 char getLlvmSize(char* string); //return nr of bytes of a type
-char* extractLiteral(char* id); //extracts literal value from string ...Lit(value)
+char* extractLiteral(char* id, char* type); //extracts literal value from string ...Lit(value)
 char* reduceString(char* string, int len, int end); //aux function for extractLiteral()
 void genLogicOperation(char* op); //prints a comparision in llvm
-char* genVariable(node root); //generates a variable with its scope or a constant
+char* genVariable(node root, char* type); //generates a variable with its scope or a constant
 void doTabs(int nr); //does tabs
 int genStore(node root, char* type, int variable, int tabs); //generates code for a store
 int genMinusConversion(int variable, int tabs, char* type); //converts a variable to -variable
 int checkIfUnary(node root); //checks if its a unary sign before an id
 int genCall(node root, int variable, int tabs); //generates code for a function call
 int genVarToTemp(node root, char* type, char* newType, int variable, int tabs); //generates a temp value for a variable
-int genArithmetic(node root, int variable, int tabs, char* type); //generates arithmetic code
+int genExpr(node root, int variable, int tabs, char* type); //generates arithmetic code
+int generateIf(node root, int variable, int tabs, char* funcType); //generates code for a if condition
+int generateWhile(node root, int variable, int tabs, char* funcType); //generates code for a while condition
+char* genOperationCommand(char* op, char* type); //generates a operation command (ex. Add = add)
 //aux
 int convertSize(char* type, char* newType, int variable, int tabs); //converts sizes
 int cmpSize(char* size1, char* size2); //compares sizes of 1 and 2 returns 1 if 1 is bigger 0 if equal -1 else
 int trasformToAscii(char* string); //transforms a string with a char to ascii code
 int powAux(int nr, int el); //power function
 int checkIfLiteral(node root); //check if node is literal
+char* checkType(char* type1, char* type2); //checks type for comparisions >...
 
 extern char flag;
 extern char printFlag;

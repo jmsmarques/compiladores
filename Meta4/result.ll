@@ -10,6 +10,8 @@ define i32 @main() {
 	store i16 -111, i16* %a, align 2
 	%b = alloca i32, align 4
 	store i32 -5, i32* %b, align 4
+	%l = alloca i32, align 4
+	store i32 5, i32* %l, align 4
 	%c = alloca i8, align 1
 	store i8 108, i8* %c, align 1
 	%d = alloca i8, align 1
@@ -79,14 +81,20 @@ define void @f9(i32 %j1, i8 %j2, double %j3) {
 	%c3 = alloca double, align 8
 	store double 1.2, double* %c3, align 8
 	%1 = load i32, i32* %c2, align 4
-	%2 = load i16, i16* %c4, align 2
-	%3 = sext i16 %2 to i32
-	%4 = mul i32 %1, %3
+	%2 = sitofp i32 %1 to double
+	%3 = load double, double* %c3, align 8
+	%4 = fmul double %2, %3
 	%5 = load i32, i32* %c1, align 4
-	%6 = sdiv i32 %4, %5
-	%7 = add i32 5, %6
-	%8 = sitofp i32 %7 to double
+	%6 = sitofp i32 %5 to double
+	%7 = fdiv double %4, %6
+	%8 = fadd double 5.0, %7
 	store double %8, double* %c3, align 8
+	%9 = load double, double* %c3, align 8
+	%10 = load i32, i32* %c2, align 4
+	%11 = sitofp i32 %10 to double
+	%12 = fcmp oge double %9, %11
+	%13 = sext i1 %12 to i32
+	store i32 %13, i32* %c1, align 4
 	ret void
 }
 

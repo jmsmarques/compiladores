@@ -2,10 +2,10 @@
 target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-pc-linux-gnu"
 
+@a = global i32 1, align 4
 @a1 = global i8 52, align 1
 @a5 = global i16 1, align 2
 @a3 = global double 1.100000e+00, align 8
-@a = common global i32 0, align 4
 @a2 = common global i8 0, align 1
 
 ; Function Attrs: nounwind uwtable
@@ -13,10 +13,12 @@ define i32 @main() #0 {
   %1 = alloca i32, align 4
   %a = alloca i32, align 4
   %b = alloca i32, align 4
+  %l = alloca i32, align 4
   %d = alloca double, align 8
   %c = alloca i8, align 1
   store i32 0, i32* %1, align 4
   store i32 -111, i32* %a, align 4
+  store i32 5, i32* %l, align 4
   store i32 -5, i32* %b, align 4
   %2 = load i32, i32* %b, align 4
   %3 = sitofp i32 %2 to double
@@ -26,10 +28,65 @@ define i32 @main() #0 {
   %5 = call i32 @putchar(i32 101)
   %6 = call i32 @putchar(i32 108)
   %7 = call i32 @putchar(i32 108)
-  %8 = call i32 @putchar(i32 127)
+  %8 = call i32 @putchar(i32 111)
   %9 = call i32 @putchar(i32 10)
-  %10 = load i32, i32* %a, align 4
-  ret i32 %10
+  %10 = load double, double* %d, align 8
+  %11 = fcmp une double %10, 0.000000e+00
+  br i1 %11, label %15, label %12
+
+; <label>:12                                      ; preds = %0
+  %13 = load i32, i32* %a, align 4
+  %14 = icmp ne i32 %13, 0
+  br label %15
+
+; <label>:15                                      ; preds = %12, %0
+  %16 = phi i1 [ true, %0 ], [ %14, %12 ]
+  %17 = zext i1 %16 to i32
+  store i32 %17, i32* %a, align 4
+  %18 = load double, double* %d, align 8
+  %19 = fcmp une double %18, 0.000000e+00
+  br i1 %19, label %23, label %20
+
+; <label>:20                                      ; preds = %15
+  %21 = load i32, i32* %a, align 4
+  %22 = icmp ne i32 %21, 0
+  br i1 %22, label %23, label %25
+
+; <label>:23                                      ; preds = %20, %15
+  %24 = call i32 @putchar(i32 105)
+  br label %25
+
+; <label>:25                                      ; preds = %23, %20
+  %26 = load i32, i32* %b, align 4
+  %27 = icmp ne i32 %26, 0
+  br i1 %27, label %28, label %33
+
+; <label>:28                                      ; preds = %25
+  %29 = load i32, i32* %a, align 4
+  %30 = icmp ne i32 %29, 0
+  br i1 %30, label %31, label %33
+
+; <label>:31                                      ; preds = %28
+  %32 = call i32 @putchar(i32 105)
+  br label %33
+
+; <label>:33                                      ; preds = %31, %28, %25
+  br label %34
+
+; <label>:34                                      ; preds = %37, %33
+  %35 = load i32, i32* %l, align 4
+  %36 = icmp ne i32 %35, 0
+  br i1 %36, label %37, label %40
+
+; <label>:37                                      ; preds = %34
+  %38 = load i32, i32* %l, align 4
+  %39 = sub nsw i32 %38, 1
+  store i32 %39, i32* %l, align 4
+  br label %34
+
+; <label>:40                                      ; preds = %34
+  %41 = load i32, i32* %a, align 4
+  ret i32 %41
 }
 
 declare i32 @putchar(i32) #1
@@ -128,14 +185,15 @@ define void @f9(i32 %j1, i8 signext %j2, double %j3) #0 {
   store i16 2, i16* %c4, align 2
   store double 1.200000e+00, double* %c3, align 8
   %4 = load i32, i32* %c2, align 4
-  %5 = load i16, i16* %c4, align 2
-  %6 = sext i16 %5 to i32
-  %7 = mul nsw i32 %4, %6
+  %5 = sitofp i32 %4 to double
+  %6 = load double, double* %c3, align 8
+  %7 = fmul double %5, %6
   %8 = load i32, i32* %c1, align 4
-  %9 = sdiv i32 %7, %8
-  %10 = add nsw i32 5, %9
-  %11 = trunc i32 %10 to i16
-  store i16 %11, i16* %c4, align 2
+  %9 = sitofp i32 %8 to double
+  %10 = fdiv double %7, %9
+  %11 = fadd double 5.000000e+00, %10
+  %12 = fptosi double %11 to i16
+  store i16 %12, i16* %c4, align 2
   ret void
 }
 

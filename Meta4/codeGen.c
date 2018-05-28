@@ -305,7 +305,7 @@ char* genVariable(node root, char* type) {
         else {
             //aux = (char*)malloc((strlen(root->child->tag)) * sizeof(char));
             aux = genVariable(root->child, type);
-            if(*aux == 0) {
+            if(strcmp(aux, "0") == 0) {
                 sprintf(aux, "1");
             }
             else {
@@ -416,7 +416,7 @@ int genCall(node root, int variable, int tabs) {
     while(params) {
         if(checkIfId(params->tag) || checkIfUnary(params)) {
             variable = genVarToTemp(params, getLlvmType(params->type), "i32"/*mudar isto*/,variable, tabs);
-            aux = (char*)realloc(aux, (strlen(aux) + strlen(params->type) + strlen(params->tag)) * sizeof(char));
+            aux = (char*)realloc(aux, (strlen(aux) + strlen(params->type) + strlen(params->tag) + 2) * sizeof(char));
             sprintf(aux, "%s%s %%%d", aux, "i32"/*mudar isto -> getLlvmType(params->type)*/, variable);
             variable++;
         }
@@ -536,6 +536,7 @@ int genExpr(node root, int variable, int tabs, char* type) {
             sprintf(aux1, "%%%d", variable);
             variable++;
         }
+        
         if(checkIfLiteral(root->child->sibling)) {
             aux2 = genVariable(root->child->sibling, realType);
         }
@@ -546,6 +547,7 @@ int genExpr(node root, int variable, int tabs, char* type) {
             sprintf(aux2, "%%%d", variable);
             variable++;
         }
+        
         doTabs(tabs);
         printf("%%%d = %s %s %s, %s\n", variable, operation, getLlvmType(realType), aux1, aux2);
         variable = convertSize("i1", type, variable, tabs);
@@ -637,7 +639,6 @@ int genExpr(node root, int variable, int tabs, char* type) {
         variable++;
         doTabs(tabs);
         printf("label%d:\n", label - 1);
-
         if(checkIfLiteral(root->child->sibling)) {
             aux2 = genVariable(root->child->sibling, root->child->sibling->type);
         }
@@ -672,6 +673,12 @@ int genExpr(node root, int variable, int tabs, char* type) {
         variable = convertSize("i1", type, variable, tabs);
         
         label++;
+    }
+    else if(strcmp(root->tag, "Store") == 0) {
+        variable = genStore(root->child, getLlvmType(root->type), variable, tabs);
+        doTabs(tabs);
+        printf("%%%d = load %s, %s* %s, align %c\n", variable, getLlvmType(root->child->type), getLlvmType(root->child->type),
+        genVariable(root->child, getLlvmType(root->child->type)), getLlvmSize(getLlvmType(root->child->type)));
     }
     else {
         if(checkIfId(root->tag) || checkIfUnary(root)) {

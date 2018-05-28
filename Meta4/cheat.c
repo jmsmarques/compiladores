@@ -13,9 +13,9 @@ int main(void) {
     int a = 1;
     int b = 1;
     int k = a && b;
-    b = k || -a || !k && !0;
-    b = b + 48;
-    putchar(b);
+    b = !(k>0 == 0 || !0 >= (a= 2 - 3)) && 2 == 2;
+    //b = b + 48;
+    putchar(-!!((k>0 == 0 || !0 >= (a= 2 - 3)) && 2 == 2) + 49);
     return 1;
 }
 

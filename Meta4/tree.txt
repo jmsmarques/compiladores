@@ -1,0 +1,299 @@
+===== Global Symbol Table =====
+putchar	int(int)
+getchar	int(void)
+a	int
+a1	char
+a2	char
+a5	short
+a3	double
+jot	char(int,char,double)
+f7	int(int,int,int)
+f9	void(int,char,double)
+hue	char(int,double)
+main	int(void)
+empty	int(void)
+
+===== Function jot Symbol Table =====
+return	char
+h0	int	param
+h1	char	param
+h2	double	param
+b1	int
+b2	int
+b5	char
+b6	char
+c3	short
+b3	double
+b4	double
+
+===== Function f7 Symbol Table =====
+return	int
+l1	int	param
+l2	int	param
+l3	int	param
+g1	int
+g3	int
+g2	char
+
+===== Function f9 Symbol Table =====
+return	void
+j1	int	param
+j2	char	param
+j3	double	param
+c1	int
+c2	int
+c4	short
+c3	double
+
+===== Function main Symbol Table =====
+return	int
+a	int
+b	int
+k	int
+
+===== Function empty Symbol Table =====
+return	int
+
+Program
+..Declaration
+....Int
+....Id(a)
+..Declaration
+....Char
+....Id(a1)
+....ChrLit('4') - int
+..Declaration
+....Char
+....Id(a2)
+..Declaration
+....Short
+....Id(a5)
+....IntLit(1) - int
+..Declaration
+....Double
+....Id(a3)
+....RealLit(1.1) - double
+..FuncDeclaration
+....Char
+....Id(jot)
+....ParamList
+......ParamDeclaration
+........Int
+......ParamDeclaration
+........Char
+......ParamDeclaration
+........Double
+..FuncDeclaration
+....Int
+....Id(f7)
+....ParamList
+......ParamDeclaration
+........Int
+......ParamDeclaration
+........Int
+......ParamDeclaration
+........Int
+..FuncDeclaration
+....Void
+....Id(f9)
+....ParamList
+......ParamDeclaration
+........Int
+......ParamDeclaration
+........Char
+......ParamDeclaration
+........Double
+..FuncDeclaration
+....Char
+....Id(hue)
+....ParamList
+......ParamDeclaration
+........Int
+......ParamDeclaration
+........Double
+..FuncDefinition
+....Int
+....Id(main)
+....ParamList
+......ParamDeclaration
+........Void
+....FuncBody
+......Declaration
+........Int
+........Id(a)
+........IntLit(1) - int
+......Declaration
+........Int
+........Id(b)
+........IntLit(1) - int
+......Declaration
+........Int
+........Id(k)
+........IntLit(0) - int
+......Store - int
+........Id(b) - int
+........Or - int
+..........IntLit(1) - int
+..........Ge - int
+............Not - int
+..............IntLit(0) - int
+............Store - int
+..............Id(a) - int
+..............IntLit(2) - int
+......Call - int
+........Id(putchar) - int(int)
+........Not - int
+..........Id(b) - int
+......Return
+........IntLit(1) - int
+..FuncDefinition
+....Int
+....Id(f7)
+....ParamList
+......ParamDeclaration
+........Int
+........Id(l1)
+......ParamDeclaration
+........Int
+........Id(l2)
+......ParamDeclaration
+........Int
+........Id(l3)
+....FuncBody
+......Declaration
+........Int
+........Id(g1)
+......Declaration
+........Int
+........Id(g3)
+......Declaration
+........Char
+........Id(g2)
+......If
+........Lt - int
+..........Id(g1) - int
+..........IntLit(1) - int
+........Store - char
+..........Id(g2) - char
+..........ChrLit('b') - int
+........Return
+..........IntLit(2) - int
+......If
+........Ne - int
+..........Id(g3) - int
+..........Id(g1) - int
+........Store - int
+..........Id(g1) - int
+..........IntLit(2) - int
+........Null
+......Return
+........IntLit(1) - int
+..FuncDefinition
+....Char
+....Id(jot)
+....ParamList
+......ParamDeclaration
+........Int
+........Id(h0)
+......ParamDeclaration
+........Char
+........Id(h1)
+......ParamDeclaration
+........Double
+........Id(h2)
+....FuncBody
+......Declaration
+........Int
+........Id(b1)
+......Declaration
+........Int
+........Id(b2)
+......Declaration
+........Char
+........Id(b5)
+......Declaration
+........Char
+........Id(b6)
+......Declaration
+........Short
+........Id(c3)
+......Declaration
+........Double
+........Id(b3)
+......Declaration
+........Double
+........Id(b4)
+......Store - char
+........Id(b5) - char
+........Minus - char
+..........Id(b6) - char
+......Store - double
+........Id(b3) - double
+........Minus - double
+..........Id(b4) - double
+......Store - int
+........Id(b1) - int
+........Minus - int
+..........Id(b2) - int
+......Store - short
+........Id(c3) - short
+........Minus - int
+..........IntLit(1) - int
+......Store - short
+........Id(c3) - short
+........Minus - short
+..........Id(c3) - short
+......Return
+........ChrLit('g') - int
+..FuncDefinition
+....Void
+....Id(f9)
+....ParamList
+......ParamDeclaration
+........Int
+........Id(j1)
+......ParamDeclaration
+........Char
+........Id(j2)
+......ParamDeclaration
+........Double
+........Id(j3)
+....FuncBody
+......Declaration
+........Int
+........Id(c1)
+......Declaration
+........Int
+........Id(c2)
+........IntLit(3) - int
+......Declaration
+........Short
+........Id(c4)
+........IntLit(2) - int
+......Declaration
+........Double
+........Id(c3)
+........RealLit(1.2) - double
+......Store - double
+........Id(c3) - double
+........Minus - double
+..........Add - double
+............IntLit(5) - int
+............Div - double
+..............Mul - double
+................Not - int
+..................Id(c2) - int
+................Id(c3) - double
+..............Plus - int
+................Id(c1) - int
+......Return
+........Null
+..FuncDefinition
+....Int
+....Id(empty)
+....ParamList
+......ParamDeclaration
+........Void
+....FuncBody
+......Return
+........IntLit(0) - int

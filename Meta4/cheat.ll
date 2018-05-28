@@ -31,36 +31,43 @@ define i32 @main() #0 {
   %9 = zext i1 %8 to i32
   store i32 %9, i32* %k, align 4
   %10 = load i32, i32* %k, align 4
-  %11 = icmp ne i32 %10, 0
-  br i1 %11, label %22, label %12
+  %11 = icmp sgt i32 %10, 0
+  %12 = zext i1 %11 to i32
+  %13 = icmp eq i32 %12, 0
+  br i1 %13, label %16, label %14
 
-; <label>:12                                      ; preds = %7
-  %13 = load i32, i32* %a, align 4
-  %14 = sub nsw i32 0, %13
-  %15 = icmp ne i32 %14, 0
-  br i1 %15, label %22, label %16
+; <label>:14                                      ; preds = %7
+  store i32 -1, i32* %a, align 4
+  br i1 true, label %16, label %15
 
-; <label>:16                                      ; preds = %12
-  %17 = load i32, i32* %k, align 4
-  %18 = icmp ne i32 %17, 0
-  br i1 %18, label %20, label %19
+; <label>:15                                      ; preds = %14
+  br label %16
 
-; <label>:19                                      ; preds = %16
-  br label %20
+; <label>:16                                      ; preds = %15, %14, %7
+  %17 = phi i1 [ false, %14 ], [ false, %7 ], [ true, %15 ]
+  %18 = zext i1 %17 to i32
+  store i32 %18, i32* %b, align 4
+  %19 = load i32, i32* %k, align 4
+  %20 = icmp sgt i32 %19, 0
+  %21 = zext i1 %20 to i32
+  %22 = icmp eq i32 %21, 0
+  br i1 %22, label %24, label %23
 
-; <label>:20                                      ; preds = %19, %16
-  %21 = phi i1 [ false, %16 ], [ true, %19 ]
-  br label %22
+; <label>:23                                      ; preds = %16
+  store i32 -1, i32* %a, align 4
+  br i1 true, label %24, label %25
 
-; <label>:22                                      ; preds = %20, %12, %7
-  %23 = phi i1 [ true, %12 ], [ true, %7 ], [ %21, %20 ]
-  %24 = zext i1 %23 to i32
-  store i32 %24, i32* %b, align 4
-  %25 = load i32, i32* %b, align 4
-  %26 = add nsw i32 %25, 48
-  store i32 %26, i32* %b, align 4
-  %27 = load i32, i32* %b, align 4
-  %28 = call i32 @putchar(i32 %27)
+; <label>:24                                      ; preds = %23, %16
+  br label %25
+
+; <label>:25                                      ; preds = %24, %23
+  %26 = phi i1 [ false, %23 ], [ true, %24 ]
+  %27 = xor i1 %26, true
+  %28 = xor i1 %27, true
+  %29 = zext i1 %28 to i32
+  %30 = sub nsw i32 0, %29
+  %31 = add nsw i32 %30, 49
+  %32 = call i32 @putchar(i32 %31)
   ret i32 1
 }
 

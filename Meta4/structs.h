@@ -153,6 +153,7 @@ int trasformToAscii(char* string); //transforms a string with a char to ascii co
 int powAux(int nr, int el); //power function
 int checkIfLiteral(node root); //check if node is literal
 char* checkType(char* type1, char* type2); //checks type for comparisions >...
+char* generateOctal(char* string); //transforms octal to int
 
 extern char flag;
 extern char printFlag;

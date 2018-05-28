@@ -10,34 +10,12 @@ void f9(int, char, double);
 char hue(int, double);
 
 int main(void) {
-    short a = -111; 
-    //a = -a;
-    int b;
-    b = -5;
-    int l = 5;
-    char c = 'l';
-    char d = '\t';
-    putchar(d);
-    putchar('h');
-    putchar('e');
-    putchar(c);
-    putchar(c);
-    putchar(-a);
-    putchar('\n');
-    //jot(1, 'a', 2);
-    //l = !a;
-    //a = d || a;
-
-    /*while(l) {
-        putchar('a');
-        l = l - 1;
-    }*/
-    if(b) {
-        putchar('b');
-    }
-    else {  
-        putchar('n');
-    }
+    int a = 1;
+    int b = 1;
+    int k = a && b;
+    b = k || -a || !k && !0;
+    b = b + 48;
+    putchar(b);
     return 1;
 }
 

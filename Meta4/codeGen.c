@@ -77,7 +77,7 @@ int genFuncBody(node root, int tabs, int variable, char* funcType, int flag) {
         if(strcmp(root->child->tag, "Null") != 0) {
             doTabs(tabs);
             if(checkIfId(root->child->tag) || checkIfUnary(root->child)) {
-                variable = genVarToTemp(root->child, root->child->type, funcType, variable, tabs);
+                variable = genVarToTemp(root->child, getLlvmType(root->child->type), funcType, variable, tabs);
                 printf("ret %s %%%d\n", funcType, variable);
                 variable++;
             }
@@ -85,7 +85,7 @@ int genFuncBody(node root, int tabs, int variable, char* funcType, int flag) {
                 printf("ret %s %s\n", funcType, genVariable(root->child, funcType));
             }
             else {
-                variable = genExpr(root->child, variable, tabs, funcType);
+                variable = genExpr(root->child, variable, tabs, getLlvmType(funcType));
                 doTabs(tabs);
                 printf("ret %s %%%d\n", funcType, variable);
                 variable++;
@@ -97,6 +97,7 @@ int genFuncBody(node root, int tabs, int variable, char* funcType, int flag) {
                 printf("ret void\n");
             }
         }
+        return variable * -1;
     }
     else {
         variable1 = genFuncBody(root->child, tabs, variable, funcType, 1);
@@ -318,6 +319,11 @@ char* genVariable(node root, char* type) {
     }
     else {
         aux = extractLiteral(root->tag, type); //falta tratar doubles
+        if(*aux == '0' && strlen(aux) > 1) {
+            //printf("octal\n");
+            aux = generateOctal(aux);
+        }
+            
     }
 
     return aux;
@@ -410,20 +416,26 @@ int genCall(node root, int variable, int tabs) {
     while(params) {
         if(checkIfId(params->tag) || checkIfUnary(params)) {
             variable = genVarToTemp(params, getLlvmType(params->type), "i32"/*mudar isto*/,variable, tabs);
-            aux = (char*)realloc(aux, (strlen(params->type) + strlen(params->tag)) * sizeof(char));
+            aux = (char*)realloc(aux, (strlen(aux) + strlen(params->type) + strlen(params->tag)) * sizeof(char));
             sprintf(aux, "%s%s %%%d", aux, "i32"/*mudar isto -> getLlvmType(params->type)*/, variable);
             variable++;
-            doTabs(tabs);
+        }
+        else if(checkIfLiteral(params)){
+            aux = (char*)realloc(aux, (strlen(aux) + strlen(params->type) + strlen(params->tag)) * sizeof(char));
+            sprintf(aux, "%s%s %s", aux, getLlvmType(params->type), genVariable(params, root->type)); //esta mal
         }
         else {
-            aux = (char*)realloc(aux, (strlen(params->type) + strlen(params->tag)) * sizeof(char));
-            sprintf(aux, "%s%s %s", aux, getLlvmType(params->type), genVariable(params, root->type)); //esta mal
+            variable = genExpr(params, variable, tabs, getLlvmType(params->type));
+            aux = (char*)realloc(aux, (strlen(aux) + strlen(params->type) + strlen(params->tag) + 5) * sizeof(char));
+            sprintf(aux, "%s%s %%%d", aux, getLlvmType(params->type), variable); //esta mal
+            variable++;
         }
         
         if(params->sibling)
             sprintf(aux, "%s,", aux);
         params = params->sibling;
     }
+    doTabs(tabs);
     printf("%%%d = call %s @%s(%s)\n", variable, getLlvmType(root->type), removeId(root->child->tag), aux);
     variable++;
     free(aux);
@@ -588,7 +600,13 @@ int genExpr(node root, int variable, int tabs, char* type) {
         doTabs(tabs);
         printf("label%d:\n", label); //true condition
         doTabs(tabs);
-        printf("%%%d = phi i1 [ false, %%0 ], [ %%%d, %%label%d ]\n", variable, variable - 1, label - 1);
+        int help = label - 2;
+        if(help == 0) {
+            printf("%%%d = phi i1 [ false, %%0 ], [ %%%d, %%label%d ]\n", variable, variable - 1, label - 1);
+        }
+        else {
+            printf("%%%d = phi i1 [ false, %%label%d ], [ %%%d, %%label%d ]\n", variable, help, variable - 1, label - 1);
+        }
         
         variable = convertSize("i1", type, variable, tabs);
         
@@ -643,7 +661,13 @@ int genExpr(node root, int variable, int tabs, char* type) {
         doTabs(tabs);
         printf("label%d:\n", label); //true condition
         doTabs(tabs);
-        printf("%%%d = phi i1 [ true, %%0 ], [ %%%d, %%label%d ]\n", variable, variable - 1, label - 1);
+        int help = label - 2;
+        if(help == 0) {
+            printf("%%%d = phi i1 [ true, %%0 ], [ %%%d, %%label%d ]\n", variable, variable - 1, label - 1);
+        }
+        else {
+            printf("%%%d = phi i1 [ true, %%label%d ], [ %%%d, %%label%d ]\n", variable, help, variable - 1, label - 1);
+        }
         
         variable = convertSize("i1", type, variable, tabs);
         
@@ -693,20 +717,38 @@ int generateIf(node root, int variable, int tabs, char* funcType) {
     doTabs(tabs);
     printf("label%d:\n", label - 1);
     variable = genFuncBody(root->child->sibling, tabs, variable, funcType, 0);
-    doTabs(tabs);
     if(strcmp(root->child->sibling->sibling->tag, "Null") != 0) { //else
-        printf("br label %%label%d\n\n", label + 1);
+        if(variable < 0) {
+            variable *= -1;
+        }
+        else {
+            doTabs(tabs);
+            printf("br label %%label%d\n\n", label + 1);
+        }
         doTabs(tabs);
         printf("label%d:\n", label);
         variable = genFuncBody(root->child->sibling->sibling, tabs, variable, funcType, 1);
         label++;
-        doTabs(tabs);
-        printf("br label %%label%d\n\n", label);
+         
+        if(variable < 0) {
+            variable *= -1;
+        }
+        else {
+            doTabs(tabs);
+            printf("br label %%label%d\n\n", label);
+        }
+        
         doTabs(tabs);
         printf("label%d:\n", label); //continue
     }
-    else { //no else
-        printf("br label %%label%d\n\n", label);
+    else { //no else   
+        if(variable < 0) {
+            variable *= -1;
+        }
+        else {
+            doTabs(tabs);
+            printf("br label %%label%d\n\n", label);
+        }
         doTabs(tabs);
         printf("label%d:\n", label);
     }
@@ -962,4 +1004,27 @@ char* checkType(char* type1, char* type2) {
         type = strdup("char");
     }
     return type;
+}
+
+char* generateOctal(char* string) {
+    int aux;
+    int transform = 0;
+    int aux1 = 0;
+    int size = strlen(string) - 1;
+    int el = 0;
+
+    for(; size > 0; size--) {
+        aux = *(string + size) - 48;
+        aux1 += aux * powAux(10, el);
+        el++;
+    }
+    el = 0;
+    while(aux1 != 0) {
+        transform += (aux1 % 10)* powAux(8, el);
+        el++;
+        aux1 /= 10;
+    }
+    char* ret = (char*)malloc(strlen(string) * sizeof(char));
+    sprintf(ret, "%d", transform);
+    return ret;
 }

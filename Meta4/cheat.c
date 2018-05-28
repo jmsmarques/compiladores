@@ -10,39 +10,35 @@ void f9(int, char, double);
 char hue(int, double);
 
 int main(void) {
-    int a = -111; 
+    short a = -111; 
     //a = -a;
     int b;
-    int l = 5;
     b = -5;
-    double d = b;
-    char c = 'o';
+    int l = 5;
+    char c = 'l';
+    char d = '\t';
+    putchar(d);
     putchar('h');
     putchar('e');
-    putchar('l');
-    putchar('l');
-    putchar('o');
-    putchar(10);
+    putchar(c);
+    putchar(c);
+    putchar(-a);
+    putchar('\n');
     //jot(1, 'a', 2);
-    b = !d;
-    a = !1;
-    a = !0;
-    a = !11;
-    a = !-11;
+    //l = !a;
+    //a = d || a;
 
-    a = d || a;
-
-    /*if(d || a) {
-        putchar('i');
-    }
-    if(b && a) {
-        putchar('i');
-    }*/
-
-    while(l) {
+    /*while(l) {
+        putchar('a');
         l = l - 1;
+    }*/
+    if(b) {
+        putchar('b');
     }
-    return a;
+    else {  
+        putchar('n');
+    }
+    return 1;
 }
 
 int f7(int l1, int l2, int l3) {

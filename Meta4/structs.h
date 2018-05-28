@@ -125,7 +125,7 @@ void wrongArguments(int line, int col, char* token, int got, int expected);
 void codeGeneration(node root, gTable symTab, table auxSymTab); //function that runs the ast and calls the function that generates code for each node
 int generateCode(node root, gTable symTab, table auxSymTab); //functions that generates code
 void genGlobalDeclaration(node root); //generates code for a global declaration
-int genFuncBody(node root, int tabs, int variable, char* funcType); //generates code for a function body
+int genFuncBody(node root, int tabs, int variable, char* funcType, int flag); //generates code for a function body
 void genFuncDef(node root); //generates code for a function
 void genFuncDec(node root, char* type); //generates code for the first line of a definition
 void genFuncParams(node root); //transforms func params to code

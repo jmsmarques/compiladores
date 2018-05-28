@@ -11,63 +11,47 @@ target triple = "x86_64-pc-linux-gnu"
 ; Function Attrs: nounwind uwtable
 define i32 @main() #0 {
   %1 = alloca i32, align 4
-  %a = alloca i32, align 4
+  %a = alloca i16, align 2
   %b = alloca i32, align 4
   %l = alloca i32, align 4
-  %d = alloca double, align 8
   %c = alloca i8, align 1
+  %d = alloca i8, align 1
   store i32 0, i32* %1, align 4
-  store i32 -111, i32* %a, align 4
-  store i32 5, i32* %l, align 4
+  store i16 -111, i16* %a, align 2
   store i32 -5, i32* %b, align 4
-  %2 = load i32, i32* %b, align 4
-  %3 = sitofp i32 %2 to double
-  store double %3, double* %d, align 8
-  store i8 111, i8* %c, align 1
-  %4 = call i32 @putchar(i32 104)
-  %5 = call i32 @putchar(i32 101)
-  %6 = call i32 @putchar(i32 108)
-  %7 = call i32 @putchar(i32 108)
-  %8 = call i32 @putchar(i32 111)
-  %9 = call i32 @putchar(i32 10)
-  %10 = load double, double* %d, align 8
-  %11 = fcmp une double %10, 0.000000e+00
-  %12 = xor i1 %11, true
-  %13 = zext i1 %12 to i32
-  store i32 %13, i32* %b, align 4
-  store i32 0, i32* %a, align 4
-  store i32 1, i32* %a, align 4
-  store i32 0, i32* %a, align 4
-  store i32 0, i32* %a, align 4
-  %14 = load double, double* %d, align 8
-  %15 = fcmp une double %14, 0.000000e+00
-  br i1 %15, label %19, label %16
+  store i32 5, i32* %l, align 4
+  store i8 108, i8* %c, align 1
+  store i8 9, i8* %d, align 1
+  %2 = load i8, i8* %d, align 1
+  %3 = sext i8 %2 to i32
+  %4 = call i32 @putchar(i32 %3)
+  %5 = call i32 @putchar(i32 104)
+  %6 = call i32 @putchar(i32 101)
+  %7 = load i8, i8* %c, align 1
+  %8 = sext i8 %7 to i32
+  %9 = call i32 @putchar(i32 %8)
+  %10 = load i8, i8* %c, align 1
+  %11 = sext i8 %10 to i32
+  %12 = call i32 @putchar(i32 %11)
+  %13 = load i16, i16* %a, align 2
+  %14 = sext i16 %13 to i32
+  %15 = sub nsw i32 0, %14
+  %16 = call i32 @putchar(i32 %15)
+  %17 = call i32 @putchar(i32 10)
+  %18 = load i32, i32* %b, align 4
+  %19 = icmp ne i32 %18, 0
+  br i1 %19, label %20, label %22
 
-; <label>:16                                      ; preds = %0
-  %17 = load i32, i32* %a, align 4
-  %18 = icmp ne i32 %17, 0
-  br label %19
+; <label>:20                                      ; preds = %0
+  %21 = call i32 @putchar(i32 98)
+  br label %24
 
-; <label>:19                                      ; preds = %16, %0
-  %20 = phi i1 [ true, %0 ], [ %18, %16 ]
-  %21 = zext i1 %20 to i32
-  store i32 %21, i32* %a, align 4
-  br label %22
+; <label>:22                                      ; preds = %0
+  %23 = call i32 @putchar(i32 110)
+  br label %24
 
-; <label>:22                                      ; preds = %25, %19
-  %23 = load i32, i32* %l, align 4
-  %24 = icmp ne i32 %23, 0
-  br i1 %24, label %25, label %28
-
-; <label>:25                                      ; preds = %22
-  %26 = load i32, i32* %l, align 4
-  %27 = sub nsw i32 %26, 1
-  store i32 %27, i32* %l, align 4
-  br label %22
-
-; <label>:28                                      ; preds = %22
-  %29 = load i32, i32* %a, align 4
-  ret i32 %29
+; <label>:24                                      ; preds = %22, %20
+  ret i32 1
 }
 
 declare i32 @putchar(i32) #1

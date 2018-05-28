@@ -49,10 +49,10 @@ void genGlobalDeclaration(node root) {
     free(code);*/
 }
 
-int genFuncBody(node root, int tabs, int variable, char* funcType) {
+int genFuncBody(node root, int tabs, int variable, char* funcType, int flag) {
     if(!root) 
         return variable;
-    int variable1 = 0;
+    int variable1 = variable;
     int variable2 = variable1;
     if(strcmp(root->tag, "Declaration") == 0) {
         doTabs(tabs);
@@ -94,9 +94,10 @@ int genFuncBody(node root, int tabs, int variable, char* funcType) {
         }
     }
     else {
-        variable1 = genFuncBody(root->child, tabs, variable, funcType);
+        variable1 = genFuncBody(root->child, tabs, variable, funcType, 1);
     }
-    variable2 = genFuncBody(root->sibling, tabs, variable, funcType);
+    if(flag)
+        variable2 = genFuncBody(root->sibling, tabs, variable, funcType, 1);
 
     if(variable1 > variable2) {
         return variable1;
@@ -110,7 +111,7 @@ void genFuncDef(node root) {
     genFuncDec(root, "define");
     printf(" {\n");
     label = 1;
-    genFuncBody(root->child->sibling->sibling->sibling->child, 1, 1, getLlvmType(root->child->tag));
+    genFuncBody(root->child->sibling->sibling->sibling->child, 1, 1, getLlvmType(root->child->tag), 1);
     if(strcmp(root->child->tag, "Void") == 0) {
         doTabs(1);
         printf("ret void\n");
@@ -655,41 +656,88 @@ int genExpr(node root, int variable, int tabs, char* type) {
 }
 
 int generateIf(node root, int variable, int tabs, char* funcType) {
-    /*variable = genExpr(root->child, variable, tabs, "i1");
-    printf("br i1 %%%d, label %%%d, label %%%d\n", variable);
-    printf("\n%%%d:\n");
-    variable = genFuncBody(root->child->sibling, tabs, variable, funcType);
-    printf(); //continue
+    if(!(checkIfLogicalOperation(root->child->tag) || strcmp(root->child->tag, "And") == 0 || strcmp(root->child->tag, "Or") == 0)) {
+        if(strcmp(root->child->type, "double") == 0) {
+            variable = genExpr(root->child, variable, tabs, "double");
+            variable++;
+            doTabs(tabs);
+            printf("%%%d = fcmp une double %%%d, 0\n", variable, variable - 1);
+        }
+        else {
+            variable = genExpr(root->child, variable, tabs, "i32");
+            variable++;
+            doTabs(tabs);
+            printf("%%%d = icmp ne i32 %%%d, 0\n", variable, variable - 1);
+        }
+    }
+    else {
+        variable = genExpr(root->child, variable, tabs, "i1");
+    }
+    label++;
+    doTabs(tabs);
+    printf("br i1 %%%d, label %%label%d, label %%label%d\n\n", variable, label - 1, label);
+    variable++;
+    doTabs(tabs);
+    printf("label%d:\n", label - 1);
+    variable = genFuncBody(root->child->sibling, tabs, variable, funcType, 0);
+    doTabs(tabs);
+    variable++;
     if(strcmp(root->child->sibling->sibling->tag, "Null") != 0) { //else
-        printf("\n%%%d:\n");
-        variable = genFuncBody(root->child->sibling->sibling, tabs, variable, funcType);
-        printf(); //continue
+        printf("br label %%label%d\n\n", label + 1);
+        doTabs(tabs);
+        printf("label%d:\n", label);
+        variable = genFuncBody(root->child->sibling->sibling, tabs, variable, funcType, 1);
+        label++;
+        doTabs(tabs);
+        printf("br label %%label%d\n\n", label);
+        doTabs(tabs);
+        printf("label%d:\n", label); //continue
     }
     else { //no else
-        printf("\n%%%d:\n");
+        printf("br label %%label%d\n\n", label);
+        doTabs(tabs);
+        printf("label%d:\n", label);
     }
-*/
+    label++;
     return variable;
 }
 
 int generateWhile(node root, int variable, int tabs, char* funcType) {
     doTabs(tabs);
-    printf("br label %%label%d\n", label);
+    printf("br label %%label%d\n\n", label);
     doTabs(tabs);
-    printf("\nlabel%d:\n", label);
+    printf("label%d:\n", label);
     label++;
     //comparacao aqui
+    if(!(checkIfLogicalOperation(root->child->tag) || strcmp(root->child->tag, "And") == 0 || strcmp(root->child->tag, "Or") == 0)) {
+        if(strcmp(root->child->type, "double") == 0) {
+            variable = genExpr(root->child, variable, tabs, "double");
+            variable++;
+            doTabs(tabs);
+            printf("%%%d = fcmp une double %%%d, 0\n", variable, variable - 1);
+        }
+        else {
+            variable = genExpr(root->child, variable, tabs, "i32");
+            variable++;
+            doTabs(tabs);
+            printf("%%%d = icmp ne i32 %%%d, 0\n", variable, variable - 1);
+        }
+    }
+    else {
+        variable = genExpr(root->child, variable, tabs, "i1");
+    }
     doTabs(tabs);
-    printf("br i1 %%%d, label %%label%d, label %%label%d\n", variable, label, label + 1);
+    printf("br i1 %%%d, label %%label%d, label %%label%d\n\n", variable, label, label + 1);
+    variable++;
     doTabs(tabs);
-    printf("\nlabel%d:\n", label);
-    variable = genFuncBody(root->child->sibling, tabs, variable, funcType);
+    printf("label%d:\n", label);
+    variable = genFuncBody(root->child->sibling, tabs, variable, funcType, 1);
     doTabs(tabs);
-    printf("br label %%label%d\n", label - 1);
+    printf("br label %%label%d\n\n", label - 1);
     label++;
     doTabs(tabs);
-    printf("\nlabel%d:\n", label); //continue
-
+    printf("label%d:\n", label); //continue
+    label++;
     return variable;
 }
 

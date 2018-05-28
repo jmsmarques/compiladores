@@ -24,15 +24,20 @@ int main(void) {
     putchar('o');
     putchar(10);
     //jot(1, 'a', 2);
+    b = !d;
+    a = !1;
+    a = !0;
+    a = !11;
+    a = !-11;
 
     a = d || a;
 
-    if(d || a) {
+    /*if(d || a) {
         putchar('i');
     }
     if(b && a) {
         putchar('i');
-    }
+    }*/
 
     while(l) {
         l = l - 1;

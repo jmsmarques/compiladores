@@ -32,61 +32,42 @@ define i32 @main() #0 {
   %9 = call i32 @putchar(i32 10)
   %10 = load double, double* %d, align 8
   %11 = fcmp une double %10, 0.000000e+00
-  br i1 %11, label %15, label %12
+  %12 = xor i1 %11, true
+  %13 = zext i1 %12 to i32
+  store i32 %13, i32* %b, align 4
+  store i32 0, i32* %a, align 4
+  store i32 1, i32* %a, align 4
+  store i32 0, i32* %a, align 4
+  store i32 0, i32* %a, align 4
+  %14 = load double, double* %d, align 8
+  %15 = fcmp une double %14, 0.000000e+00
+  br i1 %15, label %19, label %16
 
-; <label>:12                                      ; preds = %0
-  %13 = load i32, i32* %a, align 4
-  %14 = icmp ne i32 %13, 0
-  br label %15
+; <label>:16                                      ; preds = %0
+  %17 = load i32, i32* %a, align 4
+  %18 = icmp ne i32 %17, 0
+  br label %19
 
-; <label>:15                                      ; preds = %12, %0
-  %16 = phi i1 [ true, %0 ], [ %14, %12 ]
-  %17 = zext i1 %16 to i32
-  store i32 %17, i32* %a, align 4
-  %18 = load double, double* %d, align 8
-  %19 = fcmp une double %18, 0.000000e+00
-  br i1 %19, label %23, label %20
+; <label>:19                                      ; preds = %16, %0
+  %20 = phi i1 [ true, %0 ], [ %18, %16 ]
+  %21 = zext i1 %20 to i32
+  store i32 %21, i32* %a, align 4
+  br label %22
 
-; <label>:20                                      ; preds = %15
-  %21 = load i32, i32* %a, align 4
-  %22 = icmp ne i32 %21, 0
-  br i1 %22, label %23, label %25
+; <label>:22                                      ; preds = %25, %19
+  %23 = load i32, i32* %l, align 4
+  %24 = icmp ne i32 %23, 0
+  br i1 %24, label %25, label %28
 
-; <label>:23                                      ; preds = %20, %15
-  %24 = call i32 @putchar(i32 105)
-  br label %25
+; <label>:25                                      ; preds = %22
+  %26 = load i32, i32* %l, align 4
+  %27 = sub nsw i32 %26, 1
+  store i32 %27, i32* %l, align 4
+  br label %22
 
-; <label>:25                                      ; preds = %23, %20
-  %26 = load i32, i32* %b, align 4
-  %27 = icmp ne i32 %26, 0
-  br i1 %27, label %28, label %33
-
-; <label>:28                                      ; preds = %25
+; <label>:28                                      ; preds = %22
   %29 = load i32, i32* %a, align 4
-  %30 = icmp ne i32 %29, 0
-  br i1 %30, label %31, label %33
-
-; <label>:31                                      ; preds = %28
-  %32 = call i32 @putchar(i32 105)
-  br label %33
-
-; <label>:33                                      ; preds = %31, %28, %25
-  br label %34
-
-; <label>:34                                      ; preds = %37, %33
-  %35 = load i32, i32* %l, align 4
-  %36 = icmp ne i32 %35, 0
-  br i1 %36, label %37, label %40
-
-; <label>:37                                      ; preds = %34
-  %38 = load i32, i32* %l, align 4
-  %39 = sub nsw i32 %38, 1
-  store i32 %39, i32* %l, align 4
-  br label %34
-
-; <label>:40                                      ; preds = %34
-  %41 = load i32, i32* %a, align 4
-  ret i32 %41
+  ret i32 %29
 }
 
 declare i32 @putchar(i32) #1

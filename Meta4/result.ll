@@ -34,6 +34,36 @@ define i32 @main() {
 	%16 = sext i16 %15 to i32
 	%17 = call i32 @putchar(i32 %16)
 	%18 = call i32 @putchar(i32 10)
+	%19 = load i16, i16* %a, align 2
+	%20 = icmp ne i16 %19, 0
+	%21 = xor i1 %20, true
+	%22 = zext i1 %21 to i32
+	store i32 %22, i32* %l, align 4
+	%23 = load i8, i8* %d, align 1
+	%24 = icmp ne i8 %23, 0
+	br i1 %24, label %label2, label %label1
+
+	label1:
+	%25 = load i16, i16* %a, align 2
+	%26 = icmp ne i16 %25, 0
+	br label %label2
+
+	label2:
+	%27 = phi i1 [ true, %0 ], [ %26, %label1 ]
+	%28 = zext i1 %27 to i16
+	store i16 %28, i16* %a, align 2
+br label %label3
+
+label3:
+br i1 %29, label %label4, label %label5
+
+label4:
+	%29 = load i32, i32* %l, align 4
+	%30 = sub i32 %29, 1
+	store i32 %30, i32* %l, align 4
+br label %label3
+
+label5:
 	ret i32 1
 }
 
@@ -81,20 +111,17 @@ define void @f9(i32 %j1, i8 %j2, double %j3) {
 	%c3 = alloca double, align 8
 	store double 1.2, double* %c3, align 8
 	%1 = load i32, i32* %c2, align 4
-	%2 = sitofp i32 %1 to double
-	%3 = load double, double* %c3, align 8
-	%4 = fmul double %2, %3
-	%5 = load i32, i32* %c1, align 4
-	%6 = sitofp i32 %5 to double
-	%7 = fdiv double %4, %6
-	%8 = fadd double 5.0, %7
-	store double %8, double* %c3, align 8
-	%9 = load double, double* %c3, align 8
-	%10 = load i32, i32* %c2, align 4
-	%11 = sitofp i32 %10 to double
-	%12 = fcmp oge double %9, %11
-	%13 = sext i1 %12 to i32
-	store i32 %13, i32* %c1, align 4
+	%2 = icmp ne i32 %1, 0
+	%3 = xor i1 %2, true
+	%4 = sitofp i1 %3 to double
+	%5 = load double, double* %c3, align 8
+	%6 = fmul double %4, %5
+	%7 = load i32, i32* %c1, align 4
+	%8 = sitofp i32 %7 to double
+	%9 = fdiv double %6, %8
+	%10 = fadd double 5.0, %9
+	%11 = fsub double -0.000000e+00, %10
+	store double %11, double* %c3, align 8
 	ret void
 }
 

@@ -54,6 +54,7 @@ int genFuncBody(node root, int tabs, int variable, char* funcType, int flag) {
         return variable;
     int variable1 = variable;
     int variable2 = variable1;
+    int aux = 1;
     if(strcmp(root->tag, "Declaration") == 0) {
         doTabs(tabs);
         printf("%%%s = alloca %s, align %c\n", removeId(root->child->sibling->tag), getLlvmType(root->child->tag), getLlvmSize(root->child->tag));
@@ -75,15 +76,19 @@ int genFuncBody(node root, int tabs, int variable, char* funcType, int flag) {
     else if(strcmp(root->tag, "Return") == 0) { //esta mal int nao consegue retornar short
         if(strcmp(root->child->tag, "Null") != 0) {
             doTabs(tabs);
-            if(checkIfId(root->child->tag)) {
-                printf("%%%d = load %s, %s* %c%s, align %c\n", variable, funcType, funcType, 
-                root->child->scope, extractLiteral(root->child->tag, funcType), getLlvmSize(root->child->type));
-                doTabs(tabs);
+            if(checkIfId(root->child->tag) || checkIfUnary(root->child)) {
+                variable = genVarToTemp(root->child, root->child->type, funcType, variable, tabs);
                 printf("ret %s %%%d\n", funcType, variable);
                 variable++;
             }
+            else if(checkIfLiteral(root->child)) {
+                printf("ret %s %s\n", funcType, genVariable(root->child, funcType));
+            }
             else {
-                printf("ret %s %s\n", funcType, extractLiteral(root->child->tag, funcType));
+                variable = genExpr(root->child, variable, tabs, funcType);
+                doTabs(tabs);
+                printf("ret %s %%%d\n", funcType, variable);
+                variable++;
             }
         }
         else {
@@ -95,10 +100,13 @@ int genFuncBody(node root, int tabs, int variable, char* funcType, int flag) {
     }
     else {
         variable1 = genFuncBody(root->child, tabs, variable, funcType, 1);
+        aux = 0;
     }
     if(flag)
         variable2 = genFuncBody(root->sibling, tabs, variable, funcType, 1);
-
+    else if(aux) {
+        return variable;
+    }
     if(variable1 > variable2) {
         return variable1;
     }
@@ -650,6 +658,11 @@ int genExpr(node root, int variable, int tabs, char* type) {
             variable = genExpr(root->child, variable, tabs, type);
             variable = genMinusConversion(variable, tabs, type);
         }
+        else if(strcmp(root->tag, "Not") == 0) {
+            variable = genExpr(root->child, variable, tabs, type);
+            variable = genNotConversion(variable, tabs, type);
+            variable = convertSize("i1", type, variable, tabs);
+        }
     }
 
     return variable;
@@ -681,7 +694,6 @@ int generateIf(node root, int variable, int tabs, char* funcType) {
     printf("label%d:\n", label - 1);
     variable = genFuncBody(root->child->sibling, tabs, variable, funcType, 0);
     doTabs(tabs);
-    variable++;
     if(strcmp(root->child->sibling->sibling->tag, "Null") != 0) { //else
         printf("br label %%label%d\n\n", label + 1);
         doTabs(tabs);

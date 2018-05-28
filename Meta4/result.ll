@@ -34,46 +34,47 @@ define i32 @main() {
 	%16 = sext i16 %15 to i32
 	%17 = call i32 @putchar(i32 %16)
 	%18 = call i32 @putchar(i32 10)
-	br label %label1
+	store i16 0, i16* %a, align 2
+	%19 = load i8, i8* %d, align 1
+	%20 = icmp ne i8 %19, 0
+	br i1 %20, label %label1, label %label2
 
 	label1:
-	%19 = load i32, i32* %l, align 4
-	%20 = icmp ne i32 %19, 0
-	br i1 %20, label %label2, label %label3
+	%21 = load i16, i16* %a, align 2
+	%22 = icmp ne i16 %21, 0
+	br label %label2
 
 	label2:
-	%21 = call i32 @putchar(i32 97)
-	%22 = load i32, i32* %l, align 4
-	%23 = sub i32 %22, 1
-	store i32 %23, i32* %l, align 4
-	br label %label1
+	%23 = phi i1 [ false, %0 ], [ %22, %label1 ]
+	%24 = zext i1 %23 to i16
+	store i16 %24, i16* %a, align 2
+	%25 = load i16, i16* %a, align 2
+	%26 = sext i16 %25 to i32
+	%27 = add i32 %26, 48
+	%28 = trunc i32 %27 to i16
+	store i16 %28, i16* %a, align 2
+	%29 = load i16, i16* %a, align 2
+	%30 = sext i16 %29 to i32
+	%31 = call i32 @putchar(i32 %30)
+	store i32 0, i32* %b, align 4
+	%32 = load i32, i32* %l, align 4
+	%33 = icmp ne i32 %32, 0
+	br i1 %33, label %label3, label %label4
 
 	label3:
-	%24 = load i32, i32* %b, align 4
-	%25 = icmp ne i32 %24, 0
-	br i1 %25, label %label4, label %label5
+	%34 = call i32 @putchar(i32 97)
+	%35 = load i32, i32* %l, align 4
+	%36 = sub i32 %35, 1
+	store i32 %36, i32* %l, align 4
+	br label %label4
 
 	label4:
-	%26 = call i32 @putchar(i32 98)
-	br label %label6
-
-	label5:
-	%27 = call i32 @putchar(i32 110)
-	br label %label6
-
-	label6:
-	%28 = load i32, i32* %b, align 4
-	%29 = icmp slt i32 %28, -4
-	br i1 %29, label %label7, label %label8
-
-	label7:
-	%30 = call i32 @putchar(i32 52)
-	br label %label8
-
-	label8:
-	store i32 1, i32* %b, align 4
-	%31 = load i32, i32* %b, align 4
-	ret i32 %31
+		%37 = load i32, i32* %b, align 4
+	%38 = add i32 %37, 1
+	%39 = icmp ne i32 %38, 0
+	%40 = xor i1 %39, true
+	%41 = zext i1 %40 to i32
+	ret i32 %41
 }
 
 define i32 @f7(i32 %l1, i32 %l2, i32 %l3) {
@@ -86,23 +87,19 @@ define i32 @f7(i32 %l1, i32 %l2, i32 %l3) {
 
 	label1:
 	store i8 98, i8* %g2, align 1
-	br label %label3
+	br label %label2
 
 	label2:
-	ret i32 2
-	br label %label3
+	%3 = load i32, i32* %g3, align 4
+	%4 = load i32, i32* %g1, align 4
+	%5 = icmp ne i32 %3, %4
+	br i1 %5, label %label3, label %label4
 
 	label3:
-	%4 = load i32, i32* %g3, align 4
-	%5 = load i32, i32* %g1, align 4
-	%6 = icmp ne i32 %4, %5
-	br i1 %6, label %label4, label %label5
+	store i32 2, i32* %g1, align 4
+	br label %label4
 
 	label4:
-	store i32 2, i32* %g1, align 4
-	br label %label5
-
-	label5:
 	ret i32 1
 }
 

@@ -24,7 +24,7 @@ int main(void) {
         putchar('a');
         l = l - 1;
     }
-    if(1 && 0) {
+    if((0,1) && 1) {
         putchar('b');
     }
     else {  

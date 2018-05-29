@@ -28,61 +28,64 @@ define i32 @main() {
 	br label %label1
 
 	label1:
-	%12 = load i32, i32* %l, align 4
-	%13 = icmp ne i32 %12, 0
-	br i1 %13, label %label2, label %label3
+	br label %label2
 
 	label2:
-	%14 = icmp ne i32 1, 0
-	br label %label3
+	%12 = load i32, i32* %l, align 4
+	%13 = icmp ne i32 %12, 0
+	br i1 %13, label %label3, label %label4
 
 	label3:
-	%15 = phi i1 [ false, %label1 ], [ %14, %label2 ]
-	%16 = zext i1 %15 to i32
-	%17 = icmp ne i32 %16, 0
-	br i1 %17, label %label4, label %label5
+	%14 = icmp ne i32 1, 0
+	br label %label4
 
 	label4:
+	%15 = phi i1 [ false, %label2 ], [ %14, %label3 ]
+	%16 = zext i1 %15 to i32
+	%17 = icmp ne i32 %16, 0
+	br i1 %17, label %label5, label %label6
+
+	label5:
 	%18 = call i32 @putchar(i32 97)
 	%19 = load i32, i32* %l, align 4
 	%20 = sub i32 %19, 1
 	store i32 %20, i32* %l, align 4
-	br label %label1
-
-	label5:
-	%21 = icmp ne i32 1, 0
-	br i1 %21, label %label6, label %label7
-
+	br label %label2
 	label6:
-	%22 = icmp ne i32 0, 0
-	br label %label7
+	%aux1 = alloca i32
+	store i32 1, i32* %aux1
+	%21 = load i32, i32* %aux1
+	%22 = icmp ne i32 %21, 0
+	br i1 %22, label %label7, label %label8
 
 	label7:
-	%23 = phi i1 [ false, %label5 ], [ %22, %label6 ]
-	%24 = zext i1 %23 to i32
-	%25 = icmp ne i32 %24, 0
-	br i1 %25, label %label8, label %label9
+	%23 = icmp ne i32 1, 0
+	br label %label8
 
 	label8:
-	%26 = call i32 @putchar(i32 98)
-	br label %label10
+	%24 = phi i1 [ false, %label6 ], [ %23, %label7 ]
+	%25 = zext i1 %24 to i32
+	%26 = icmp ne i32 %25, 0
+	br i1 %26, label %label9, label %label10
 
 	label9:
-	%27 = call i32 @putchar(i32 110)
-	br label %label10
-
+	ret i32 1
 	label10:
+	%27 = call i32 @putchar(i32 110)
+	br label %label11
+
+	label11:
 	%28 = load double, double* %b, align 8
 	%29 = fcmp olt double %28, -4.0
 	%30 = zext i1 %29 to i32
 	%31 = icmp ne i32 %30, 0
-	br i1 %31, label %label11, label %label12
-
-	label11:
-	%32 = call i32 @putchar(i32 52)
-	br label %label12
+	br i1 %31, label %label12, label %label13
 
 	label12:
+	%32 = call i32 @putchar(i32 52)
+	br label %label13
+
+	label13:
 	ret i32 1
 }
 

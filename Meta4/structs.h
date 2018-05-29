@@ -161,5 +161,6 @@ extern gTable symTab;
 extern node root;
 extern char codeGenFlag;
 extern int label;
+extern int temp;
 
 #endif

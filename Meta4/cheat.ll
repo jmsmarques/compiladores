@@ -52,7 +52,7 @@ define i32 @main() #0 {
   br label %12
 
 ; <label>:22                                      ; preds = %16
-  %23 = call i32 @putchar(i32 110)
+  %23 = call i32 @putchar(i32 98)
   %24 = load double, double* %b, align 8
   %25 = fcmp olt double %24, -4.000000e+00
   br i1 %25, label %26, label %28

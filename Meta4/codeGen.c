@@ -69,9 +69,15 @@ int genFuncBody(node root, int tabs, int variable, char* funcType, int flag) {
     }
     else if(strcmp(root->tag, "If") == 0) {
         variable = generateIf(root, variable, tabs, funcType);
+        if(variable < 0) {
+            return variable;
+        }
     }
     else if(strcmp(root->tag, "While") == 0) {
         variable = generateWhile(root, variable, tabs, funcType);
+        if(variable < 0) {
+            return variable;
+        }
     }
     else if(strcmp(root->tag, "Return") == 0) { //esta mal int nao consegue retornar short
         if(strcmp(root->child->tag, "Null") != 0) {
@@ -96,6 +102,7 @@ int genFuncBody(node root, int tabs, int variable, char* funcType, int flag) {
                 printf("ret void\n");
             }
         }
+        
         return variable * -1;
     }
     else {
@@ -107,7 +114,13 @@ int genFuncBody(node root, int tabs, int variable, char* funcType, int flag) {
     else if(aux) {
         return variable;
     }
-    if(variable1 > variable2) {
+    if(variable1 < 0) {
+        return variable1;
+    }
+    else if(variable2 < 0) {
+        return variable2;
+    }
+    else if(variable1 > variable2) {
         return variable1;
     }
     else {
@@ -119,6 +132,7 @@ void genFuncDef(node root) {
     genFuncDec(root, "define");
     printf(" {\n");
     label = 1;
+    temp = 1;
     genFuncBody(root->child->sibling->sibling->sibling->child, 1, 1, getLlvmType(root->child->tag), 1);
     if(strcmp(root->child->tag, "Void") == 0) {
         doTabs(1);
@@ -668,12 +682,20 @@ int genExpr(node root, int variable, int tabs, char* type) {
         variable--;
     }
     else if(strcmp(root->tag, "Comma") == 0) {
-        /*if(checkIfLiteral(root->child->sibling)) {
+        if(checkIfLiteral(root->child->sibling)) {
             aux1 = genVariable(root->child->sibling, root->child->sibling->type);
-            printf("%%%d = load %s, %s* %s, align %c\n", variable, getLlvmType(root->type), getLlvmType(root->type),
-            genVariable(root->child, getLlvmType(root->child->type)), getLlvmSize(getLlvmType(root->child->type)));
+            doTabs(tabs);
+            printf("%%aux%d = alloca %s\n", temp, getLlvmType(root->child->sibling->type));
+            doTabs(tabs);
+            printf("store %s %s, %s* %%aux%d\n", getLlvmType(root->child->sibling->type), aux1, 
+            getLlvmType(root->child->sibling->type), temp);
+            doTabs(tabs);
+            printf("%%%d = load %s, %s* %%aux%d\n", variable, getLlvmType(root->child->sibling->type),
+            getLlvmType(root->child->sibling->type), temp);
+            free(aux1);
         }
-        variable = genExpr(root->child->sibling, variable, tabs, getLlvmType(root->type));*/
+        else 
+            variable = genExpr(root->child->sibling, variable, tabs, getLlvmType(root->type));
     }
     else {
         if(checkIfId(root->tag) || checkIfUnary(root)) {
@@ -801,9 +823,12 @@ int generateWhile(node root, int variable, int tabs, char* funcType) {
         char* aux = NULL;
         aux = genVariable(root->child, root->child->type);
         if(strcmp(aux, "0") != 0) {
-            variable = genFuncBody(root->child->sibling, tabs, variable, funcType, 0);
-            doTabs(tabs);
-            printf("br label %%label%d\n", auxLabel);
+            variable = genFuncBody(root->child->sibling, tabs, variable, funcType, 1);
+            if(!(variable < 0)) {
+                doTabs(tabs);
+                printf("br label %%label%d\n", auxLabel);
+                variable *= -1;
+            }
         }
         free(aux);
         return variable;
@@ -820,8 +845,13 @@ int generateWhile(node root, int variable, int tabs, char* funcType) {
     doTabs(tabs);
     printf("label%d:\n", label);
     variable = genFuncBody(root->child->sibling, tabs, variable, funcType, 1);
-    doTabs(tabs);
-    printf("br label %%label%d\n\n", auxLabel);
+    if(variable < 0) {
+        variable *= -1;
+    }
+    else {
+        doTabs(tabs);
+        printf("br label %%label%d\n", auxLabel);
+    }
     label++;
     doTabs(tabs);
     printf("label%d:\n", label); //continue

@@ -129,12 +129,7 @@ Program
 ........Id(b)
 ........Add - double
 ..........RealLit(1.0) - double
-..........IntLit(012) - int
-......Call - int
-........Id(putchar) - int(int)
-........Add - int
-..........Id(a) - int
-..........IntLit(48) - int
+..........IntLit(12) - int
 ......Declaration
 ........Int
 ........Id(c)
@@ -162,14 +157,50 @@ Program
 ........Int
 ........Id(l)
 ........IntLit(5) - int
-......If
+......While
 ........IntLit(1) - int
+........StatList
+..........Call - int
+............Id(putchar) - int(int)
+............ChrLit('i') - int
+..........Return
+............IntLit(1) - int
+......While
+........And - int
+..........Id(l) - int
+..........IntLit(1) - int
+........StatList
+..........Call - int
+............Id(putchar) - int(int)
+............ChrLit('a') - int
+..........Store - int
+............Id(l) - int
+............Sub - int
+..............Id(l) - int
+..............IntLit(1) - int
+......If
+........And - int
+..........Comma - int
+............Comma - int
+..............IntLit(0) - int
+..............IntLit(1) - int
+............IntLit(1) - int
+..........IntLit(1) - int
 ........Call - int
 ..........Id(putchar) - int(int)
 ..........ChrLit('b') - int
 ........Call - int
 ..........Id(putchar) - int(int)
 ..........ChrLit('n') - int
+......If
+........Lt - int
+..........Id(b) - double
+..........Minus - int
+............IntLit(4) - int
+........Call - int
+..........Id(putchar) - int(int)
+..........ChrLit('4') - int
+........Null
 ......Return
 ........IntLit(1) - int
 ..FuncDefinition

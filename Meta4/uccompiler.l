@@ -14,7 +14,7 @@ int line = 1;
 int aux_line = 1;
 int aux_col = 1;
 int label;
-
+int temp;
 gTable symTab;
 table auxSymTab = NULL;
 %}

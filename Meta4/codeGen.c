@@ -681,6 +681,10 @@ int genExpr(node root, int variable, int tabs, char* type) {
         printf("%%%d = load %s, %s* %s, align %c\n", variable, getLlvmType(root->child->type), getLlvmType(root->child->type),
         genVariable(root->child, getLlvmType(root->child->type)), getLlvmSize(getLlvmType(root->child->type)));
     }
+    else if(strcmp(root->tag, "Call") == 0) {
+        variable = genCall(root, variable, tabs);
+        variable--;
+    }
     else {
         if(checkIfId(root->tag) || checkIfUnary(root)) {
             variable = genVarToTemp(root, getLlvmType(root->type), type, variable, tabs);

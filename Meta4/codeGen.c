@@ -227,10 +227,17 @@ char* extractLiteral(char* string, char* type) {
     if(strncmp(string, "Real", 4) == 0) {
         len = 8;
         aux = reduceString(string, len, len + 1);
+        if(*aux == '.') {
+            sprintf(aux, "0%s", strdup(aux));
+        }
     }
     else if(strncmp(string, "Int", 3) == 0) {
         len = 7;
         aux = reduceString(string, len, len + 1);
+        if((*aux == '0' && strlen(aux) > 1)) {
+            //printf("octal\n");
+            aux = generateOctal(aux);
+        }
         if(strcmp(type, "double") == 0) {
             sprintf(aux, "%s.0", aux);
         }
@@ -259,27 +266,6 @@ char* reduceString(char* string, int len, int end) {
     *(aux + strlen(string) - end) = '\0';
 
     return aux;
-}
-
-void genLogicOperation(char* operatorTag) {
-    if(strcmp(operatorTag, "Eq") == 0) {
-        printf("eq");
-    }
-    else if(strcmp(operatorTag, "Gt") == 0) {
-        printf("sgt");
-    }
-    else if(strcmp(operatorTag, "Lt") == 0) {
-        printf("slt");
-    }
-    else if(strcmp(operatorTag, "Ge") == 0) {
-        printf("sge");
-    }
-    else if(strcmp(operatorTag, "Le") == 0) {
-        printf("sle");
-    }
-    else if(strcmp(operatorTag, "Ne") == 0) {
-        printf("ne");
-    }
 }
 
 char* genVariable(node root, char* type) {
@@ -320,11 +306,6 @@ char* genVariable(node root, char* type) {
     }
     else {
         aux = extractLiteral(root->tag, type); //falta tratar doubles
-        if(*aux == '0' && strlen(aux) > 1) {
-            //printf("octal\n");
-            aux = generateOctal(aux);
-        }
-            
     }
 
     return aux;
@@ -540,6 +521,7 @@ int genExpr(node root, int variable, int tabs, char* type) {
         
         if(checkIfLiteral(root->child->sibling)) {
             aux2 = genVariable(root->child->sibling, realType);
+            //printf("%s\n", aux2);
         }
         else {
             aux2 = (char*)malloc(4 * sizeof(char));
@@ -1035,7 +1017,7 @@ char* generateOctal(char* string) {
         el++;
         aux1 /= 10;
     }
-    char* ret = (char*)malloc(strlen(string) * sizeof(char));
+    char* ret = (char*)malloc((strlen(string) + 3) * sizeof(char));
     sprintf(ret, "%d", transform);
     return ret;
 }

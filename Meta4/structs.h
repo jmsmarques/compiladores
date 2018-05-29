@@ -133,7 +133,6 @@ char* getLlvmType(char* string); //returns type in llvm language
 char getLlvmSize(char* string); //return nr of bytes of a type
 char* extractLiteral(char* id, char* type); //extracts literal value from string ...Lit(value)
 char* reduceString(char* string, int len, int end); //aux function for extractLiteral()
-void genLogicOperation(char* op); //prints a comparision in llvm
 char* genVariable(node root, char* type); //generates a variable with its scope or a constant
 void doTabs(int nr); //does tabs
 int genStore(node root, char* type, int variable, int tabs); //generates code for a store

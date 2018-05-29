@@ -13,46 +13,41 @@ define i32 @main() #0 {
   %1 = alloca i32, align 4
   %a = alloca i32, align 4
   %b = alloca i16, align 2
-  %k = alloca i8, align 1
+  %k = alloca double, align 8
   store i32 0, i32* %1, align 4
   store i32 0, i32* %a, align 4
   store i16 1, i16* %b, align 2
   %2 = load i16, i16* %b, align 2
   %3 = sext i16 %2 to i32
-  %4 = icmp ne i32 %3, 0
-  %5 = zext i1 %4 to i32
-  %6 = trunc i32 %5 to i8
-  store i8 %6, i8* %k, align 1
-  %7 = load i8, i8* %k, align 1
-  %8 = sext i8 %7 to i32
-  %9 = icmp sgt i32 %8, 0
-  %10 = zext i1 %9 to i32
-  %11 = icmp eq i32 %10, 0
-  %12 = zext i1 %11 to i32
+  %4 = sitofp i32 %3 to double
+  %5 = fsub double %4, 1.000000e-01
+  %6 = fadd double %5, 2.925000e+01
+  store double %6, double* %k, align 8
+  %7 = load double, double* %k, align 8
+  %8 = fcmp ogt double %7, 0.000000e+00
+  %9 = zext i1 %8 to i32
+  %10 = icmp eq i32 %9, 0
+  %11 = zext i1 %10 to i32
   store i32 -1, i32* %a, align 4
-  %13 = and i32 %12, 1
-  %14 = icmp ne i32 %13, 0
-  br i1 %14, label %16, label %15
+  %12 = and i32 %11, 1
+  %13 = icmp ne i32 %12, 0
+  br i1 %13, label %15, label %14
 
-; <label>:15                                      ; preds = %0
-  br label %16
+; <label>:14                                      ; preds = %0
+  br label %15
 
-; <label>:16                                      ; preds = %15, %0
-  %17 = phi i1 [ false, %0 ], [ true, %15 ]
-  %18 = zext i1 %17 to i32
-  %19 = trunc i32 %18 to i16
-  store i16 %19, i16* %b, align 2
-  %20 = load i16, i16* %b, align 2
-  %21 = sext i16 %20 to i32
-  %22 = add nsw i32 %21, 48
-  %23 = call i32 @putchar(i32 %22)
-  %24 = load i32, i32* %a, align 4
-  %25 = add nsw i32 %24, 48
-  %26 = call i32 @putchar(i32 %25)
-  %27 = load i8, i8* %k, align 1
-  %28 = sext i8 %27 to i32
-  %29 = add nsw i32 %28, 48
-  %30 = call i32 @putchar(i32 %29)
+; <label>:15                                      ; preds = %14, %0
+  %16 = phi i1 [ false, %0 ], [ true, %14 ]
+  %17 = zext i1 %16 to i32
+  %18 = trunc i32 %17 to i16
+  store i16 %18, i16* %b, align 2
+  %19 = load i16, i16* %b, align 2
+  %20 = sext i16 %19 to i32
+  %21 = add nsw i32 %20, 48
+  %22 = call i32 @putchar(i32 %21)
+  %23 = load i32, i32* %a, align 4
+  %24 = add nsw i32 %23, 48
+  %25 = call i32 @putchar(i32 %24)
   ret i32 1
 }
 

@@ -8,75 +8,58 @@ declare i32 @putchar(i32)
 define i32 @main() {
 	%a = alloca i32, align 4
 	store i32 0, i32* %a, align 4
-	%b = alloca i16, align 2
-	store i16 1, i16* %b, align 2
-	%k = alloca i8, align 1
-	%1 = icmp ne i32 1, 0
-	br i1 %1, label %label1, label %label2
+	%b = alloca double, align 8
+	%1 = fadd double 1.0, 10.0
+	store double %1, double* %b, align 8
+	%k = alloca double, align 8
+	%2 = load double, double* %b, align 8
+	%3 = fsub double %2, 0.1
+	%4 = fmul double 2.25, 5.2
+	%5 = fdiv double %4, 0.4
+	%6 = fadd double %3, %5
+	store double %6, double* %k, align 8
+	%7 = load double, double* %k, align 8
+	%8 = fcmp ogt double %7, 0.0
+	%9 = zext i1 %8 to i32
+	%10 = icmp eq i32 %9, 0
+	%11 = zext i1 %10 to i32
+	%12 = sub i32 2, 3
+	store i32 %12, i32* %a, align 4
+	%13 = load i32, i32* %a, align 4
+	%14 = icmp sge i32 1, %13
+	%15 = zext i1 %14 to i32
+	%16 = and i32 %11, %15
+	%17 = icmp ne i32 %16, 0
+	%18 = xor i1 %17, true
+	%19 = zext i1 %18 to i32
+	%20 = icmp ne i32 %19, 0
+	br i1 %20, label %label1, label %label2
 
 	label1:
-	%2 = load i16, i16* %b, align 2
-	%3 = sext i16 %2 to i32
-	%4 = call i32 @putchar(i32 97)
-	%5 = add i32 %3, %4
-	%6 = icmp ne i32 %5, 0
+	%21 = icmp eq i32 -2, 2
+	%22 = zext i1 %21 to i32
+	%23 = or i32 %22, 5
+	%24 = icmp ne i32 %23, 0
 	br label %label2
 
 	label2:
-	%7 = phi i1 [ false, %0 ], [ %6, %label1 ]
-	%8 = zext i1 %7 to i8
-	store i8 %8, i8* %k, align 1
-	%9 = load i8, i8* %k, align 1
-	%10 = sext i8 %9 to i32
-	%11 = icmp sgt i32 %10, 0
-	%12 = zext i1 %11 to i32
-	%13 = icmp eq i32 %12, 0
-	%14 = zext i1 %13 to i32
-	%15 = sub i32 2, 3
-	store i32 %15, i32* %a, align 4
-	%16 = load i32, i32* %a, align 4
-	%17 = icmp sge i32 1, %16
-	%18 = zext i1 %17 to i32
-	%19 = and i32 %14, %18
-	%20 = icmp ne i32 %19, 0
-	%21 = xor i1 %20, true
-	%22 = zext i1 %21 to i32
-	%23 = icmp ne i32 %22, 0
-	br i1 %23, label %label3, label %label4
+	%25 = phi i1 [ false, %0 ], [ %24, %label1 ]
+	%26 = zext i1 %25 to i32
+	%27 = icmp ne i32 %26, 0
+	br i1 %27, label %label3, label %label4
 
 	label3:
-	%24 = icmp eq i32 -2, 2
-	%25 = zext i1 %24 to i32
-	%26 = or i32 %25, 5
-	%27 = icmp ne i32 %26, 0
+	%28 = xor i32 -4, 5
+	%29 = icmp ne i32 %28, 0
 	br label %label4
 
 	label4:
-	%28 = phi i1 [ false, %label2 ], [ %27, %label3 ]
-	%29 = zext i1 %28 to i32
-	%30 = icmp ne i32 %29, 0
-	br i1 %30, label %label5, label %label6
-
-	label5:
-	%31 = xor i32 -4, 5
-	%32 = icmp ne i32 %31, 0
-	br label %label6
-
-	label6:
-	%33 = phi i1 [ false, %label4 ], [ %32, %label5 ]
-	%34 = zext i1 %33 to i16
-	store i16 %34, i16* %b, align 2
-	%35 = load i16, i16* %b, align 2
-	%36 = sext i16 %35 to i32
-	%37 = add i32 %36, 48
-	%38 = call i32 @putchar(i32 %37)
-	%39 = load i32, i32* %a, align 4
-	%40 = add i32 %39, 48
-	%41 = call i32 @putchar(i32 %40)
-	%42 = load i8, i8* %k, align 1
-	%43 = sext i8 %42 to i32
-	%44 = add i32 %43, 48
-	%45 = call i32 @putchar(i32 %44)
+	%30 = phi i1 [ false, %label2 ], [ %29, %label3 ]
+	%31 = sitofp i1 %30 to double
+	store double %31, double* %b, align 8
+	%32 = load i32, i32* %a, align 4
+	%33 = add i32 %32, 48
+	%34 = call i32 @putchar(i32 %33)
 	ret i32 1
 }
 

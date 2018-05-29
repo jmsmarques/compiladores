@@ -71,7 +71,7 @@ int genFuncBody(node root, int tabs, int variable, char* funcType, int flag) {
         variable = generateIf(root, variable, tabs, funcType);
     }
     else if(strcmp(root->tag, "While") == 0) {
-        variable = generateWhile(root, variable, tabs, funcType);
+        //variable = generateWhile(root, variable, tabs, funcType);
     }
     else if(strcmp(root->tag, "Return") == 0) { //esta mal int nao consegue retornar short
         if(strcmp(root->child->tag, "Null") != 0) {
@@ -86,7 +86,6 @@ int genFuncBody(node root, int tabs, int variable, char* funcType, int flag) {
             }
             else {
                 variable = genExpr(root->child, variable, tabs, getLlvmType(funcType));
-                doTabs(tabs);
                 printf("ret %s %%%d\n", funcType, variable);
                 variable++;
             }
@@ -292,7 +291,9 @@ char* genVariable(node root, char* type) {
         }
         else {
             aux = (char*)malloc((strlen(root->child->tag)) * sizeof(char));
-            sprintf(aux, "-%s", genVariable(root->child, type));
+            aux = genVariable(root->child, type);
+            if(strcmp(aux, "0") != 0)
+                sprintf(aux, "-%s", strdup(aux));
         }
     }
     else if(strcmp(root->tag, "Plus") == 0) {
@@ -412,7 +413,6 @@ int checkIfUnary(node root) {
 int genCall(node root, int variable, int tabs) {
     node params = root->child->sibling;
     char* aux = strdup("");
-    doTabs(tabs);
     while(params) {
         if(checkIfId(params->tag) || checkIfUnary(params)) {
             variable = genVarToTemp(params, getLlvmType(params->type), "i32"/*mudar isto*/,variable, tabs);
@@ -446,6 +446,7 @@ int genVarToTemp(node root, char* type, char* newType, int variable, int tabs) {
     if(strcmp(root->tag, "Not") == 0) {
         type = getLlvmType(root->child->type);
     }
+    doTabs(tabs);
     printf("%%%d = load %s, %s* %s, align %c\n", variable, type, 
     type, genVariable(root, type), getLlvmSize(type));
     
@@ -682,7 +683,6 @@ int genExpr(node root, int variable, int tabs, char* type) {
     }
     else {
         if(checkIfId(root->tag) || checkIfUnary(root)) {
-            doTabs(tabs);
             variable = genVarToTemp(root, getLlvmType(root->type), type, variable, tabs);
         }
         else if(strcmp(root->tag, "Minus") == 0) {

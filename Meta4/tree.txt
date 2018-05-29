@@ -48,8 +48,8 @@ c3	double
 ===== Function main Symbol Table =====
 return	int
 a	int
-b	int
-k	int
+b	short
+k	char
 
 ===== Function empty Symbol Table =====
 return	int
@@ -123,27 +123,58 @@ Program
 ........Id(a)
 ........IntLit(1) - int
 ......Declaration
-........Int
+........Short
 ........Id(b)
 ........IntLit(1) - int
 ......Declaration
-........Int
+........Char
 ........Id(k)
-........IntLit(0) - int
-......Store - int
-........Id(b) - int
-........Or - int
-..........IntLit(1) - int
-..........Ge - int
-............Not - int
-..............IntLit(0) - int
-............Store - int
-..............Id(a) - int
+........And - int
+..........Id(a) - int
+..........Id(b) - short
+......Store - short
+........Id(b) - short
+........And - int
+..........Not - int
+............Or - int
+..............Eq - int
+................Gt - int
+..................Id(k) - char
+..................IntLit(0) - int
+................IntLit(0) - int
+..............Ge - int
+................Not - int
+..................IntLit(0) - int
+................Store - int
+..................Id(a) - int
+..................Sub - int
+....................IntLit(2) - int
+....................IntLit(3) - int
+..........BitWiseOr - int
+............Eq - int
+..............Minus - int
+................IntLit(2) - int
 ..............IntLit(2) - int
+............BitWiseXor - int
+..............BitWiseAnd - int
+................IntLit(5) - int
+................IntLit(4) - int
+..............IntLit(5) - int
 ......Call - int
 ........Id(putchar) - int(int)
-........Not - int
-..........Id(b) - int
+........Add - int
+..........Id(b) - short
+..........IntLit(48) - int
+......Call - int
+........Id(putchar) - int(int)
+........Add - int
+..........Id(a) - int
+..........IntLit(48) - int
+......Call - int
+........Id(putchar) - int(int)
+........Add - int
+..........Id(k) - char
+..........IntLit(48) - int
 ......Return
 ........IntLit(1) - int
 ..FuncDefinition

@@ -10,12 +10,16 @@ void f9(int, char, double);
 char hue(int, double);
 
 int main(void) {
-    int a = 1;
-    int b = 1;
-    int k = a && b;
-    b = !(k>0 == 0 || !0 >= (a= 2 - 3)) && 2 == 2;
+    int a = -0;
+    short b = 1;
+    char k = !-0 && b;
+    b = !(k>0 == 0 & !0 >= (a= 2 - 3)) && -2 == 2 | 5 && -4 ^ 5;
     //b = b + 48;
-    putchar(-!!((k>0 == 0 || !0 >= (a= 2 - 3)) && 2 == 2) + 49);
+    //a = b = k = 2;
+    //b = b + 48;
+    putchar(b + 48);
+    putchar(a + 48);
+    putchar(k + 48);
     return 1;
 }
 

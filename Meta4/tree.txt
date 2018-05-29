@@ -48,8 +48,9 @@ c3	double
 ===== Function main Symbol Table =====
 return	int
 a	int
-b	short
-k	char
+b	double
+c	int
+l	int
 
 ===== Function empty Symbol Table =====
 return	int
@@ -122,67 +123,53 @@ Program
 ........Int
 ........Id(a)
 ........Minus - int
-..........IntLit(0) - int
+..........IntLit(111) - int
 ......Declaration
-........Short
+........Double
 ........Id(b)
-........IntLit(1) - int
-......Declaration
-........Char
-........Id(k)
-........And - int
-..........Not - int
-............Minus - int
-..............IntLit(0) - int
-..........Add - int
-............Id(b) - short
-............Call - int
-..............Id(putchar) - int(int)
-..............ChrLit('a') - int
-......Store - short
-........Id(b) - short
-........And - int
-..........And - int
-............Not - int
-..............BitWiseAnd - int
-................Eq - int
-..................Gt - int
-....................Id(k) - char
-....................IntLit(0) - int
-..................IntLit(0) - int
-................Ge - int
-..................Not - int
-....................IntLit(0) - int
-..................Store - int
-....................Id(a) - int
-....................Sub - int
-......................IntLit(2) - int
-......................IntLit(3) - int
-............BitWiseOr - int
-..............Eq - int
-................Minus - int
-..................IntLit(2) - int
-................IntLit(2) - int
-..............IntLit(5) - int
-..........BitWiseXor - int
-............Minus - int
-..............IntLit(4) - int
-............IntLit(5) - int
-......Call - int
-........Id(putchar) - int(int)
-........Add - int
-..........Id(b) - short
-..........IntLit(48) - int
+........Add - double
+..........RealLit(1.0) - double
+..........IntLit(012) - int
 ......Call - int
 ........Id(putchar) - int(int)
 ........Add - int
 ..........Id(a) - int
 ..........IntLit(48) - int
+......Declaration
+........Int
+........Id(c)
+........IntLit(108) - int
 ......Call - int
 ........Id(putchar) - int(int)
-........Add - int
-..........Id(k) - char
-..........IntLit(48) - int
+........ChrLit('h') - int
+......Call - int
+........Id(putchar) - int(int)
+........ChrLit('e') - int
+......Call - int
+........Id(putchar) - int(int)
+........Id(c) - int
+......Call - int
+........Id(putchar) - int(int)
+........Id(c) - int
+......Call - int
+........Id(putchar) - int(int)
+........Minus - int
+..........Id(a) - int
+......Call - int
+........Id(putchar) - int(int)
+........IntLit(10) - int
+......Declaration
+........Int
+........Id(l)
+........IntLit(5) - int
+......If
+........IntLit(1) - int
+........Call - int
+..........Id(putchar) - int(int)
+..........ChrLit('b') - int
+........Call - int
+..........Id(putchar) - int(int)
+..........ChrLit('n') - int
 ......Return
 ........IntLit(1) - int
 ..FuncDefinition

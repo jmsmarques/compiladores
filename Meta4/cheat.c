@@ -10,17 +10,30 @@ void f9(int, char, double);
 char hue(int, double);
 
 int main(void) {
-    int a = -0;
-    short b = 1;
-    double k = b - 0.1 + 2.25 * 5.2 / 0.4;
+    int a = -111;
+    double b = 1.0 + 12;
+    int c = 108;
+    putchar('h');
+    putchar('e');
+    putchar(c);
+    putchar(c);
+    putchar(-a);
+    putchar(10);
+    int l = 5;
+    while(l && 1) {
+        putchar('a');
+        l = l - 1;
+    }
+    if(1 && 0) {
+        putchar('b');
+    }
+    else {  
+        putchar('n');
+    }
     
-    k = k > 0 <= 0.0 > 2.53e45;
-    //b = !(k>0 == 0 & !0 >= (a= 2 - 3)) && -2 == 2 | 5 && -4 ^ 5;
-    //b = b + 48;
-    //a = b = k = 2;
-    //b = b + 48;
-    putchar(b + 48);
-    putchar(a + 48);
+    if(b < -4) {
+        putchar('4');
+    }
     return 1;
 }
 

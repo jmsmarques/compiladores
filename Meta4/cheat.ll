@@ -12,42 +12,56 @@ target triple = "x86_64-pc-linux-gnu"
 define i32 @main() #0 {
   %1 = alloca i32, align 4
   %a = alloca i32, align 4
-  %b = alloca i16, align 2
-  %k = alloca double, align 8
+  %b = alloca double, align 8
+  %c = alloca i32, align 4
+  %l = alloca i32, align 4
   store i32 0, i32* %1, align 4
-  store i32 0, i32* %a, align 4
-  store i16 1, i16* %b, align 2
-  %2 = load i16, i16* %b, align 2
-  %3 = sext i16 %2 to i32
-  %4 = sitofp i32 %3 to double
-  %5 = fsub double %4, 1.000000e-01
-  %6 = fadd double %5, 2.925000e+01
-  store double %6, double* %k, align 8
-  %7 = load double, double* %k, align 8
-  %8 = fcmp ogt double %7, 0.000000e+00
-  %9 = zext i1 %8 to i32
-  %10 = icmp eq i32 %9, 0
-  %11 = zext i1 %10 to i32
-  store i32 -1, i32* %a, align 4
-  %12 = and i32 %11, 1
-  %13 = icmp ne i32 %12, 0
-  br i1 %13, label %15, label %14
+  store i32 -111, i32* %a, align 4
+  store double 1.300000e+01, double* %b, align 8
+  store i32 108, i32* %c, align 4
+  %2 = call i32 @putchar(i32 104)
+  %3 = call i32 @putchar(i32 101)
+  %4 = load i32, i32* %c, align 4
+  %5 = call i32 @putchar(i32 %4)
+  %6 = load i32, i32* %c, align 4
+  %7 = call i32 @putchar(i32 %6)
+  %8 = load i32, i32* %a, align 4
+  %9 = sub nsw i32 0, %8
+  %10 = call i32 @putchar(i32 %9)
+  %11 = call i32 @putchar(i32 10)
+  store i32 5, i32* %l, align 4
+  br label %12
 
-; <label>:14                                      ; preds = %0
-  br label %15
+; <label>:12                                      ; preds = %18, %0
+  %13 = load i32, i32* %l, align 4
+  %14 = icmp ne i32 %13, 0
+  br i1 %14, label %15, label %16
 
-; <label>:15                                      ; preds = %14, %0
-  %16 = phi i1 [ false, %0 ], [ true, %14 ]
-  %17 = zext i1 %16 to i32
-  %18 = trunc i32 %17 to i16
-  store i16 %18, i16* %b, align 2
-  %19 = load i16, i16* %b, align 2
-  %20 = sext i16 %19 to i32
-  %21 = add nsw i32 %20, 48
-  %22 = call i32 @putchar(i32 %21)
-  %23 = load i32, i32* %a, align 4
-  %24 = add nsw i32 %23, 48
-  %25 = call i32 @putchar(i32 %24)
+; <label>:15                                      ; preds = %12
+  br label %16
+
+; <label>:16                                      ; preds = %15, %12
+  %17 = phi i1 [ false, %12 ], [ true, %15 ]
+  br i1 %17, label %18, label %22
+
+; <label>:18                                      ; preds = %16
+  %19 = call i32 @putchar(i32 97)
+  %20 = load i32, i32* %l, align 4
+  %21 = sub nsw i32 %20, 1
+  store i32 %21, i32* %l, align 4
+  br label %12
+
+; <label>:22                                      ; preds = %16
+  %23 = call i32 @putchar(i32 110)
+  %24 = load double, double* %b, align 8
+  %25 = fcmp olt double %24, -4.000000e+00
+  br i1 %25, label %26, label %28
+
+; <label>:26                                      ; preds = %22
+  %27 = call i32 @putchar(i32 52)
+  br label %28
+
+; <label>:28                                      ; preds = %26, %22
   ret i32 1
 }
 

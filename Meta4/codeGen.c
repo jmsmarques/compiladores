@@ -730,6 +730,8 @@ int generateIf(node root, int variable, int tabs, char* funcType) {
             printf("%%%d = icmp ne i32 %%%d, 0\n", variable, variable - 1);
         }
     }*/
+    int auxLabel;
+    int auxLabel1;
     if(checkIfLiteral(root->child)) {
         char* aux = NULL;
         aux = genVariable(root->child, root->child->type);
@@ -752,33 +754,36 @@ int generateIf(node root, int variable, int tabs, char* funcType) {
     doTabs(tabs);
     printf("br i1 %%%d, label %%label%d, label %%label%d\n\n", variable, label, label + 1);
     variable++;
-    label++;
+    label += 2;
+    auxLabel = label - 1;
     doTabs(tabs);
-    printf("label%d:\n", label - 1);
+    printf("label%d:\n", label - 2);
     variable = genFuncBody(root->child->sibling, tabs, variable, funcType, 0);
     if(strcmp(root->child->sibling->sibling->tag, "Null") != 0) { //else
+        auxLabel1 = label;
+        label++; 
         if(variable < 0) {
             variable *= -1;
         }
         else {
             doTabs(tabs);
-            printf("br label %%label%d\n\n", label + 1);
+            printf("br label %%label%d\n\n", auxLabel1);
         }
         doTabs(tabs);
-        printf("label%d:\n", label);
+        printf("label%d:\n", auxLabel);
+        //label++;
         variable = genFuncBody(root->child->sibling->sibling, tabs, variable, funcType, 1);
-        label++;
          
         if(variable < 0) {
             variable *= -1;
         }
         else {
             doTabs(tabs);
-            printf("br label %%label%d\n\n", label);
+            printf("br label %%label%d\n\n", auxLabel1);
         }
         
         doTabs(tabs);
-        printf("label%d:\n", label); //continue
+        printf("label%d:\n", auxLabel1); //continue
     }
     else { //no else   
         if(variable < 0) {
@@ -786,17 +791,18 @@ int generateIf(node root, int variable, int tabs, char* funcType) {
         }
         else {
             doTabs(tabs);
-            printf("br label %%label%d\n\n", label);
+            printf("br label %%label%d\n\n", auxLabel);
         }
         doTabs(tabs);
-        printf("label%d:\n", label);
+        printf("label%d:\n", auxLabel);
     }
-    label++;
+    //label++;
     return variable;
 }
 
 int generateWhile(node root, int variable, int tabs, char* funcType) {
     int auxLabel;
+    int auxLabel1;
     doTabs(tabs);
     printf("br label %%label%d\n\n", label);
     doTabs(tabs);
@@ -844,7 +850,9 @@ int generateWhile(node root, int variable, int tabs, char* funcType) {
     variable++;
     doTabs(tabs);
     printf("label%d:\n", label);
-    variable = genFuncBody(root->child->sibling, tabs, variable, funcType, 1);
+    label += 2;
+    auxLabel1 = label - 1;
+    variable = genFuncBody(root->child->sibling, tabs + 1, variable, funcType, 1);
     if(variable < 0) {
         variable *= -1;
     }
@@ -852,10 +860,9 @@ int generateWhile(node root, int variable, int tabs, char* funcType) {
         doTabs(tabs);
         printf("br label %%label%d\n", auxLabel);
     }
-    label++;
     doTabs(tabs);
-    printf("label%d:\n", label); //continue
-    label++;
+    printf("label%d:\n", auxLabel1); //continue
+    //label++;
     return variable;
 }
 

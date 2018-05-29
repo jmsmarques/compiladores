@@ -158,13 +158,26 @@ Program
 ........Id(l)
 ........IntLit(5) - int
 ......While
-........IntLit(1) - int
+........Lt - int
+..........Id(l) - int
+..........IntLit(1000) - int
 ........StatList
 ..........Call - int
 ............Id(putchar) - int(int)
-............ChrLit('i') - int
-..........Return
-............IntLit(1) - int
+............ChrLit('o') - int
+..........Store - int
+............Id(l) - int
+............Add - int
+..............Id(l) - int
+..............IntLit(1) - int
+..........If
+............Gt - int
+..............Id(l) - int
+..............IntLit(500) - int
+............Call - int
+..............Id(putchar) - int(int)
+..............ChrLit('i') - int
+............Null
 ......While
 ........And - int
 ..........Id(l) - int
@@ -178,29 +191,6 @@ Program
 ............Sub - int
 ..............Id(l) - int
 ..............IntLit(1) - int
-......If
-........And - int
-..........Comma - int
-............Comma - int
-..............IntLit(0) - int
-..............IntLit(1) - int
-............IntLit(1) - int
-..........IntLit(1) - int
-........Call - int
-..........Id(putchar) - int(int)
-..........ChrLit('b') - int
-........Call - int
-..........Id(putchar) - int(int)
-..........ChrLit('n') - int
-......If
-........Lt - int
-..........Id(b) - double
-..........Minus - int
-............IntLit(4) - int
-........Call - int
-..........Id(putchar) - int(int)
-..........ChrLit('4') - int
-........Null
 ......Return
 ........IntLit(1) - int
 ..FuncDefinition

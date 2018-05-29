@@ -10,29 +10,13 @@ void f9(int, char, double);
 char hue(int, double);
 
 int main(void) {
-    int a = -111;
-    double b = 1.0 + 12;
-    int c = 108;
-    putchar('h');
-    putchar('e');
-    putchar(c);
-    putchar(c);
-    putchar(-a);
-    putchar(10);
     int l = 5;
-    while(l && 1) {
-        putchar('a');
-        l = l - 1;
-    }
-    if((0,1) && 1) {
-        putchar('b');
-    }
-    else {  
-        putchar('n');
-    }
-    
-    if(b < -4) {
-        putchar('4');
+    while(l < 1000) {
+        putchar('o');
+        l = l + 1;
+        if(l > 500) {
+            putchar('i');
+        }
     }
     return 1;
 }

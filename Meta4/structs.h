@@ -153,6 +153,8 @@ int powAux(int nr, int el); //power function
 int checkIfLiteral(node root); //check if node is literal
 char* checkType(char* type1, char* type2); //checks type for comparisions >...
 char* generateOctal(char* string); //transforms octal to int
+char* extractParamType(char * string); //extracts function parameters type
+char* getFuncParams(char* args, node params, int variable); //gets function param types
 
 extern char flag;
 extern char printFlag;

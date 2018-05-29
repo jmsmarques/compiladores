@@ -82,12 +82,7 @@ int genFuncBody(node root, int tabs, int variable, char* funcType, int flag) {
     else if(strcmp(root->tag, "Return") == 0) { //esta mal int nao consegue retornar short
         if(strcmp(root->child->tag, "Null") != 0) {
             doTabs(tabs);
-            if(checkIfId(root->child->tag) || checkIfUnary(root->child)) {
-                variable = genVarToTemp(root->child, getLlvmType(root->child->type), funcType, variable, tabs);
-                printf("ret %s %%%d\n", funcType, variable);
-                variable++;
-            }
-            else if(checkIfLiteral(root->child)) {
+            if(checkIfLiteral(root->child)) {
                 printf("ret %s %s\n", funcType, genVariable(root->child, funcType));
             }
             else {
@@ -407,33 +402,37 @@ int checkIfUnary(node root) {
 
 int genCall(node root, int variable, int tabs) {
     node params = root->child->sibling;
+    char* token;
     char* aux = strdup("");
-    while(params) {
-        if(checkIfId(params->tag) || checkIfUnary(params)) {
-            variable = genVarToTemp(params, getLlvmType(params->type), "i32"/*mudar isto*/,variable, tabs);
-            aux = (char*)realloc(aux, (strlen(aux) + strlen(params->type) + strlen(params->tag) + 2) * sizeof(char));
-            sprintf(aux, "%s%s %%%d", aux, "i32"/*mudar isto -> getLlvmType(params->type)*/, variable);
-            variable++;
-        }
-        else if(checkIfLiteral(params)){
+    char* paramsType = extractParamType(root->child->type);
+    token = strtok(paramsType, ",");
+    while(params && token) {
+        if(checkIfLiteral(params)){
             aux = (char*)realloc(aux, (strlen(aux) + strlen(params->type) + strlen(params->tag)) * sizeof(char));
-            sprintf(aux, "%s%s %s", aux, getLlvmType(params->type), genVariable(params, root->type)); //esta mal
+            sprintf(aux, "%s%s %s", aux, getLlvmType(token), genVariable(params, getLlvmType(token))); //esta mal
         }
         else {
-            variable = genExpr(params, variable, tabs, getLlvmType(params->type));
+            variable = genExpr(params, variable, tabs, getLlvmType(token));
             aux = (char*)realloc(aux, (strlen(aux) + strlen(params->type) + strlen(params->tag) + 5) * sizeof(char));
-            sprintf(aux, "%s%s %%%d", aux, getLlvmType(params->type), variable); //esta mal
+            sprintf(aux, "%s%s %%%d", aux, getLlvmType(token), variable); //esta mal
             variable++;
         }
         
         if(params->sibling)
             sprintf(aux, "%s,", aux);
         params = params->sibling;
+        token = strtok(NULL, ",");
     }
     doTabs(tabs);
-    printf("%%%d = call %s @%s(%s)\n", variable, getLlvmType(root->type), removeId(root->child->tag), aux);
-    variable++;
+    if(strcmp(root->type, "void") != 0) {
+        printf("%%%d = call %s @%s(%s)\n", variable, getLlvmType(root->type), removeId(root->child->tag), aux);
+        variable++;
+    }
+    else {
+        printf("call %s @%s(%s)\n", getLlvmType(root->type), removeId(root->child->tag), aux);
+    }
     free(aux);
+    free(token);
     return variable;
 }
 
@@ -852,7 +851,7 @@ int generateWhile(node root, int variable, int tabs, char* funcType) {
     printf("label%d:\n", label);
     label += 2;
     auxLabel1 = label - 1;
-    variable = genFuncBody(root->child->sibling, tabs + 1, variable, funcType, 1);
+    variable = genFuncBody(root->child->sibling, tabs, variable, funcType, 1);
     if(variable < 0) {
         variable *= -1;
     }
@@ -1098,4 +1097,46 @@ char* generateOctal(char* string) {
     char* ret = (char*)malloc((strlen(string) + 3) * sizeof(char));
     sprintf(ret, "%d", transform);
     return ret;
+}
+
+char* extractParamType(char * string) {
+    int rem;
+    rem = strlen(checkVarType(string));
+    char* result = (char*)malloc((strlen(string) + 1) * sizeof(char));
+    strncpy(result, string + rem + 1, strlen(string) - 2);
+    *(result + strlen(string) - rem - 2) = '\0';
+    return result;
+}
+
+char* getFuncParams(char* args, node params, int variable) {
+    //genCall
+    /*char* result = (char*)malloc(sizeof(char));
+    char* token;
+    int rem;
+    rem = strlen(checkVarType(args));
+    char* aux1 = (char*)malloc((strlen(args) + 1) * sizeof(char));
+    strncpy(aux1, args + rem + 1, strlen(args) - 2);
+    *(aux1 + strlen(args) - rem - 2) = '\0';
+    token = strtok(aux1, ",");
+    while(token && params) {
+        
+        if(checkIfLiteral(params)){
+            result = (char*)realloc(result, (strlen(result) + strlen(params->type) + strlen(params->tag)) * sizeof(char));
+            sprintf(result, "%s%s %s", result, getLlvmType(token), genVariable(params, root->type)); //esta mal
+        }
+        else {
+            variable = genExpr(params, variable, tabs, getLlvmType(params->type));
+            result = (char*)realloc(result, (strlen(result) + strlen(params->type) + strlen(params->tag) + 5) * sizeof(char));
+            sprintf(result, "%s%s %%%d", result, getLlvmType(params->type), variable); //esta mal
+            variable++;
+        }
+        
+        if(params->sibling)
+            sprintf(result, "%s,", result);
+
+
+        token = strtok(NULL, ",");
+        params = params->sibling;
+    }*/
+    return "oi";
 }

@@ -11,13 +11,14 @@ char hue(int, double);
 
 int main(void) {
     int l = 5;
-    while(l < 1000) {
+    /*while(l < 1000) {
         putchar('o');
         l = l + 1;
         if(l > 500) {
             putchar('i');
         }
-    }
+    }*/
+    f9(1, 1, 1);
     return 1;
 }
 
@@ -25,15 +26,17 @@ int f7(int l1, int l2, int l3) {
     int g1;
     int g3;
     char g2;
-    if(g1 < 1) {
-        g2 = 'b';
+    if(l1 < 1) {
+        putchar('a');
     }
     else {
+        if(l1 > 0)
+            putchar('b');
         return 2;
     }
-    if(g3 != g1) {
+    /*if(g3 != g1) {
         g1 = 2;
-    }
+    }*/
     return 1;
 }
 

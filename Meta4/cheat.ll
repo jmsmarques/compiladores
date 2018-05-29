@@ -14,34 +14,37 @@ define i32 @main() #0 {
   %l = alloca i32, align 4
   store i32 0, i32* %1, align 4
   store i32 5, i32* %l, align 4
-  br label %2
-
-; <label>:2                                       ; preds = %13, %0
-  %3 = load i32, i32* %l, align 4
-  %4 = icmp slt i32 %3, 1000
-  br i1 %4, label %5, label %14
-
-; <label>:5                                       ; preds = %2
-  %6 = call i32 @putchar(i32 111)
-  %7 = load i32, i32* %l, align 4
-  %8 = add nsw i32 %7, 1
-  store i32 %8, i32* %l, align 4
-  %9 = load i32, i32* %l, align 4
-  %10 = icmp sgt i32 %9, 500
-  br i1 %10, label %11, label %13
-
-; <label>:11                                      ; preds = %5
-  %12 = call i32 @putchar(i32 105)
-  br label %13
-
-; <label>:13                                      ; preds = %11, %5
-  br label %2
-
-; <label>:14                                      ; preds = %2
+  call void @f9(i32 1, i8 signext 1, double 1.000000e+00)
   ret i32 1
 }
 
-declare i32 @putchar(i32) #1
+; Function Attrs: nounwind uwtable
+define void @f9(i32 %j1, i8 signext %j2, double %j3) #0 {
+  %1 = alloca i32, align 4
+  %2 = alloca i8, align 1
+  %3 = alloca double, align 8
+  %c1 = alloca i32, align 4
+  %c2 = alloca i32, align 4
+  %c4 = alloca i16, align 2
+  %c3 = alloca double, align 8
+  store i32 %j1, i32* %1, align 4
+  store i8 %j2, i8* %2, align 1
+  store double %j3, double* %3, align 8
+  store i32 3, i32* %c2, align 4
+  store i16 2, i16* %c4, align 2
+  store double 1.200000e+00, double* %c3, align 8
+  %4 = load i32, i32* %c2, align 4
+  %5 = sitofp i32 %4 to double
+  %6 = load double, double* %c3, align 8
+  %7 = fmul double %5, %6
+  %8 = load i32, i32* %c1, align 4
+  %9 = sitofp i32 %8 to double
+  %10 = fdiv double %7, %9
+  %11 = fadd double 5.000000e+00, %10
+  %12 = fptosi double %11 to i16
+  store i16 %12, i16* %c4, align 2
+  ret void
+}
 
 ; Function Attrs: nounwind uwtable
 define i32 @f7(i32 %l1, i32 %l2, i32 %l3) #0 {
@@ -55,36 +58,37 @@ define i32 @f7(i32 %l1, i32 %l2, i32 %l3) #0 {
   store i32 %l1, i32* %2, align 4
   store i32 %l2, i32* %3, align 4
   store i32 %l3, i32* %4, align 4
-  %5 = load i32, i32* %g1, align 4
+  %5 = load i32, i32* %2, align 4
   %6 = icmp slt i32 %5, 1
-  br i1 %6, label %7, label %8
+  br i1 %6, label %7, label %9
 
 ; <label>:7                                       ; preds = %0
-  store i8 98, i8* %g2, align 1
-  br label %9
-
-; <label>:8                                       ; preds = %0
-  store i32 2, i32* %1, align 4
+  %8 = call i32 @putchar(i32 97)
   br label %15
 
-; <label>:9                                       ; preds = %7
-  %10 = load i32, i32* %g3, align 4
-  %11 = load i32, i32* %g1, align 4
-  %12 = icmp ne i32 %10, %11
-  br i1 %12, label %13, label %14
+; <label>:9                                       ; preds = %0
+  %10 = load i32, i32* %2, align 4
+  %11 = icmp sgt i32 %10, 0
+  br i1 %11, label %12, label %14
 
-; <label>:13                                      ; preds = %9
-  store i32 2, i32* %g1, align 4
+; <label>:12                                      ; preds = %9
+  %13 = call i32 @putchar(i32 98)
   br label %14
 
-; <label>:14                                      ; preds = %13, %9
-  store i32 1, i32* %1, align 4
-  br label %15
+; <label>:14                                      ; preds = %12, %9
+  store i32 2, i32* %1, align 4
+  br label %16
 
-; <label>:15                                      ; preds = %14, %8
-  %16 = load i32, i32* %1, align 4
-  ret i32 %16
+; <label>:15                                      ; preds = %7
+  store i32 1, i32* %1, align 4
+  br label %16
+
+; <label>:16                                      ; preds = %15, %14
+  %17 = load i32, i32* %1, align 4
+  ret i32 %17
 }
+
+declare i32 @putchar(i32) #1
 
 ; Function Attrs: nounwind uwtable
 define signext i8 @jot(i32 %h0, i8 signext %h1, double %h2) #0 {
@@ -119,34 +123,6 @@ define signext i8 @jot(i32 %h0, i8 signext %h1, double %h2) #0 {
   %15 = trunc i32 %14 to i16
   store i16 %15, i16* %c3, align 2
   ret i8 103
-}
-
-; Function Attrs: nounwind uwtable
-define void @f9(i32 %j1, i8 signext %j2, double %j3) #0 {
-  %1 = alloca i32, align 4
-  %2 = alloca i8, align 1
-  %3 = alloca double, align 8
-  %c1 = alloca i32, align 4
-  %c2 = alloca i32, align 4
-  %c4 = alloca i16, align 2
-  %c3 = alloca double, align 8
-  store i32 %j1, i32* %1, align 4
-  store i8 %j2, i8* %2, align 1
-  store double %j3, double* %3, align 8
-  store i32 3, i32* %c2, align 4
-  store i16 2, i16* %c4, align 2
-  store double 1.200000e+00, double* %c3, align 8
-  %4 = load i32, i32* %c2, align 4
-  %5 = sitofp i32 %4 to double
-  %6 = load double, double* %c3, align 8
-  %7 = fmul double %5, %6
-  %8 = load i32, i32* %c1, align 4
-  %9 = sitofp i32 %8 to double
-  %10 = fdiv double %7, %9
-  %11 = fadd double 5.000000e+00, %10
-  %12 = fptosi double %11 to i16
-  store i16 %12, i16* %c4, align 2
-  ret void
 }
 
 ; Function Attrs: nounwind uwtable

@@ -54,71 +54,81 @@ define i32 @readint() {
 	%25 = trunc i32 %24 to i8
 	store i8 %25, i8* %c, align 1
 	br label %label3
+
 	label5:
-		%26 = load i32, i32* %sign, align 4
+	%26 = load i32, i32* %sign, align 4
 	%27 = load i32, i32* %read, align 4
 	%28 = mul i32 %26, %27
-ret i32 %28
+	ret i32 %28
 }
 
-define void @printint(i32 %n) {
-	%1 = alloca i32, align 4
-	store i32 %n, i32* %1, align 4
-	%2 = load i32, i32* %1, align 4
-	%3 = icmp slt i32 %2, 0
+define double @printint(double %n, i32 %f, i16 %g) {
+	%1 = alloca double, align 8
+	store double %n, double* %1, align 8
+	%2 = alloca i32, align 4
+	store i32 %f, i32* %2, align 4
+	%3 = alloca i16, align 2
+	store i16 %g, i16* %3, align 2
+	%4 = load i32, i32* %2, align 4
+	%5 = load i16, i16* %3, align 2
+	%6 = sext i16 %5 to i32
+	%7 = add i32 %4, %6
+	%8 = sitofp i32 %7 to double
+	store double %8, double* %1, align 8
+	%9 = load i16, i16* %3, align 2
+	%10 = sext i16 %9 to i32
+	store i32 %10, i32* %2, align 4
+	%11 = mul i32 2, 4
+	%12 = sdiv i32 %11, 2
+	store i32 %12, i32* %2, align 4
+	%13 = load i32, i32* %2, align 4
+	%14 = add i32 %13, 48
+	%15 = call i32 @putchar(i32 %14)
+	%16 = load i32, i32* %2, align 4
+	%17 = trunc i32 %16 to i16
+	store i16 %17, i16* %3, align 2
+	%18 = load i32, i32* %2, align 4
+	%19 = sdiv i32 %18, 2
+	store i32 %19, i32* %2, align 4
+	%20 = load i16, i16* %3, align 2
+	%21 = sext i16 %20 to i32
+	%22 = add i32 %21, 48
+	%23 = call i32 @putchar(i32 %22)
+	%24 = load i32, i32* %2, align 4
+	%25 = add i32 %24, 48
+	%26 = call i32 @putchar(i32 %25)
+	%27 = load double, double* %1, align 8
+	ret double %27
+}
+
+define i32 @main() {
+	%c = alloca double, align 8
+	%1 = call double @printint(double 10.0,i32 4,i16 2)
+	store double %1, double* %c, align 8
+	%2 = load double, double* %c, align 8
+	%3 = fcmp ogt double %2, 5.0
 	%4 = zext i1 %3 to i32
 	%5 = icmp ne i32 %4, 0
 	br i1 %5, label %label1, label %label2
 
 	label1:
-	%6 = call i32 @putchar(i32 45)
-	%7 = load i32, i32* %1, align 4
-	%8 = sub nsw i32 0, %7
-	store i32 %8, i32* %1, align 4
+	%6 = load double, double* %c, align 8
+	%7 = fcmp olt double %6, 7.0
+	%8 = zext i1 %7 to i32
+	%9 = icmp ne i32 %8, 0
 	br label %label2
 
 	label2:
-	%9 = load i32, i32* %1, align 4
-	%10 = sdiv i32 %9, 10
-	%11 = icmp ne i32 %10, 0
-	br i1 %11, label %label3, label %label4
+	%10 = phi i1 [ false, %0 ], [ %9, %label1 ]
+	%11 = zext i1 %10 to i32
+	%12 = icmp ne i32 %11, 0
+	br i1 %12, label %label3, label %label4
 
 	label3:
-	%12 = load i32, i32* %1, align 4
-	%13 = sdiv i32 %12, 10
-	call void @printint(i32 %13)
+	%13 = call i32 @putchar(i32 10)
 	br label %label4
 
 	label4:
-	%14 = load i32, i32* %1, align 4
-	%15 = srem i32 %14, 10
-	%16 = add i32 %15, 48
-	%17 = call i32 @putchar(i32 %16)
-	ret void
-}
-
-define i32 @main() {
-	%i = alloca i32, align 4
-	store i32 1, i32* %i, align 4
-	br label %label1
-
-	label1:
-	%1 = load i32, i32* %i, align 4
-	%2 = icmp ne i32 %1, 0
-	%3 = zext i1 %2 to i32
-	%4 = icmp ne i32 %3, 0
-	br i1 %4, label %label2, label %label3
-
-	label2:
-	%5 = call i32 @readint()
-	store i32 %5, i32* %i, align 4
-	%6 = load i32, i32* %i, align 4
-	call void @printint(i32 %6)
-	%7 = call i32 @putchar(i32 10)
-	br label %label1
-	label3:
-%8 = alloca i32, align 4
-%9 = load i32, i32* %8, align 4
-ret i32 %9
+	ret i32 1
 }
 

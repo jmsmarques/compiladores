@@ -24,14 +24,25 @@ define i32 @main() {
 	%10 = call i32 @putchar(i32 %9)
 	%11 = call i32 @putchar(i32 10)
 	%l = alloca i32, align 4
-	store i32 5, i32* %l, align 4
+	store i32 97, i32* %l, align 4
+	store i32 122, i32* %l, align 4
+	%12 = load i32, i32* %l, align 4
+	%aux1 = alloca i32
+	store i32 1, i32* %aux1
+	%13 = load i32, i32* %aux1
+	%14 = icmp ne i32 %13, 0
+	br i1 %14, label %label1, label %label2
+
+	label1:
+	%15 = load i32, i32* %l, align 4
+	%16 = call i32 @putchar(i32 %15)
+	br label %label2
+
+	label2:
 	%f = alloca i32, align 4
-	%12 = call i32 @f7(i32 49,i32 1,i32 2)
-	store i32 %12, i32* %f, align 4
-	%13 = load i32, i32* %f, align 4
-	%14 = call i32 @putchar(i32 %13)
-		%15 = load i32, i32* %f, align 4
-ret i32 %15
+	%17 = call i32 @factorial(i32 5)
+	store i32 %17, i32* %f, align 4
+	ret i32 1
 }
 
 define i32 @f7(i32 %l1, i32 %l2, i32 %l3) {
@@ -67,6 +78,30 @@ ret i32 %15
 	label3:
 		%16 = load i32, i32* %g, align 4
 ret i32 %16
+}
+
+define i32 @factorial(i32 %x) {
+	%1 = alloca i32, align 4
+	store i32 %x, i32* %1, align 4
+	%2 = load i32, i32* %1, align 4
+	%3 = icmp eq i32 %2, 1
+	%4 = zext i1 %3 to i32
+	%5 = icmp ne i32 %4, 0
+	br i1 %5, label %label1, label %label2
+
+	label1:
+	ret i32 1
+	label2:
+		%6 = alloca i32, align 4
+	store i32 %x, i32* %6, align 4
+	%7 = load i32, i32* %6, align 4
+	%8 = alloca i32, align 4
+	store i32 %x, i32* %8, align 4
+	%9 = load i32, i32* %8, align 4
+	%10 = sub i32 %9, 1
+	%11 = call i32 @factorial(i32 %10)
+	%12 = mul i32 %7, %11
+ret i32 %12
 }
 
 define i8 @jot(i32 %h0, i8 %h1, double %h2) {

@@ -707,6 +707,10 @@ int genExpr(node root, int variable, int tabs, char* type, paramsInfo paramList)
         variable--;
     }
     else if(strcmp(root->tag, "Comma") == 0) {
+        if(!checkIfLiteral(root->child)) { 
+            variable = genExpr(root->child, variable, tabs, getLlvmType(root->child->type), paramList);
+            variable++;
+        }
         if(checkIfLiteral(root->child->sibling)) {
             aux1 = genVariable(root->child->sibling, root->child->sibling->type);
             doTabs(tabs);

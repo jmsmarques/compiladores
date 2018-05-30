@@ -31,13 +31,48 @@ define i32 @main() #0 {
   %10 = call i32 @putchar(i32 %9)
   %11 = call i32 @putchar(i32 10)
   store i32 5, i32* %l, align 4
-  %12 = call i32 @f7(i32 49, i32 1, i32 2)
-  store i32 %12, i32* %f, align 4
-  %13 = load i32, i32* %f, align 4
-  ret i32 %13
+  store i32 122, i32* %l, align 4
+  br i1 true, label %12, label %15
+
+; <label>:12                                      ; preds = %0
+  %13 = load i32, i32* %l, align 4
+  %14 = call i32 @putchar(i32 %13)
+  br label %15
+
+; <label>:15                                      ; preds = %12, %0
+  %16 = call i32 @factorial(i32 5)
+  store i32 %16, i32* %f, align 4
+  ret i32 1
 }
 
 declare i32 @putchar(i32) #1
+
+; Function Attrs: nounwind uwtable
+define i32 @factorial(i32 %x) #0 {
+  %1 = alloca i32, align 4
+  %2 = alloca i32, align 4
+  store i32 %x, i32* %2, align 4
+  %3 = load i32, i32* %2, align 4
+  %4 = icmp eq i32 %3, 1
+  br i1 %4, label %5, label %6
+
+; <label>:5                                       ; preds = %0
+  store i32 1, i32* %1, align 4
+  br label %12
+
+; <label>:6                                       ; preds = %0
+  %7 = load i32, i32* %2, align 4
+  %8 = load i32, i32* %2, align 4
+  %9 = sub nsw i32 %8, 1
+  %10 = call i32 @factorial(i32 %9)
+  %11 = mul nsw i32 %7, %10
+  store i32 %11, i32* %1, align 4
+  br label %12
+
+; <label>:12                                      ; preds = %6, %5
+  %13 = load i32, i32* %1, align 4
+  ret i32 %13
+}
 
 ; Function Attrs: nounwind uwtable
 define i32 @f7(i32 %l1, i32 %l2, i32 %l3) #0 {
@@ -65,30 +100,16 @@ define i32 @f7(i32 %l1, i32 %l2, i32 %l3) #0 {
   %13 = load i32, i32* %4, align 4
   %14 = add nsw i32 %12, %13
   store i32 %14, i32* %1, align 4
-  br label %26
+  br label %17
 
 ; <label>:15                                      ; preds = %7
   %16 = load i32, i32* %g, align 4
-  %17 = load i32, i32* %2, align 4
-  %18 = icmp sgt i32 %16, %17
-  br i1 %18, label %19, label %24
+  store i32 %16, i32* %1, align 4
+  br label %17
 
-; <label>:19                                      ; preds = %15
-  %20 = load i32, i32* %3, align 4
-  %21 = load i32, i32* %4, align 4
-  %22 = add nsw i32 %20, %21
-  %23 = add nsw i32 %22, 94
-  store i32 %23, i32* %g, align 4
-  br label %24
-
-; <label>:24                                      ; preds = %19, %15
-  %25 = load i32, i32* %g, align 4
-  store i32 %25, i32* %1, align 4
-  br label %26
-
-; <label>:26                                      ; preds = %24, %11
-  %27 = load i32, i32* %1, align 4
-  ret i32 %27
+; <label>:17                                      ; preds = %15, %11
+  %18 = load i32, i32* %1, align 4
+  ret i32 %18
 }
 
 ; Function Attrs: nounwind uwtable
@@ -138,21 +159,25 @@ define void @f9(i32 %j1, i8 signext %j2, double %j3) #0 {
   store i32 %j1, i32* %1, align 4
   store i8 %j2, i8* %2, align 1
   store double %j3, double* %3, align 8
-  store i32 3, i32* %1, align 4
-  store i32 2, i32* %1, align 4
   store i32 3, i32* %c2, align 4
   store i16 2, i16* %c4, align 2
   store double 1.200000e+00, double* %c3, align 8
   %4 = load i32, i32* %c2, align 4
-  %5 = sitofp i32 %4 to double
-  %6 = load double, double* %c3, align 8
-  %7 = fmul double %5, %6
-  %8 = load i32, i32* %c1, align 4
-  %9 = sitofp i32 %8 to double
-  %10 = fdiv double %7, %9
-  %11 = fadd double 5.000000e+00, %10
-  %12 = fptosi double %11 to i16
-  store i16 %12, i16* %c4, align 2
+  %5 = icmp ne i32 %4, 0
+  %6 = xor i1 %5, true
+  %7 = zext i1 %6 to i32
+  %8 = sitofp i32 %7 to double
+  %9 = load double, double* %c3, align 8
+  %10 = fmul double %8, %9
+  %11 = load i32, i32* %c1, align 4
+  %12 = sitofp i32 %11 to double
+  %13 = fdiv double %10, %12
+  %14 = fadd double 5.000000e+00, %13
+  %15 = fsub double -0.000000e+00, %14
+  store double %15, double* %c3, align 8
+  %16 = load i32, i32* %1, align 4
+  %17 = call i32 @putchar(i32 %16)
+  %18 = call i32 @putchar(i32 10)
   ret void
 }
 

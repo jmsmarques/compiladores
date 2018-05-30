@@ -1,38 +1,11 @@
-#include <stdio.h>
-
-/*int readint (void) {
-    int read = 0 ,sign = 1;
-    //read = 1, sign = 0, read = 1;
-    char c = getchar();
-    if(c == '-')
-        sign = -1;
-    while(c != '\n') {
-        if(c != '-')
-            read = read * 10 + c - '0';
-        c = getchar();
+double printint (double n) {
+    n = n + 1;
+    while(n < 10) {
+        n = printint(n);
     }
-    return sign * read;
-}*/
-void printint (int n) {
-    if(n < 0) {
-        putchar('-');
-        n = -n;
-    }
-    if(n / 10) {
-        printint (n / 10);
-    }
-    putchar (n % 10 + '0');
+    return n;
 }
 int main (void) {
-    int i = 1;
-    /*while (i != 0) {
-        i = readint();
-        printint(i);
-        putchar('\n');
-    }*/
-
-    while(i < 500) {
-        printint(i);
-        i = i + 1;
-    }
+    double g = printint(1);
+    return 1;
 }

@@ -42,6 +42,7 @@ typedef struct _params_node* paramsInfo;
 typedef struct _params_node{
     char* id;
     char* type;
+    int var;
     paramsInfo next;
 }params_node;
 

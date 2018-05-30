@@ -1,6 +1,6 @@
 #include "structs.h"
 
-int returnFlag;
+//int returnFlag;
 
 void codeGeneration(node root, gTable symTab, table auxSymTab) {
     if(!root)
@@ -82,8 +82,8 @@ int genFuncBody(node root, paramsInfo paramList, int tabs, int variable, char* f
         }
     }
     else if(strcmp(root->tag, "Return") == 0) {
-        if(flag)
-            returnFlag = 1;
+        /*if(flag)
+            returnFlag = 1;*/
         if(strcmp(root->child->tag, "Null") != 0) {
             doTabs(tabs);
             if(checkIfLiteral(root->child)) {
@@ -134,18 +134,18 @@ void genFuncDef(node root) {
     printf(" {\n");
     label = 1;
     temp = 1;
-    returnFlag = 0;
+    //returnFlag = 0;
     if(strcmp(root->child->sibling->sibling->child->child->tag, "Void") != 0) {
         params = (paramsInfo)malloc(sizeof(params_node));
-        //variable = genParams(params, root->child->sibling->sibling->child, variable, 1);
-        genParams(params, root->child->sibling->sibling->child, variable, 1);
+        variable = genParams(params, root->child->sibling->sibling->child, variable, 1);
+        //genParams(params, root->child->sibling->sibling->child, variable, 1);
     }
     variable = genFuncBody(root->child->sibling->sibling->sibling->child, params, 1, variable, getLlvmType(root->child->tag), 1);
     if(strcmp(root->child->tag, "Void") == 0) {
         doTabs(1);
         printf("ret void\n");
     }
-    else if(!returnFlag) {
+    else if(variable > 0) {
         printf("%%%d = alloca %s, align %c\n", variable, getLlvmType(root->child->tag), getLlvmSize(root->child->tag));
         variable++;
         printf("%%%d = load %s, %s* %%%d, align %c\n", variable, getLlvmType(root->child->tag), 
@@ -269,7 +269,6 @@ char* extractLiteral(char* string, char* type) {
         }
         else {
             aux = analiseReal(aux);
-            printf("\n");
         }
     }
     else if(strncmp(string, "Int", 3) == 0) {
@@ -368,17 +367,12 @@ int genStore(node root, char* type, int variable, int tabs, paramsInfo paramList
         
         variable = genExpr(root->sibling, variable, tabs, type, paramList);
         
-        if(checkIfArgument(paramList, genVariable(root, root->type))) {
-            doTabs(tabs);
-            printf("%%%d = alloca %s, align %c\n", variable + 1, type, getLlvmSize(type));
+        int arg = checkIfArgument(paramList, genVariable(root, root->type));
+        if(arg) {
             doTabs(tabs);
             printf("store %s %%%d, %s* %%%d, align %c\n", type, 
-            variable, type, variable + 1, getLlvmSize(type));
+            variable, type, arg, getLlvmSize(type));
             variable++;
-            doTabs(tabs);
-            printf("%%%d = load %s, %s* %%%d, align %c\n", variable + 1, type, 
-            type, variable, getLlvmSize(type));
-            variable += 2;
         }
         else {
             doTabs(tabs);
@@ -486,8 +480,9 @@ int genVarToTemp(node root, char* type, char* newType, int variable, int tabs, p
     if(strcmp(root->tag, "Not") == 0) {
         type = getLlvmType(root->child->type);
     }
-    if(checkIfArgument(paramList, genVariable(root, type))) {
-        doTabs(tabs);
+    int arg = checkIfArgument(paramList, genVariable(root, type));
+    if(arg) {
+        /*doTabs(tabs);
         printf("%%%d = alloca %s, align %c\n", variable, paramList->type, getLlvmSize(paramList->type));
         doTabs(tabs);
         printf("store %s %s, %s* %%%d, align %c\n", paramList->type, genVariable(root, type), 
@@ -495,7 +490,9 @@ int genVarToTemp(node root, char* type, char* newType, int variable, int tabs, p
         variable++;
         doTabs(tabs);
         printf("%%%d = load %s, %s* %%%d, align %c\n", variable, type, 
-        type, variable - 1, getLlvmSize(type));
+        type, variable - 1, getLlvmSize(type));*/
+        doTabs(tabs);
+        printf("%%%d = load %s, %s* %%%d, align %c\n", variable, type, type, arg, getLlvmSize(type));
     }
     else {
         doTabs(tabs);
@@ -1027,16 +1024,16 @@ char* genOperationCommand(char* op, char* type) {
 
 int genParams(paramsInfo params, node root, int variable, int tabs) {
     while(root) {
-        /*doTabs(tabs);
+        doTabs(tabs);
         printf("%%%d = alloca %s, align %c\n", variable, getLlvmType(root->child->tag), getLlvmSize(root->child->tag));
         doTabs(tabs);
         printf("store %s %%%s, %s* %%%d, align %c\n", getLlvmType(root->child->tag), removeId(root->child->sibling->tag), 
-        getLlvmType(root->child->tag), variable, getLlvmSize(root->child->tag));*/
+        getLlvmType(root->child->tag), variable, getLlvmSize(root->child->tag));
         params->next = NULL;
         params->id = removeId(root->child->sibling->tag);
         params->type = getLlvmType(root->child->tag);
-        //params->var = variable;
-        //variable++;
+        params->var = variable;
+        variable++;
         if(root->sibling) {
             params->next = (paramsInfo)malloc(sizeof(params_node));
             params = params->next;
@@ -1050,7 +1047,7 @@ int genParams(paramsInfo params, node root, int variable, int tabs) {
 int checkIfArgument(paramsInfo params, char* id) {
     while(params) {
         if(strstr(id, params->id))
-            return 1;
+            return params->var;
         params = params->next;
     }
     return 0;

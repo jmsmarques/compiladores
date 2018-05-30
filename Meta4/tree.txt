@@ -31,9 +31,7 @@ return	int
 l1	int	param
 l2	int	param
 l3	int	param
-g1	int
-g3	int
-g2	char
+g	int
 
 ===== Function f9 Symbol Table =====
 return	void
@@ -51,6 +49,7 @@ a	int
 b	double
 c	int
 l	int
+f	int
 
 ===== Function empty Symbol Table =====
 return	int
@@ -157,42 +156,16 @@ Program
 ........Int
 ........Id(l)
 ........IntLit(5) - int
-......While
-........Lt - int
-..........Id(l) - int
-..........IntLit(1000) - int
-........StatList
-..........Call - int
-............Id(putchar) - int(int)
-............ChrLit('o') - int
-..........Store - int
-............Id(l) - int
-............Add - int
-..............Id(l) - int
-..............IntLit(1) - int
-..........If
-............Gt - int
-..............Id(l) - int
-..............IntLit(500) - int
-............Call - int
-..............Id(putchar) - int(int)
-..............ChrLit('i') - int
-............Null
-......While
-........And - int
-..........Id(l) - int
+......Declaration
+........Int
+........Id(f)
+........Call - int
+..........Id(f7) - int(int,int,int)
+..........IntLit(49) - int
 ..........IntLit(1) - int
-........StatList
-..........Call - int
-............Id(putchar) - int(int)
-............ChrLit('a') - int
-..........Store - int
-............Id(l) - int
-............Sub - int
-..............Id(l) - int
-..............IntLit(1) - int
+..........IntLit(2) - int
 ......Return
-........IntLit(1) - int
+........Id(f) - int
 ..FuncDefinition
 ....Int
 ....Id(f7)
@@ -209,32 +182,34 @@ Program
 ....FuncBody
 ......Declaration
 ........Int
-........Id(g1)
-......Declaration
-........Int
-........Id(g3)
-......Declaration
-........Char
-........Id(g2)
+........Id(g)
 ......If
-........Lt - int
-..........Id(g1) - int
+........Gt - int
+..........Id(l1) - int
 ..........IntLit(1) - int
-........Store - char
-..........Id(g2) - char
-..........ChrLit('b') - int
-........Return
-..........IntLit(2) - int
-......If
-........Ne - int
-..........Id(g3) - int
-..........Id(g1) - int
 ........Store - int
-..........Id(g1) - int
-..........IntLit(2) - int
+..........Id(g) - int
+..........Add - int
+............Id(l1) - int
+............Id(l2) - int
+........Return
+..........Add - int
+............Id(l1) - int
+............Id(l3) - int
+......If
+........Gt - int
+..........Id(g) - int
+..........Id(l1) - int
+........Store - int
+..........Id(g) - int
+..........Add - int
+............Add - int
+..............Id(l2) - int
+..............Id(l3) - int
+............IntLit(94) - int
 ........Null
 ......Return
-........IntLit(1) - int
+........Id(g) - int
 ..FuncDefinition
 ....Char
 ....Id(jot)
@@ -333,6 +308,12 @@ Program
 ................Id(c3) - double
 ..............Plus - int
 ................Id(c1) - int
+......Call - int
+........Id(putchar) - int(int)
+........Id(j1) - int
+......Call - int
+........Id(putchar) - int(int)
+........IntLit(10) - int
 ......Return
 ........Null
 ..FuncDefinition

@@ -11,40 +11,33 @@ target triple = "x86_64-pc-linux-gnu"
 ; Function Attrs: nounwind uwtable
 define i32 @main() #0 {
   %1 = alloca i32, align 4
+  %a = alloca i32, align 4
+  %b = alloca double, align 8
+  %c = alloca i32, align 4
   %l = alloca i32, align 4
+  %f = alloca i32, align 4
   store i32 0, i32* %1, align 4
+  store i32 -111, i32* %a, align 4
+  store double 1.300000e+01, double* %b, align 8
+  store i32 108, i32* %c, align 4
+  %2 = call i32 @putchar(i32 104)
+  %3 = call i32 @putchar(i32 101)
+  %4 = load i32, i32* %c, align 4
+  %5 = call i32 @putchar(i32 %4)
+  %6 = load i32, i32* %c, align 4
+  %7 = call i32 @putchar(i32 %6)
+  %8 = load i32, i32* %a, align 4
+  %9 = sub nsw i32 0, %8
+  %10 = call i32 @putchar(i32 %9)
+  %11 = call i32 @putchar(i32 10)
   store i32 5, i32* %l, align 4
-  call void @f9(i32 1, i8 signext 1, double 1.000000e+00)
-  ret i32 1
+  %12 = call i32 @f7(i32 49, i32 1, i32 2)
+  store i32 %12, i32* %f, align 4
+  %13 = load i32, i32* %f, align 4
+  ret i32 %13
 }
 
-; Function Attrs: nounwind uwtable
-define void @f9(i32 %j1, i8 signext %j2, double %j3) #0 {
-  %1 = alloca i32, align 4
-  %2 = alloca i8, align 1
-  %3 = alloca double, align 8
-  %c1 = alloca i32, align 4
-  %c2 = alloca i32, align 4
-  %c4 = alloca i16, align 2
-  %c3 = alloca double, align 8
-  store i32 %j1, i32* %1, align 4
-  store i8 %j2, i8* %2, align 1
-  store double %j3, double* %3, align 8
-  store i32 3, i32* %c2, align 4
-  store i16 2, i16* %c4, align 2
-  store double 1.200000e+00, double* %c3, align 8
-  %4 = load i32, i32* %c2, align 4
-  %5 = sitofp i32 %4 to double
-  %6 = load double, double* %c3, align 8
-  %7 = fmul double %5, %6
-  %8 = load i32, i32* %c1, align 4
-  %9 = sitofp i32 %8 to double
-  %10 = fdiv double %7, %9
-  %11 = fadd double 5.000000e+00, %10
-  %12 = fptosi double %11 to i16
-  store i16 %12, i16* %c4, align 2
-  ret void
-}
+declare i32 @putchar(i32) #1
 
 ; Function Attrs: nounwind uwtable
 define i32 @f7(i32 %l1, i32 %l2, i32 %l3) #0 {
@@ -52,43 +45,51 @@ define i32 @f7(i32 %l1, i32 %l2, i32 %l3) #0 {
   %2 = alloca i32, align 4
   %3 = alloca i32, align 4
   %4 = alloca i32, align 4
-  %g1 = alloca i32, align 4
-  %g3 = alloca i32, align 4
-  %g2 = alloca i8, align 1
+  %g = alloca i32, align 4
   store i32 %l1, i32* %2, align 4
   store i32 %l2, i32* %3, align 4
   store i32 %l3, i32* %4, align 4
   %5 = load i32, i32* %2, align 4
-  %6 = icmp slt i32 %5, 1
-  br i1 %6, label %7, label %9
+  %6 = icmp sgt i32 %5, 1
+  br i1 %6, label %7, label %11
 
 ; <label>:7                                       ; preds = %0
-  %8 = call i32 @putchar(i32 97)
+  %8 = load i32, i32* %2, align 4
+  %9 = load i32, i32* %3, align 4
+  %10 = add nsw i32 %8, %9
+  store i32 %10, i32* %g, align 4
   br label %15
 
-; <label>:9                                       ; preds = %0
-  %10 = load i32, i32* %2, align 4
-  %11 = icmp sgt i32 %10, 0
-  br i1 %11, label %12, label %14
-
-; <label>:12                                      ; preds = %9
-  %13 = call i32 @putchar(i32 98)
-  br label %14
-
-; <label>:14                                      ; preds = %12, %9
-  store i32 2, i32* %1, align 4
-  br label %16
+; <label>:11                                      ; preds = %0
+  %12 = load i32, i32* %2, align 4
+  %13 = load i32, i32* %4, align 4
+  %14 = add nsw i32 %12, %13
+  store i32 %14, i32* %1, align 4
+  br label %26
 
 ; <label>:15                                      ; preds = %7
-  store i32 1, i32* %1, align 4
-  br label %16
+  %16 = load i32, i32* %g, align 4
+  %17 = load i32, i32* %2, align 4
+  %18 = icmp sgt i32 %16, %17
+  br i1 %18, label %19, label %24
 
-; <label>:16                                      ; preds = %15, %14
-  %17 = load i32, i32* %1, align 4
-  ret i32 %17
+; <label>:19                                      ; preds = %15
+  %20 = load i32, i32* %3, align 4
+  %21 = load i32, i32* %4, align 4
+  %22 = add nsw i32 %20, %21
+  %23 = add nsw i32 %22, 94
+  store i32 %23, i32* %g, align 4
+  br label %24
+
+; <label>:24                                      ; preds = %19, %15
+  %25 = load i32, i32* %g, align 4
+  store i32 %25, i32* %1, align 4
+  br label %26
+
+; <label>:26                                      ; preds = %24, %11
+  %27 = load i32, i32* %1, align 4
+  ret i32 %27
 }
-
-declare i32 @putchar(i32) #1
 
 ; Function Attrs: nounwind uwtable
 define signext i8 @jot(i32 %h0, i8 signext %h1, double %h2) #0 {
@@ -123,6 +124,36 @@ define signext i8 @jot(i32 %h0, i8 signext %h1, double %h2) #0 {
   %15 = trunc i32 %14 to i16
   store i16 %15, i16* %c3, align 2
   ret i8 103
+}
+
+; Function Attrs: nounwind uwtable
+define void @f9(i32 %j1, i8 signext %j2, double %j3) #0 {
+  %1 = alloca i32, align 4
+  %2 = alloca i8, align 1
+  %3 = alloca double, align 8
+  %c1 = alloca i32, align 4
+  %c2 = alloca i32, align 4
+  %c4 = alloca i16, align 2
+  %c3 = alloca double, align 8
+  store i32 %j1, i32* %1, align 4
+  store i8 %j2, i8* %2, align 1
+  store double %j3, double* %3, align 8
+  store i32 3, i32* %1, align 4
+  store i32 2, i32* %1, align 4
+  store i32 3, i32* %c2, align 4
+  store i16 2, i16* %c4, align 2
+  store double 1.200000e+00, double* %c3, align 8
+  %4 = load i32, i32* %c2, align 4
+  %5 = sitofp i32 %4 to double
+  %6 = load double, double* %c3, align 8
+  %7 = fmul double %5, %6
+  %8 = load i32, i32* %c1, align 4
+  %9 = sitofp i32 %8 to double
+  %10 = fdiv double %7, %9
+  %11 = fadd double 5.000000e+00, %10
+  %12 = fptosi double %11 to i16
+  store i16 %12, i16* %c4, align 2
+  ret void
 }
 
 ; Function Attrs: nounwind uwtable

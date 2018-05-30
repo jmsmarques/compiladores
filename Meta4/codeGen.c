@@ -49,7 +49,7 @@ void genGlobalDeclaration(node root) {
     free(code);*/
 }
 
-int genFuncBody(node root, int tabs, int variable, char* funcType, int flag) {
+int genFuncBody(node root, paramsInfo paramList, int tabs, int variable, char* funcType, int flag) {
     if(!root) 
         return variable;
     int variable1 = variable;
@@ -59,22 +59,22 @@ int genFuncBody(node root, int tabs, int variable, char* funcType, int flag) {
         doTabs(tabs);
         printf("%%%s = alloca %s, align %c\n", removeId(root->child->sibling->tag), getLlvmType(root->child->tag), getLlvmSize(root->child->tag));
         if(root->child->sibling->sibling)
-            variable = genStore(root->child->sibling, getLlvmType(root->child->tag), variable, tabs);
+            variable = genStore(root->child->sibling, getLlvmType(root->child->tag), variable, tabs, paramList);
     }
     else if(strcmp(root->tag, "Call") == 0) {
-        variable = genCall(root, variable, tabs);            
+        variable = genCall(root, variable, tabs, paramList);            
     }
     else if(strcmp(root->tag, "Store") == 0) {
-        variable = genStore(root->child, getLlvmType(root->type), variable, tabs);
+        variable = genStore(root->child, getLlvmType(root->type), variable, tabs, paramList);
     }
     else if(strcmp(root->tag, "If") == 0) {
-        variable = generateIf(root, variable, tabs, funcType);
+        variable = generateIf(root, paramList, variable, tabs, funcType);
         if(variable < 0) {
             return variable;
         }
     }
     else if(strcmp(root->tag, "While") == 0) {
-        variable = generateWhile(root, variable, tabs, funcType);
+        variable = generateWhile(root, paramList, variable, tabs, funcType);
         if(variable < 0) {
             return variable;
         }
@@ -86,7 +86,7 @@ int genFuncBody(node root, int tabs, int variable, char* funcType, int flag) {
                 printf("ret %s %s\n", funcType, genVariable(root->child, funcType));
             }
             else {
-                variable = genExpr(root->child, variable, tabs, getLlvmType(funcType));
+                variable = genExpr(root->child, variable, tabs, getLlvmType(funcType), paramList);
                 printf("ret %s %%%d\n", funcType, variable);
                 variable++;
             }
@@ -101,11 +101,11 @@ int genFuncBody(node root, int tabs, int variable, char* funcType, int flag) {
         return variable * -1;
     }
     else {
-        variable1 = genFuncBody(root->child, tabs, variable, funcType, 1);
+        variable1 = genFuncBody(root->child, paramList, tabs, variable, funcType, 1);
         aux = 0;
     }
     if(flag)
-        variable2 = genFuncBody(root->sibling, tabs, variable, funcType, 1);
+        variable2 = genFuncBody(root->sibling, paramList, tabs, variable, funcType, 1);
     else if(aux) {
         return variable;
     }
@@ -124,17 +124,28 @@ int genFuncBody(node root, int tabs, int variable, char* funcType, int flag) {
 }
 
 void genFuncDef(node root) {
+    int variable = 1;
+    paramsInfo params = NULL;
     genFuncDec(root, "define");
     printf(" {\n");
     label = 1;
     temp = 1;
-    genFuncBody(root->child->sibling->sibling->sibling->child, 1, 1, getLlvmType(root->child->tag), 1);
+    if(strcmp(root->child->sibling->sibling->child->child->tag, "Void") != 0) {
+        params = (paramsInfo)malloc(sizeof(params_node));
+        //variable = genParams(params, root->child->sibling->sibling->child, variable, 1);
+        genParams(params, root->child->sibling->sibling->child, variable, 1);
+    }
+    genFuncBody(root->child->sibling->sibling->sibling->child, params, 1, variable, getLlvmType(root->child->tag), 1);
     if(strcmp(root->child->tag, "Void") == 0) {
         doTabs(1);
         printf("ret void\n");
     }
     
     printf("}\n\n");
+    /*while(params) {
+        free(params);
+        params->next;
+    }*/
 }
 
 void genFuncDec(node root, char* type) {
@@ -198,6 +209,9 @@ char* getLlvmType(char* string) {
     }
     else if(strncmp(string, "short", 5) == 0) {
         aux = strdup("i16");
+    }
+    else {
+        return string;
     }
   
     return aux;
@@ -325,7 +339,7 @@ void doTabs(int nr) {
         printf("\t");
 }
 
-int genStore(node root, char* type, int variable, int tabs) {
+int genStore(node root, char* type, int variable, int tabs, paramsInfo paramList) {
     if(!checkIfLiteral(root->sibling)) {
         /*printf("%%%d = load %s, %s* %s, align %c\n", variable, type, 
         type, genVariable(root->sibling), getLlvmSize(type));
@@ -333,9 +347,9 @@ int genStore(node root, char* type, int variable, int tabs) {
         if(checkIfUnary(root->sibling)) {
             variable = genMinusConversion(variable, tabs, type);
         }*/
-
-        variable = genExpr(root->sibling, variable, tabs, type);
-
+        
+        variable = genExpr(root->sibling, variable, tabs, type, paramList);
+        
         doTabs(tabs);
         printf("store %s %%%d, %s* %s, align %c\n", type, 
         variable, type, genVariable(root, type), getLlvmSize(type));
@@ -400,7 +414,7 @@ int checkIfUnary(node root) {
     return 0;
 }
 
-int genCall(node root, int variable, int tabs) {
+int genCall(node root, int variable, int tabs, paramsInfo paramList) {
     node params = root->child->sibling;
     char* token;
     char* aux = strdup("");
@@ -412,7 +426,7 @@ int genCall(node root, int variable, int tabs) {
             sprintf(aux, "%s%s %s", aux, getLlvmType(token), genVariable(params, getLlvmType(token))); //esta mal
         }
         else {
-            variable = genExpr(params, variable, tabs, getLlvmType(token));
+            variable = genExpr(params, variable, tabs, getLlvmType(token), paramList);
             aux = (char*)realloc(aux, (strlen(aux) + strlen(params->type) + strlen(params->tag) + 5) * sizeof(char));
             sprintf(aux, "%s%s %%%d", aux, getLlvmType(token), variable); //esta mal
             variable++;
@@ -436,14 +450,27 @@ int genCall(node root, int variable, int tabs) {
     return variable;
 }
 
-int genVarToTemp(node root, char* type, char* newType, int variable, int tabs) {
+int genVarToTemp(node root, char* type, char* newType, int variable, int tabs, paramsInfo paramList) {
     if(strcmp(root->tag, "Not") == 0) {
         type = getLlvmType(root->child->type);
     }
-    doTabs(tabs);
-    printf("%%%d = load %s, %s* %s, align %c\n", variable, type, 
-    type, genVariable(root, type), getLlvmSize(type));
-    
+    if(checkIfArgument(paramList, genVariable(root, type))) {
+        doTabs(tabs);
+        printf("%%%d = alloca %s, align %c\n", variable, paramList->type, getLlvmSize(paramList->type));
+        doTabs(tabs);
+        printf("store %s %s, %s* %%%d, align %c\n", paramList->type, genVariable(root, type), 
+        paramList->type, variable, getLlvmSize(paramList->type)); 
+        variable++;
+        doTabs(tabs);
+        printf("%%%d = load %s, %s* %%%d, align %c\n", variable, type, 
+        type, variable - 1, getLlvmSize(type));
+    }
+    else {
+        doTabs(tabs);
+        printf("%%%d = load %s, %s* %s, align %c\n", variable, type, 
+        type, genVariable(root, type), getLlvmSize(type));
+    }
+    //getParamVar(params, paramId); //aqui
     if(checkIfUnary(root)) {
         if(strcmp(root->tag, "Minus") == 0) {
             variable = genMinusConversion(variable, tabs, type);
@@ -453,7 +480,6 @@ int genVarToTemp(node root, char* type, char* newType, int variable, int tabs) {
             type = strdup("i1");
         }
     }
-
     variable = convertSize(type, newType, variable, tabs);
 
     return variable;
@@ -484,7 +510,7 @@ int convertSize(char* type, char* newType, int variable, int tabs) {
     return variable;
 }
 
-int genExpr(node root, int variable, int tabs, char* type) {
+int genExpr(node root, int variable, int tabs, char* type, paramsInfo paramList) {
     char* aux1 = NULL;
     char* aux2 = NULL;
     char* operation = NULL;
@@ -497,7 +523,7 @@ int genExpr(node root, int variable, int tabs, char* type) {
         }
         else {
             aux1 = (char*)malloc(4 * sizeof(char));
-            variable = genExpr(root->child, variable, tabs, getLlvmType(root->type));
+            variable = genExpr(root->child, variable, tabs, getLlvmType(root->type), paramList);
             //variable = convertSize(root->child->type, type, variable, tabs);
             sprintf(aux1, "%%%d", variable);
             variable++;
@@ -507,7 +533,7 @@ int genExpr(node root, int variable, int tabs, char* type) {
         }
         else {
             aux2 = (char*)malloc(4 * sizeof(char));
-            variable = genExpr(root->child->sibling, variable, tabs, getLlvmType(root->type));
+            variable = genExpr(root->child->sibling, variable, tabs, getLlvmType(root->type), paramList);
             //variable = convertSize(root->child->sibling->type, type, variable, tabs);
             sprintf(aux2, "%%%d", variable);
             variable++;
@@ -526,7 +552,7 @@ int genExpr(node root, int variable, int tabs, char* type) {
         }
         else {
             aux1 = (char*)malloc(4 * sizeof(char));
-            variable = genExpr(root->child, variable, tabs, getLlvmType(realType));
+            variable = genExpr(root->child, variable, tabs, getLlvmType(realType), paramList);
             //variable = convertSize(root->child->type, type, variable, tabs);
             sprintf(aux1, "%%%d", variable);
             variable++;
@@ -538,7 +564,7 @@ int genExpr(node root, int variable, int tabs, char* type) {
         }
         else {
             aux2 = (char*)malloc(4 * sizeof(char));
-            variable = genExpr(root->child->sibling, variable, tabs, getLlvmType(realType));
+            variable = genExpr(root->child->sibling, variable, tabs, getLlvmType(realType), paramList);
             //variable = convertSize(root->child->sibling->type, type, variable, tabs);
             sprintf(aux2, "%%%d", variable);
             variable++;
@@ -557,7 +583,7 @@ int genExpr(node root, int variable, int tabs, char* type) {
         }
         else {
             aux1 = (char*)malloc(4 * sizeof(char));
-            variable = genExpr(root->child, variable, tabs, getLlvmType(root->child->type));
+            variable = genExpr(root->child, variable, tabs, getLlvmType(root->child->type), paramList);
             sprintf(aux1, "%%%d", variable);
             variable++;
         }
@@ -580,7 +606,7 @@ int genExpr(node root, int variable, int tabs, char* type) {
         }
         else {
             aux2 = (char*)malloc(4 * sizeof(char));
-            variable = genExpr(root->child->sibling, variable, tabs, getLlvmType(root->child->sibling->type));
+            variable = genExpr(root->child->sibling, variable, tabs, getLlvmType(root->child->sibling->type), paramList);
             sprintf(aux2, "%%%d", variable);
             variable++;
         }
@@ -618,7 +644,7 @@ int genExpr(node root, int variable, int tabs, char* type) {
         }
         else {
             aux1 = (char*)malloc(4 * sizeof(char));
-            variable = genExpr(root->child, variable, tabs, getLlvmType(root->child->type));
+            variable = genExpr(root->child, variable, tabs, getLlvmType(root->child->type), paramList);
             sprintf(aux1, "%%%d", variable);
             variable++;
         }
@@ -640,7 +666,7 @@ int genExpr(node root, int variable, int tabs, char* type) {
         }
         else {
             aux2 = (char*)malloc(4 * sizeof(char));
-            variable = genExpr(root->child->sibling, variable, tabs, getLlvmType(root->child->sibling->type));
+            variable = genExpr(root->child->sibling, variable, tabs, getLlvmType(root->child->sibling->type), paramList);
             sprintf(aux2, "%%%d", variable);
             variable++;
         }
@@ -671,13 +697,13 @@ int genExpr(node root, int variable, int tabs, char* type) {
         label++;
     }
     else if(strcmp(root->tag, "Store") == 0) {
-        variable = genStore(root->child, getLlvmType(root->type), variable, tabs);
+        variable = genStore(root->child, getLlvmType(root->type), variable, tabs, paramList);
         doTabs(tabs);
         printf("%%%d = load %s, %s* %s, align %c\n", variable, getLlvmType(root->child->type), getLlvmType(root->child->type),
         genVariable(root->child, getLlvmType(root->child->type)), getLlvmSize(getLlvmType(root->child->type)));
     }
     else if(strcmp(root->tag, "Call") == 0) {
-        variable = genCall(root, variable, tabs);
+        variable = genCall(root, variable, tabs, paramList);
         variable--;
     }
     else if(strcmp(root->tag, "Comma") == 0) {
@@ -694,18 +720,18 @@ int genExpr(node root, int variable, int tabs, char* type) {
             free(aux1);
         }
         else 
-            variable = genExpr(root->child->sibling, variable, tabs, getLlvmType(root->type));
+            variable = genExpr(root->child->sibling, variable, tabs, getLlvmType(root->type), paramList);
     }
     else {
         if(checkIfId(root->tag) || checkIfUnary(root)) {
-            variable = genVarToTemp(root, getLlvmType(root->type), type, variable, tabs);
+            variable = genVarToTemp(root, getLlvmType(root->type), type, variable, tabs, paramList);
         }
         else if(strcmp(root->tag, "Minus") == 0) {
-            variable = genExpr(root->child, variable, tabs, type);
+            variable = genExpr(root->child, variable, tabs, type, paramList);
             variable = genMinusConversion(variable, tabs, type);
         }
         else if(strcmp(root->tag, "Not") == 0) {
-            variable = genExpr(root->child, variable, tabs, type);
+            variable = genExpr(root->child, variable, tabs, type, paramList);
             variable = genNotConversion(variable, tabs, type);
             variable = convertSize("i1", type, variable, tabs);
         }
@@ -714,7 +740,7 @@ int genExpr(node root, int variable, int tabs, char* type) {
     return variable;
 }
 
-int generateIf(node root, int variable, int tabs, char* funcType) {
+int generateIf(node root, paramsInfo paramList, int variable, int tabs, char* funcType) {
     /*if(!(checkIfLogicalOperation(root->child->tag) || strcmp(root->child->tag, "And") == 0 || strcmp(root->child->tag, "Or") == 0)) {
         if(strcmp(root->child->type, "double") == 0) {
             variable = genExpr(root->child, variable, tabs, "double");
@@ -735,16 +761,16 @@ int generateIf(node root, int variable, int tabs, char* funcType) {
         char* aux = NULL;
         aux = genVariable(root->child, root->child->type);
         if(strcmp(aux, "0") != 0) {
-            variable = genFuncBody(root->child->sibling, tabs, variable, funcType, 0);
+            variable = genFuncBody(root->child->sibling, paramList, tabs, variable, funcType, 0);
         }
         else {
-            variable = genFuncBody(root->child->sibling->sibling, tabs, variable, funcType, 0);
+            variable = genFuncBody(root->child->sibling->sibling, paramList, tabs, variable, funcType, 0);
         }
         free(aux);
         return variable;
     }
     else {
-        variable = genExpr(root->child, variable, tabs, "i32");
+        variable = genExpr(root->child, variable, tabs, "i32", paramList);
         doTabs(tabs);
         variable++;
         printf("%%%d = icmp ne i32 %%%d, 0\n", variable, variable - 1);
@@ -757,7 +783,7 @@ int generateIf(node root, int variable, int tabs, char* funcType) {
     auxLabel = label - 1;
     doTabs(tabs);
     printf("label%d:\n", label - 2);
-    variable = genFuncBody(root->child->sibling, tabs, variable, funcType, 0);
+    variable = genFuncBody(root->child->sibling, paramList, tabs, variable, funcType, 0);
     if(strcmp(root->child->sibling->sibling->tag, "Null") != 0) { //else
         auxLabel1 = label;
         label++; 
@@ -771,7 +797,7 @@ int generateIf(node root, int variable, int tabs, char* funcType) {
         doTabs(tabs);
         printf("label%d:\n", auxLabel);
         //label++;
-        variable = genFuncBody(root->child->sibling->sibling, tabs, variable, funcType, 1);
+        variable = genFuncBody(root->child->sibling->sibling, paramList, tabs, variable, funcType, 1);
          
         if(variable < 0) {
             variable *= -1;
@@ -799,7 +825,7 @@ int generateIf(node root, int variable, int tabs, char* funcType) {
     return variable;
 }
 
-int generateWhile(node root, int variable, int tabs, char* funcType) {
+int generateWhile(node root, paramsInfo paramList, int variable, int tabs, char* funcType) {
     int auxLabel;
     int auxLabel1;
     doTabs(tabs);
@@ -828,7 +854,7 @@ int generateWhile(node root, int variable, int tabs, char* funcType) {
         char* aux = NULL;
         aux = genVariable(root->child, root->child->type);
         if(strcmp(aux, "0") != 0) {
-            variable = genFuncBody(root->child->sibling, tabs, variable, funcType, 1);
+            variable = genFuncBody(root->child->sibling, paramList, tabs, variable, funcType, 1);
             if(!(variable < 0)) {
                 doTabs(tabs);
                 printf("br label %%label%d\n", auxLabel);
@@ -839,7 +865,7 @@ int generateWhile(node root, int variable, int tabs, char* funcType) {
         return variable;
     }
     
-    variable = genExpr(root->child, variable, tabs, "i32");
+    variable = genExpr(root->child, variable, tabs, "i32", paramList);
     doTabs(tabs);
     variable++;
     printf("%%%d = icmp ne i32 %%%d, 0\n", variable, variable - 1);
@@ -851,7 +877,7 @@ int generateWhile(node root, int variable, int tabs, char* funcType) {
     printf("label%d:\n", label);
     label += 2;
     auxLabel1 = label - 1;
-    variable = genFuncBody(root->child->sibling, tabs, variable, funcType, 1);
+    variable = genFuncBody(root->child->sibling, paramList, tabs, variable, funcType, 1);
     if(variable < 0) {
         variable *= -1;
     }
@@ -960,6 +986,37 @@ char* genOperationCommand(char* op, char* type) {
         }
     }
     return result;
+}
+
+int genParams(paramsInfo params, node root, int variable, int tabs) {
+    while(root) {
+        /*doTabs(tabs);
+        printf("%%%d = alloca %s, align %c\n", variable, getLlvmType(root->child->tag), getLlvmSize(root->child->tag));
+        doTabs(tabs);
+        printf("store %s %%%s, %s* %%%d, align %c\n", getLlvmType(root->child->tag), removeId(root->child->sibling->tag), 
+        getLlvmType(root->child->tag), variable, getLlvmSize(root->child->tag));*/
+        params->next = NULL;
+        params->id = removeId(root->child->sibling->tag);
+        params->type = getLlvmType(root->child->tag);
+        //params->var = variable;
+        //variable++;
+        if(root->sibling) {
+            params->next = (paramsInfo)malloc(sizeof(params_node));
+            params = params->next;
+        }
+        root = root->sibling;
+    }
+    
+    return variable;
+}
+
+int checkIfArgument(paramsInfo params, char* id) {
+    while(params) {
+        if(strstr(id, params->id))
+            return 1;
+        params = params->next;
+    }
+    return 0;
 }
 
 //aux functions
@@ -1108,35 +1165,13 @@ char* extractParamType(char * string) {
     return result;
 }
 
-char* getFuncParams(char* args, node params, int variable) {
-    //genCall
-    /*char* result = (char*)malloc(sizeof(char));
-    char* token;
-    int rem;
-    rem = strlen(checkVarType(args));
-    char* aux1 = (char*)malloc((strlen(args) + 1) * sizeof(char));
-    strncpy(aux1, args + rem + 1, strlen(args) - 2);
-    *(aux1 + strlen(args) - rem - 2) = '\0';
-    token = strtok(aux1, ",");
-    while(token && params) {
-        
-        if(checkIfLiteral(params)){
-            result = (char*)realloc(result, (strlen(result) + strlen(params->type) + strlen(params->tag)) * sizeof(char));
-            sprintf(result, "%s%s %s", result, getLlvmType(token), genVariable(params, root->type)); //esta mal
+int getParamVar(paramsInfo params, char* paramId) {
+    while(params) {
+        if(strcmp(params->id, paramId) == 0) {
+            return params->var;
         }
-        else {
-            variable = genExpr(params, variable, tabs, getLlvmType(params->type));
-            result = (char*)realloc(result, (strlen(result) + strlen(params->type) + strlen(params->tag) + 5) * sizeof(char));
-            sprintf(result, "%s%s %%%d", result, getLlvmType(params->type), variable); //esta mal
-            variable++;
-        }
-        
-        if(params->sibling)
-            sprintf(result, "%s,", result);
 
-
-        token = strtok(NULL, ",");
-        params = params->sibling;
-    }*/
-    return "oi";
+        params = params->next;
+    }
+    return 0;
 }

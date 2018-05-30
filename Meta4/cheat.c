@@ -10,34 +10,50 @@ void f9(int, char, double);
 char hue(int, double);
 
 int main(void) {
+    int a = -111;
+    double b = 1.0 + 12;
+    int c = 108;
+    putchar('h');
+    putchar('e');
+    putchar(c);
+    putchar(c);
+    putchar(-a);
+    putchar(10);
     int l = 5;
+    
     /*while(l < 1000) {
         putchar('o');
         l = l + 1;
-        if(l > 500) {
+        if(1,0,1) {
             putchar('i');
         }
+    }
+    /*while(l && 1) {
+        putchar('a');
+        l = l - 1;
     }*/
-    f9(1, 1, 1);
-    return 1;
+    int f = f7(49, 1, 2);
+    //double k = b - 0.1 + 2.25 * 5.2 / .4;
+    //b = !(k>0 == 0 & !0 >= (a= 2 - 3)) && -2 == 2 | 5 && -4 ^ 5;
+    //b = b + 48;
+    //a = b = k = 2;
+    //b = b + 48;
+    return f;
 }
 
 int f7(int l1, int l2, int l3) {
-    int g1;
-    int g3;
-    char g2;
-    if(l1 < 1) {
-        putchar('a');
+    int g;
+    if(l1 > 1) {
+        g = l1 + l2;
     }
     else {
-        if(l1 > 0)
-            putchar('b');
-        return 2;
+        return l1 + l3;
     }
-    /*if(g3 != g1) {
-        g1 = 2;
-    }*/
-    return 1;
+    if(g > l1) {
+        g = l2 + l3 + 94;
+    }
+    
+    return g;
 }
 
 char jot(int h0, char h1, double h2) {
@@ -54,6 +70,8 @@ char jot(int h0, char h1, double h2) {
 }
 
 void f9(int j1, char j2, double j3) {
+    j1 = 3;
+    j1 = 2;
     int c1, c2 = 3;
     short c4 = 2;
     double c3 = 1.2;

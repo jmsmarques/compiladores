@@ -42,7 +42,6 @@ typedef struct _params_node* paramsInfo;
 typedef struct _params_node{
     char* id;
     char* type;
-    int var;
     paramsInfo next;
 }params_node;
 
@@ -165,6 +164,7 @@ char* checkType(char* type1, char* type2); //checks type for comparisions >...
 char* generateOctal(char* string); //transforms octal to int
 char* extractParamType(char * string); //extracts function parameters type
 int getParamVar(paramsInfo params, char* paramId); //gets temp var with the value of the parameter
+char* analiseReal(char* real); //adds a . to a real if it has a e and no .
 
 extern char flag;
 extern char printFlag;

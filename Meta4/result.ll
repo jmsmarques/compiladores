@@ -4,11 +4,13 @@ declare i32 @putchar(i32)
 @a1 = global i8 52, align 1
 @a2 = common global i8 0, align 1
 @a5 = global i16 1, align 2
+
 @a3 = global double 1.1, align 8
 define i32 @main() {
 	%a = alloca i32, align 4
 	store i32 -111, i32* %a, align 4
 	%b = alloca double, align 8
+
 	%1 = fadd double 1.0, 12.0
 	store double %1, double* %b, align 8
 	%c = alloca i32, align 4
@@ -23,25 +25,30 @@ define i32 @main() {
 	%9 = sub nsw i32 0, %8
 	%10 = call i32 @putchar(i32 %9)
 	%11 = call i32 @putchar(i32 10)
-	%l = alloca i32, align 4
-	store i32 97, i32* %l, align 4
-	store i32 122, i32* %l, align 4
-	%12 = load i32, i32* %l, align 4
-	%aux1 = alloca i32
-	store i32 1, i32* %aux1
-	%13 = load i32, i32* %aux1
-	%14 = icmp ne i32 %13, 0
-	br i1 %14, label %label1, label %label2
-
-	label1:
-	%15 = load i32, i32* %l, align 4
-	%16 = call i32 @putchar(i32 %15)
-	br label %label2
-
-	label2:
+	%l = alloca i16, align 2
+	store i16 5, i16* %l, align 2
 	%f = alloca i32, align 4
-	%17 = call i32 @factorial(i32 5)
-	store i32 %17, i32* %f, align 4
+	%12 = call i32 @f7(i32 2,i32 1,i32 1)
+	%13 = call i32 @factorial(i32 %12)
+	store i32 %13, i32* %f, align 4
+	%p = alloca i32, align 4
+
+	%14 = call i16 @empty(double 1.e+1)
+	%15 = sext i16 %14 to i32
+	store i32 %15, i32* %p, align 4
+	%16 = call i32 @getchar()
+	%17 = call i32 @putchar(i32 %16)
+	%18 = call i32 @f7(i32 2,i32 1,i32 1)
+	%19 = call i32 @factorial(i32 %18)
+	%20 = call i16 @empty(double 1.0)
+	%21 = sext i16 %20 to i32
+	%22 = add i32 %19, %21
+	%23 = call i16 @empty(double 0.0)
+	%24 = sext i16 %23 to i32
+	%25 = add i32 %22, %24
+	store i32 %25, i32* %f, align 4
+	%26 = load i32, i32* %f, align 4
+	%27 = call i32 @putchar(i32 %26)
 	ret i32 1
 }
 
@@ -139,7 +146,8 @@ define void @f9(i32 %j1, i8 %j2, double %j3) {
 	%c4 = alloca i16, align 2
 	store i16 2, i16* %c4, align 2
 	%c3 = alloca double, align 8
-	store double 1.2, double* %c3, align 8
+	
+store double 1.2, double* %c3, align 8
 	%1 = load i32, i32* %c2, align 4
 	%2 = icmp ne i32 %1, 0
 	%3 = xor i1 %2, true
@@ -160,7 +168,7 @@ define void @f9(i32 %j1, i8 %j2, double %j3) {
 	ret void
 }
 
-define i32 @empty() {
-	ret i32 0
+define i16 @empty(double %a) {
+	ret i16 24
 }
 

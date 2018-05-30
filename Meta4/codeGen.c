@@ -1,5 +1,7 @@
 #include "structs.h"
 
+int returnFlag;
+
 void codeGeneration(node root, gTable symTab, table auxSymTab) {
     if(!root)
         return;
@@ -79,7 +81,9 @@ int genFuncBody(node root, paramsInfo paramList, int tabs, int variable, char* f
             return variable;
         }
     }
-    else if(strcmp(root->tag, "Return") == 0) { //esta mal int nao consegue retornar short
+    else if(strcmp(root->tag, "Return") == 0) {
+        if(flag)
+            returnFlag = 1;
         if(strcmp(root->child->tag, "Null") != 0) {
             doTabs(tabs);
             if(checkIfLiteral(root->child)) {
@@ -130,17 +134,27 @@ void genFuncDef(node root) {
     printf(" {\n");
     label = 1;
     temp = 1;
+    returnFlag = 0;
     if(strcmp(root->child->sibling->sibling->child->child->tag, "Void") != 0) {
         params = (paramsInfo)malloc(sizeof(params_node));
         //variable = genParams(params, root->child->sibling->sibling->child, variable, 1);
         genParams(params, root->child->sibling->sibling->child, variable, 1);
     }
-    genFuncBody(root->child->sibling->sibling->sibling->child, params, 1, variable, getLlvmType(root->child->tag), 1);
+    variable = genFuncBody(root->child->sibling->sibling->sibling->child, params, 1, variable, getLlvmType(root->child->tag), 1);
     if(strcmp(root->child->tag, "Void") == 0) {
         doTabs(1);
         printf("ret void\n");
     }
+    else if(!returnFlag) {
+        printf("%%%d = alloca %s, align %c\n", variable, getLlvmType(root->child->tag), getLlvmSize(root->child->tag));
+        variable++;
+        printf("%%%d = load %s, %s* %%%d, align %c\n", variable, getLlvmType(root->child->tag), 
+        getLlvmType(root->child->tag), variable - 1, getLlvmSize(root->child->tag));
+        printf("ret %s %%%d\n", getLlvmType(root->child->tag), variable);
+    }
+
     
+
     printf("}\n\n");
     /*while(params) {
         free(params);
@@ -253,6 +267,10 @@ char* extractLiteral(char* string, char* type) {
         if(*aux == '.') {
             sprintf(aux, "0%s", strdup(aux));
         }
+        else {
+            aux = analiseReal(aux);
+            printf("\n");
+        }
     }
     else if(strncmp(string, "Int", 3) == 0) {
         len = 7;
@@ -328,7 +346,7 @@ char* genVariable(node root, char* type) {
         sprintf(aux, "%c%s", root->scope, removeId(root->tag));
     }
     else {
-        aux = extractLiteral(root->tag, type); //falta tratar doubles
+        aux = extractLiteral(root->tag, type);
     }
 
     return aux;
@@ -350,10 +368,24 @@ int genStore(node root, char* type, int variable, int tabs, paramsInfo paramList
         
         variable = genExpr(root->sibling, variable, tabs, type, paramList);
         
-        doTabs(tabs);
-        printf("store %s %%%d, %s* %s, align %c\n", type, 
-        variable, type, genVariable(root, type), getLlvmSize(type));
-        variable++;
+        if(checkIfArgument(paramList, genVariable(root, root->type))) {
+            doTabs(tabs);
+            printf("%%%d = alloca %s, align %c\n", variable + 1, type, getLlvmSize(type));
+            doTabs(tabs);
+            printf("store %s %%%d, %s* %%%d, align %c\n", type, 
+            variable, type, variable + 1, getLlvmSize(type));
+            variable++;
+            doTabs(tabs);
+            printf("%%%d = load %s, %s* %%%d, align %c\n", variable + 1, type, 
+            type, variable, getLlvmSize(type));
+            variable += 2;
+        }
+        else {
+            doTabs(tabs);
+            printf("store %s %%%d, %s* %s, align %c\n", type, 
+            variable, type, genVariable(root, type), getLlvmSize(type));
+            variable++;
+        }
     }
     else {
         doTabs(tabs);
@@ -446,7 +478,7 @@ int genCall(node root, int variable, int tabs, paramsInfo paramList) {
         printf("call %s @%s(%s)\n", getLlvmType(root->type), removeId(root->child->tag), aux);
     }
     free(aux);
-    free(token);
+    //free(token);
     return variable;
 }
 
@@ -705,6 +737,7 @@ int genExpr(node root, int variable, int tabs, char* type, paramsInfo paramList)
     else if(strcmp(root->tag, "Call") == 0) {
         variable = genCall(root, variable, tabs, paramList);
         variable--;
+        variable = convertSize(getLlvmType(root->type), type, variable, tabs);
     }
     else if(strcmp(root->tag, "Comma") == 0) {
         if(!checkIfLiteral(root->child)) { 
@@ -801,7 +834,7 @@ int generateIf(node root, paramsInfo paramList, int variable, int tabs, char* fu
         doTabs(tabs);
         printf("label%d:\n", auxLabel);
         //label++;
-        variable = genFuncBody(root->child->sibling->sibling, paramList, tabs, variable, funcType, 1);
+        variable = genFuncBody(root->child->sibling->sibling, paramList, tabs, variable, funcType, 0);
          
         if(variable < 0) {
             variable *= -1;
@@ -858,7 +891,7 @@ int generateWhile(node root, paramsInfo paramList, int variable, int tabs, char*
         char* aux = NULL;
         aux = genVariable(root->child, root->child->type);
         if(strcmp(aux, "0") != 0) {
-            variable = genFuncBody(root->child->sibling, paramList, tabs, variable, funcType, 1);
+            variable = genFuncBody(root->child->sibling, paramList, tabs, variable, funcType, 0);
             if(!(variable < 0)) {
                 doTabs(tabs);
                 printf("br label %%label%d\n", auxLabel);
@@ -881,7 +914,7 @@ int generateWhile(node root, paramsInfo paramList, int variable, int tabs, char*
     printf("label%d:\n", label);
     label += 2;
     auxLabel1 = label - 1;
-    variable = genFuncBody(root->child->sibling, paramList, tabs, variable, funcType, 1);
+    variable = genFuncBody(root->child->sibling, paramList, tabs, variable, funcType, 0);
     if(variable < 0) {
         variable *= -1;
     }
@@ -1170,12 +1203,29 @@ char* extractParamType(char * string) {
 }
 
 int getParamVar(paramsInfo params, char* paramId) {
-    while(params) {
+/*    while(params) {
         if(strcmp(params->id, paramId) == 0) {
             return params->var;
         }
 
         params = params->next;
-    }
+    }*/
     return 0;
+}
+
+char* analiseReal(char* real) {
+    char* result = NULL;
+    for(int i = 0; i < strlen(real); i++) {
+        if(*(real + i) == '.') {
+            return real;
+        }
+        if(*(real + i) == 'e') {
+            result = (char*)malloc(50*sizeof(char));
+            strncpy(result, real, i);
+            strcpy(result + i, ".");
+            strcpy(result + i + 1, real + i);
+            return result;
+        }
+    }
+    return real;
 }

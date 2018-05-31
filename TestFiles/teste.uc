@@ -10,7 +10,7 @@ int readint (void) {
     }
     return sign * read;
 }
-void printint (int n) {
+void printint (char n) {
     if(n < 0) {
         putchar('-');
         n = -n;
@@ -22,8 +22,10 @@ void printint (int n) {
 }
 int main (void) {
     int i = 1;
+    //double l;
     while (i != 0) {
         i = readint();
+        //l = i;
         printint(i);
         putchar('\n');
     }

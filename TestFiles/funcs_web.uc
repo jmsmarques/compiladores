@@ -1,4 +1,3 @@
-#include <stdio.h>
 void func(int a){
 
 	a=2;
@@ -87,7 +86,7 @@ int main(void){
 	putchar(o6+48);
 	putchar('\n');
 	int beta2= o5&o6;
-	/*putchar(beta2+48);
+	putchar(beta2+48);
 	putchar('\n');
 
 	char o7,o8;
@@ -99,5 +98,5 @@ int main(void){
 	putchar(beta3);
 	putchar('\n');
 
-	return 0;*/
+	return 0;
 }

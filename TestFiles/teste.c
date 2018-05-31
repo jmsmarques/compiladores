@@ -10,7 +10,7 @@ int readint (void) {
     }
     return sign * read;
 }
-void printint (char n) {
+void printint (int n) {
     if(n < 0) {
         putchar('-');
         n = -n;

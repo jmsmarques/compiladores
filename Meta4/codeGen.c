@@ -1,6 +1,6 @@
 #include "structs.h"
 
-//int returnFlag;
+int label;
 
 void codeGeneration(node root, gTable symTab, table auxSymTab) {
     if(!root)
@@ -38,16 +38,30 @@ void genGlobalDeclaration(node root) {
     */
     if(!root->child->sibling->sibling) { //if declaration doesnt have definition
         //sprintf(code, "@%s = common global %s 0, align %c", removeId(root->child->sibling->tag), type, getLlvmSize(root->child->tag));
-        printf("@%s = common global %s 0, align %c\n", removeId(root->child->sibling->tag),
-        getLlvmType(root->child->tag), getLlvmSize(root->child->tag));
+        if(strcmp(root->child->tag, "Double") != 0) {
+            printf("@%s = common global %s 0, align %c\n", removeId(root->child->sibling->tag),
+            getLlvmType(root->child->tag), getLlvmSize(root->child->tag));
+        }
+        else {
+            printf("@%s = common global %s 0.0, align %c\n", removeId(root->child->sibling->tag),
+            getLlvmType(root->child->tag), getLlvmSize(root->child->tag));
+        }
     }
     else { //declaration has definition
         //sprintf(code, "@%s = global %s %s, align %c", removeId(root->child->sibling->tag), type, genDecAtribution(root->child->sibling->sibling), getLlvmSize(root->child->tag));
-        printf("@%s = global %s %s, align %c\n", removeId(root->child->sibling->tag), getLlvmType(root->child->tag), 
-        extractLiteral(root->child->sibling->sibling->tag, root->child->sibling->sibling->type), 
-        getLlvmSize(root->child->tag));
+        if(checkIfLiteral(root->child->sibling->sibling)) {
+            printf("@%s = global %s %s, align %c\n", removeId(root->child->sibling->tag), getLlvmType(root->child->tag), 
+            genVariable(root->child->sibling->sibling, getLlvmType(root->child->tag)), getLlvmSize(root->child->tag));
+        }
+        else {
+
+        }
     }
-    /*printf("%s\n", code);
+    /*doTabs(tabs);
+        printf("%%%s = alloca %s, align %c\n", removeId(root->child->sibling->tag), getLlvmType(root->child->tag), getLlvmSize(root->child->tag));
+        if(root->child->sibling->sibling)
+            variable = genStore(root->child->sibling, getLlvmType(root->child->tag), variable, tabs, paramList);
+    printf("%s\n", code);
     free(code);*/
 }
 
@@ -143,7 +157,6 @@ void genFuncDef(node root) {
     genFuncDec(root, "define");
     printf(" {\n");
     label = 1;
-    temp = 1;
     //returnFlag = 0;
     if(strcmp(root->child->sibling->sibling->child->child->tag, "Void") != 0) {
         params = (paramsInfo)malloc(sizeof(params_node));
@@ -777,14 +790,15 @@ int genExpr(node root, int variable, int tabs, char* type, paramsInfo paramList)
         if(checkIfLiteral(root->child->sibling)) {
             aux1 = genVariable(root->child->sibling, root->child->sibling->type);
             doTabs(tabs);
-            printf("%%aux%d = alloca %s\n", temp, getLlvmType(root->child->sibling->type));
+            printf("%%jorge%d = alloca %s\n", variable, getLlvmType(root->child->sibling->type));
             doTabs(tabs);
-            printf("store %s %s, %s* %%aux%d\n", getLlvmType(root->child->sibling->type), aux1, 
-            getLlvmType(root->child->sibling->type), temp);
+            printf("store %s %s, %s* %%jorge%d\n", getLlvmType(root->child->sibling->type), aux1, 
+            getLlvmType(root->child->sibling->type), variable);
             doTabs(tabs);
-            printf("%%%d = load %s, %s* %%aux%d\n", variable, getLlvmType(root->child->sibling->type),
-            getLlvmType(root->child->sibling->type), temp);
+            printf("%%%d = load %s, %s* %%jorge%d\n", variable, getLlvmType(root->child->sibling->type),
+            getLlvmType(root->child->sibling->type), variable);
             free(aux1);
+            variable = convertSize(getLlvmType(root->type), type, variable, tabs);
         }
         else 
             variable = genExpr(root->child->sibling, variable, tabs, getLlvmType(root->type), paramList);
@@ -796,6 +810,7 @@ int genExpr(node root, int variable, int tabs, char* type, paramsInfo paramList)
         else if(strcmp(root->tag, "Minus") == 0) {
             variable = genExpr(root->child, variable, tabs, type, paramList);
             variable = genMinusConversion(variable, tabs, type);
+            variable = convertSize(getLlvmType(root->type), type, variable, tabs);
         }
         else if(strcmp(root->tag, "Not") == 0) {
             variable = genExpr(root->child, variable, tabs, type, paramList);

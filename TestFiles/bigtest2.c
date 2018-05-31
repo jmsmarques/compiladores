@@ -1,4 +1,3 @@
-#include <stdio.h>
 int putchar(int);
 
 void condition_if(int a) {

@@ -1,4 +1,3 @@
-#include <stdio.h>
 int bigmod(int a, int p, int m) {
     int c;
     if(p == 0) {

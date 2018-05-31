@@ -1,3 +1,8 @@
+void teste(double a, double c) {
+    a = 'b';
+    c = a + c;
+}
+
 int main(void) {
-    if(x);
+    teste(1, 2e2);
 }

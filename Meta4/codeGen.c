@@ -386,9 +386,17 @@ int genStore(node root, char* type, int variable, int tabs, paramsInfo paramList
         }
     }
     else {
-        doTabs(tabs);
-        printf("store %s %s, %s* %s, align %c\n", type, genVariable(root->sibling, type), 
-        type, genVariable(root, type), getLlvmSize(type));
+        int arg = checkIfArgument(paramList, genVariable(root, root->type));
+        if(arg) {
+            doTabs(tabs);
+            printf("store %s %s, %s* %%%d, align %c\n", type, 
+            genVariable(root->sibling, type), type, arg, getLlvmSize(type));
+        }
+        else {
+            doTabs(tabs);
+            printf("store %s %s, %s* %s, align %c\n", type, genVariable(root->sibling, type), 
+            type, genVariable(root, type), getLlvmSize(type));
+        }
     }
     return variable;
 }

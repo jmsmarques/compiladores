@@ -1,87 +1,35 @@
 ===== Global Symbol Table =====
 putchar	int(int)
 getchar	int(void)
-readint	int(void)
 printint	void(int)
-sum	int(int,int)
+print	void(int)
+main2	void(char)
 main	int(void)
-
-===== Function readint Symbol Table =====
-return	int
-read	int
-sign	int
-c	char
+q	char(char,char)
 
 ===== Function printint Symbol Table =====
 return	void
 n	int	param
 
-===== Function sum Symbol Table =====
-return	int
-a	int	param
-b	int	param
+===== Function print Symbol Table =====
+return	void
+x	int	param
+
+===== Function main2 Symbol Table =====
+return	void
+p	char	param
 
 ===== Function main Symbol Table =====
 return	int
-i	int
+p	int
+q	char
+
+===== Function q Symbol Table =====
+return	char
+p	char	param
+q	char	param
 
 Program
-..FuncDefinition
-....Int
-....Id(readint)
-....ParamList
-......ParamDeclaration
-........Void
-....FuncBody
-......Declaration
-........Int
-........Id(read)
-........IntLit(0) - int
-......Declaration
-........Int
-........Id(sign)
-........IntLit(1) - int
-......Declaration
-........Char
-........Id(c)
-........Call - int
-..........Id(getchar) - int(void)
-......If
-........Eq - int
-..........Id(c) - char
-..........ChrLit('-') - int
-........Store - int
-..........Id(sign) - int
-..........Minus - int
-............IntLit(1) - int
-........Null
-......While
-........Ne - int
-..........Id(c) - char
-..........ChrLit('\n') - int
-........StatList
-..........If
-............Ne - int
-..............Id(c) - char
-..............ChrLit('-') - int
-............Store - int
-..............Id(read) - int
-..............Sub - int
-................Add - int
-..................Mul - int
-....................Id(read) - int
-....................IntLit(10) - int
-..................Id(c) - char
-................ChrLit('0') - int
-............Null
-..........Store - char
-............Id(c) - char
-............Call - int
-..............Id(getchar) - int(void)
-......Return
-........Mul - int
-..........Id(sign) - int
-..........Id(read) - int
 ..FuncDefinition
 ....Void
 ....Id(printint)
@@ -121,20 +69,26 @@ Program
 ............IntLit(10) - int
 ..........ChrLit('0') - int
 ..FuncDefinition
-....Int
-....Id(sum)
+....Void
+....Id(print)
 ....ParamList
 ......ParamDeclaration
 ........Int
-........Id(a)
-......ParamDeclaration
-........Int
-........Id(b)
+........Id(x)
 ....FuncBody
-......Return
-........Add - int
-..........Id(a) - int
-..........Id(b) - int
+......Call - void
+........Id(printint) - void(int)
+........Id(x) - int
+......Call - int
+........Id(putchar) - int(int)
+........ChrLit('\n') - int
+..FuncDeclaration
+....Void
+....Id(main2)
+....ParamList
+......ParamDeclaration
+........Char
+........Id(q)
 ..FuncDefinition
 ....Int
 ....Id(main)
@@ -144,29 +98,78 @@ Program
 ....FuncBody
 ......Declaration
 ........Int
-........Id(i)
+........Id(p)
+......Declaration
+........Char
+........Id(q)
+......Store - int
+........Id(p) - int
+........IntLit(5) - int
+......Store - char
+........Id(q) - char
 ........IntLit(1) - int
-......While
-........Ne - int
-..........Id(i) - int
-..........IntLit(0) - int
-........StatList
-..........Store - int
-............Id(i) - int
-............Call - int
-..............Id(readint) - int(void)
-..........Call - void
-............Id(printint) - void(int)
-............Id(i) - int
-..........Call - void
-............Id(printint) - void(int)
-............Call - int
-..............Id(sum) - int(int,int)
-..............Call - int
-................Id(sum) - int(int,int)
-................Id(i) - int
-................IntLit(1) - int
-..............IntLit(4) - int
-..........Call - int
-............Id(putchar) - int(int)
-............ChrLit('\n') - int
+......Call - void
+........Id(main2) - void(char)
+........Id(q) - char
+......Return
+........IntLit(0) - int
+..FuncDeclaration
+....Char
+....Id(q)
+....ParamList
+......ParamDeclaration
+........Char
+......ParamDeclaration
+........Char
+..FuncDefinition
+....Void
+....Id(main2)
+....ParamList
+......ParamDeclaration
+........Char
+........Id(p)
+....FuncBody
+......Call - void
+........Id(print) - void(int)
+........Call - char
+..........Id(q) - char
+..........Id(p) - char
+..........Id(p) - char
+......Call - void
+........Id(print) - void(int)
+........Call - char
+..........Id(q) - char
+..........Id(p) - char
+..........Not - int
+............Id(p) - char
+......Call - void
+........Id(print) - void(int)
+........Call - char
+..........Id(q) - char
+..........Not - int
+............Id(p) - char
+..........Id(p) - char
+......Call - void
+........Id(print) - void(int)
+........Call - char
+..........Id(q) - char
+..........Not - int
+............Id(p) - char
+..........Not - int
+............Id(p) - char
+..FuncDefinition
+....Char
+....Id(q)
+....ParamList
+......ParamDeclaration
+........Char
+........Id(p)
+......ParamDeclaration
+........Char
+........Id(q)
+....FuncBody
+......Return
+........And - int
+..........Id(p) - char
+..........Not - int
+............Id(q) - char

@@ -1,4 +1,3 @@
-#include <stdio.h>
 int t = 1;
 char o = 'a';
 void sin(int a, short b, char c){
@@ -29,4 +28,5 @@ int main(void){
     putchar(e + a);
     putchar(!!e);
     sin(1, 2, 3);
+
 }

@@ -41,3 +41,5 @@ valgrind ./uccompiler < ../TestFiles/bigtest1.c > result.ll
 lli result.ll
 valgrind ./uccompiler < ../TestFiles/bigtest2.c > result.ll
 lli result.ll
+valgrind ./uccompiler < ../TestFiles/returns.c > result.ll
+lli result.ll

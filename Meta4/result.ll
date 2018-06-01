@@ -1,67 +1,5 @@
 declare i32 @getchar()
 declare i32 @putchar(i32)
-define i32 @readint() {
-	%read = alloca i32, align 4
-	store i32 0, i32* %read, align 4
-	%sign = alloca i32, align 4
-	store i32 1, i32* %sign, align 4
-	%c = alloca i8, align 1
-	%1 = call i32 @getchar()
-	%2 = trunc i32 %1 to i8
-	store i8 %2, i8* %c, align 1
-	%3 = load i8, i8* %c, align 1
-	%4 = sext i8 %3 to i32
-	%5 = icmp eq i32 %4, 45
-	%6 = zext i1 %5 to i32
-	%7 = icmp ne i32 %6, 0
-	br i1 %7, label %label1, label %label2
-
-	label1:
-	store i32 -1, i32* %sign, align 4
-	br label %label2
-
-	label2:
-	br label %label3
-
-	label3:
-	%8 = load i8, i8* %c, align 1
-	%9 = sext i8 %8 to i32
-	%10 = icmp ne i32 %9, 10
-	%11 = zext i1 %10 to i32
-	%12 = icmp ne i32 %11, 0
-	br i1 %12, label %label4, label %label5
-
-	label4:
-	%13 = load i8, i8* %c, align 1
-	%14 = sext i8 %13 to i32
-	%15 = icmp ne i32 %14, 45
-	%16 = zext i1 %15 to i32
-	%17 = icmp ne i32 %16, 0
-	br i1 %17, label %label6, label %label7
-
-	label6:
-	%18 = load i32, i32* %read, align 4
-	%19 = mul i32 %18, 10
-	%20 = load i8, i8* %c, align 1
-	%21 = sext i8 %20 to i32
-	%22 = add i32 %19, %21
-	%23 = sub i32 %22, 48
-	store i32 %23, i32* %read, align 4
-	br label %label7
-
-	label7:
-	%24 = call i32 @getchar()
-	%25 = trunc i32 %24 to i8
-	store i8 %25, i8* %c, align 1
-	br label %label3
-
-	label5:
-	%26 = load i32, i32* %sign, align 4
-	%27 = load i32, i32* %read, align 4
-	%28 = mul i32 %26, %27
-	ret i32 %28
-}
-
 define void @printint(i32 %n) {
 	%1 = alloca i32, align 4
 	store i32 %n, i32* %1, align 4
@@ -98,63 +36,63 @@ define void @printint(i32 %n) {
 	ret void
 }
 
-define i32 @sum1(i32 %a, i32 %b) {
+define void @print(i32 %x) {
 	%1 = alloca i32, align 4
-	store i32 %a, i32* %1, align 4
-	%2 = alloca i32, align 4
-	store i32 %b, i32* %2, align 4
-	%3 = load i32, i32* %1, align 4
-	%4 = load i32, i32* %2, align 4
-	%5 = add i32 %3, %4
-	ret i32 %5
-}
-
-define i32 @sum(i32 %a, i32 %b) {
-	%1 = alloca i32, align 4
-	store i32 %a, i32* %1, align 4
-	%2 = alloca i32, align 4
-	store i32 %b, i32* %2, align 4
-	%3 = load i32, i32* %1, align 4
-	%4 = load i32, i32* %2, align 4
-	%5 = add i32 %3, %4
-	ret i32 %5
+	store i32 %x, i32* %1, align 4
+	%2 = load i32, i32* %1, align 4
+	call void @printint(i32 %2)
+	%3 = call i32 @putchar(i32 10)
+	ret void
 }
 
 define i32 @main() {
-	%i = alloca i32, align 4
-	store i32 1, i32* %i, align 4
-	br label %label1
+	%p = alloca i32, align 4
+	%q = alloca i8, align 1
+	store i32 5, i32* %p, align 4
+	store i8 1, i8* %q, align 1
+	%1 = load i8, i8* %q, align 1
+	call void @main2(i8 signext %1)
+	ret i32 0
+}
+
+define void @main2(i8 signext %p) {
+	%1 = alloca i8, align 1
+	store i8 %p, i8* %1, align 1
+	%2 = call i8 @q()
+	%3 = sext i8 %2 to i32
+	call void @print(i32 %3)
+	%4 = call i8 @q()
+	%5 = sext i8 %4 to i32
+	call void @print(i32 %5)
+	%6 = call i8 @q()
+	%7 = sext i8 %6 to i32
+	call void @print(i32 %7)
+	%8 = call i8 @q()
+	%9 = sext i8 %8 to i32
+	call void @print(i32 %9)
+	ret void
+}
+
+define i8 @q(i8 signext %p, i8 signext %q) {
+	%1 = alloca i8, align 1
+	store i8 %p, i8* %1, align 1
+	%2 = alloca i8, align 1
+	store i8 %q, i8* %2, align 1
+	%3 = load i8, i8* %1, align 1
+	%4 = icmp ne i8 %3, 0
+	br i1 %4, label %label1, label %label2
 
 	label1:
-	%1 = load i32, i32* %i, align 4
-	%2 = icmp ne i32 %1, 0
-	%3 = zext i1 %2 to i32
-	%4 = icmp ne i32 %3, 0
-	br i1 %4, label %label2, label %label3
+	%5 = load i8, i8* %2, align 1
+	%6 = icmp ne i8 %5, 0
+	%7 = xor i1 %6, true
+	%8 = zext i1 %7 to i32
+	%9 = icmp ne i32 %8, 0
+	br label %label2
 
 	label2:
-	%5 = call i32 @readint()
-	store i32 %5, i32* %i, align 4
-	%6 = load i32, i32* %i, align 4
-	call void @printint(i32 %6)
-	%7 = load i32, i32* %i, align 4
-	%8 = call i32 @sum1(i32 %7,i32 1)
-	%9 = add i32 3, 4
-	%10 = call i32 @sum1(i32 2,i32 %9)
-	%11 = call i32 @sum(i32 4,i32 %10)
-	%12 = call i32 @sum(i32 %8,i32 %11)
-	call void @printint(i32 %12)
-	%13 = call i32 @putchar(i32 10)
-	br label %label1
-
-	label3:
-	%14 = load i32, i32* %i, align 4
-	%15 = call i32 @sum1(i32 %14,i32 1)
-	%16 = add i32 3, 4
-	%17 = call i32 @sum1(i32 2,i32 %16)
-	%18 = call i32 @sum(i32 4,i32 %17)
-	%19 = call i32 @sum(i32 %15,i32 %18)
-	%20 = call i32 @sum(i32 1,i32 %19)
-	ret i32 %20
+	%10 = phi i1 [ false, %0 ], [ %9, %label1 ]
+	%11 = zext i1 %10 to i8
+	ret i8 %11
 }
 

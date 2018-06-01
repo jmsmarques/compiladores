@@ -20,6 +20,13 @@ void printint (int n) {
     }
     putchar (n % 10 + '0');
 }
+int sum1(int a, int b) {
+    return a + b;
+}
+
+int sum(int a, int b) {
+    return a + b;
+}
 int main (void) {
     int i = 1;
     //double l;
@@ -27,6 +34,8 @@ int main (void) {
         i = readint();
         //l = i;
         printint(i);
+        printint(sum(sum1(i,1), !sum(!4, !sum1(2, !3 + 4))));
         putchar('\n');
     }
+    sum(!sum(i,1), !sum1(!i, 0));
 }

@@ -2,7 +2,7 @@ double a = 1;
 
 short fl(void);
 
-char teste(double a, double c, char d) {
+int teste(double a, double c, char d) {
     a = 'b';
     a = 3.0e1 + (d = 4);
     c = a + c;
@@ -31,7 +31,7 @@ short fl(void) {
     return 48;
 }
 
-void troll(int a) {
+double troll(int a) {
     putchar(a + '0');
 }
 
@@ -39,8 +39,8 @@ char volta(double a, int b) {
     short f = 2;
     char l = b;
     a = f;
-    putchar(b = fl() + teste(2, (l = b,2.), fl()));
-    return b = fl() + teste(2, (l = b,2.), fl());
+    putchar(b = fl() + !teste(!2, (l = !b,2.), !fl()));
+    return !(fl() + teste(!2, (l = b,2.), fl()) % 2 * l / b);
 }
 
 int volta3(int a) {
@@ -50,8 +50,9 @@ int volta3(int a) {
 
 int volta2(int a) {
     a = a + 2;
-    int f = volta3(a);
-    return f;
+    char f = volta3(a);
+    short k = 2;
+    return f + k;
 }
 
 int volta1(int a) {
@@ -70,9 +71,10 @@ int func(int a, short b, char c, double d) {
 }
 
 int main(void) {
-    int p = 0;
+    short s = 9;
+    int p = volta(2., s);
     putchar(!p +!p + '0');
-
+    
     putchar(volta1(1) + 48);
     int g = 5;
     putchar((g == g) + ((g != g) + '0'));

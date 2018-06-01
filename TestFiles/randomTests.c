@@ -1,4 +1,3 @@
-#include <stdio.h>
 double a = 1;
 
 short fl(void);
@@ -34,7 +33,6 @@ short fl(void) {
 
 void troll(int a) {
     putchar(a + '0');
-    return troll(a);
 }
 
 char volta(double a, int b) {

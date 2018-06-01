@@ -33,7 +33,7 @@ valgrind ./uccompiler < ../TestFiles/funcs.c > result.ll
 lli result.ll
 valgrind ./uccompiler < ../TestFiles/teste.c > result.ll
 lli result.ll
-valgrind ./uccompiler < ../TestFiles/testesq.c > result.ll
+valgrind ./uccompiler < ../TestFiles/randomTests.c > result.ll
 lli result.ll
 valgrind ./uccompiler < ../TestFiles/validProgram.c > result.ll
 lli result.ll

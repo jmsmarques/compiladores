@@ -2,100 +2,187 @@
 target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-pc-linux-gnu"
 
-@a = global i32 1, align 4
-@b = global i16 2, align 2
-@c = global i8 3, align 1
-@d = global i32 4, align 4
+@a = global double 1.000000e+00, align 8
 
 ; Function Attrs: nounwind uwtable
-define void @condition_if(i32 %a) #0 {
-  %1 = alloca i32, align 4
-  store i32 %a, i32* %1, align 4
-  %2 = load i32, i32* %1, align 4
-  %3 = icmp ne i32 %2, 0
-  br i1 %3, label %4, label %16
-
-; <label>:4                                       ; preds = %0
-  %5 = call i32 @putchar(i32 69)
-  %6 = call i32 @putchar(i32 110)
-  %7 = call i32 @putchar(i32 116)
-  %8 = call i32 @putchar(i32 101)
-  %9 = call i32 @putchar(i32 114)
-  %10 = call i32 @putchar(i32 101)
-  %11 = call i32 @putchar(i32 100)
-  %12 = call i32 @putchar(i32 32)
-  %13 = call i32 @putchar(i32 105)
-  %14 = call i32 @putchar(i32 102)
-  %15 = call i32 @putchar(i32 10)
-  br label %30
-
-; <label>:16                                      ; preds = %0
-  %17 = call i32 @putchar(i32 69)
-  %18 = call i32 @putchar(i32 110)
-  %19 = call i32 @putchar(i32 116)
-  %20 = call i32 @putchar(i32 101)
-  %21 = call i32 @putchar(i32 114)
-  %22 = call i32 @putchar(i32 101)
-  %23 = call i32 @putchar(i32 100)
-  %24 = call i32 @putchar(i32 32)
-  %25 = call i32 @putchar(i32 101)
-  %26 = call i32 @putchar(i32 108)
-  %27 = call i32 @putchar(i32 115)
-  %28 = call i32 @putchar(i32 101)
-  %29 = call i32 @putchar(i32 10)
-  br label %30
-
-; <label>:30                                      ; preds = %16, %4
-  ret void
+define signext i8 @teste(double %a, double %c, i8 signext %d) #0 {
+  %1 = alloca double, align 8
+  %2 = alloca double, align 8
+  %3 = alloca i8, align 1
+  %g = alloca i8, align 1
+  %k = alloca double, align 8
+  %j = alloca double, align 8
+  store double %a, double* %1, align 8
+  store double %c, double* %2, align 8
+  store i8 %d, i8* %3, align 1
+  store double 9.800000e+01, double* %1, align 8
+  store i8 4, i8* %3, align 1
+  store double 3.400000e+01, double* %1, align 8
+  %4 = load double, double* %1, align 8
+  %5 = load double, double* %2, align 8
+  %6 = fadd double %4, %5
+  store double %6, double* %2, align 8
+  store i8 48, i8* %g, align 1
+  store double 3.000000e+00, double* %k, align 8
+  %7 = load double, double* %k, align 8
+  %8 = load double, double* %k, align 8
+  %9 = fcmp oeq double %7, %8
+  %10 = zext i1 %9 to i32
+  %11 = load double, double* %1, align 8
+  %12 = load double, double* %1, align 8
+  %13 = fsub double -0.000000e+00, %12
+  %14 = fcmp une double %11, %13
+  %15 = zext i1 %14 to i32
+  %16 = add nsw i32 %10, %15
+  %17 = sitofp i32 %16 to double
+  store double %17, double* %j, align 8
+  %18 = call i32 @putchar(i32 102)
+  %19 = call i32 @putchar(i32 10)
+  %20 = load i8, i8* %3, align 1
+  ret i8 %20
 }
 
 declare i32 @putchar(i32) #1
 
 ; Function Attrs: nounwind uwtable
-define void @condition_while(i32 %a, i32 %b) #0 {
-  %1 = alloca i32, align 4
+define i32 @cao(double %a, i32 %b, i16 signext %c, i8 signext %d) #0 {
+  %1 = alloca double, align 8
   %2 = alloca i32, align 4
-  store i32 %a, i32* %1, align 4
+  %3 = alloca i16, align 2
+  %4 = alloca i8, align 1
+  store double %a, double* %1, align 8
   store i32 %b, i32* %2, align 4
-  %3 = load i32, i32* %1, align 4
-  store i32 %3, i32* %1, align 4
-  br label %4
-
-; <label>:4                                       ; preds = %8, %0
-  %5 = load i32, i32* %1, align 4
-  %6 = load i32, i32* %2, align 4
-  %7 = icmp sle i32 %5, %6
-  br i1 %7, label %8, label %13
-
-; <label>:8                                       ; preds = %4
-  %9 = load i32, i32* %1, align 4
+  store i16 %c, i16* %3, align 2
+  store i8 %d, i8* %4, align 1
+  %5 = load i32, i32* %2, align 4
+  %6 = trunc i32 %5 to i8
+  store i8 %6, i8* %4, align 1
+  %7 = load i8, i8* %4, align 1
+  %8 = sext i8 %7 to i32
+  %9 = add nsw i32 %8, 48
   %10 = call i32 @putchar(i32 %9)
-  %11 = load i32, i32* %1, align 4
-  %12 = add nsw i32 %11, 1
-  store i32 %12, i32* %1, align 4
-  br label %4
+  %11 = load i16, i16* %3, align 2
+  %12 = sitofp i16 %11 to double
+  store double %12, double* %1, align 8
+  %13 = load i8, i8* %4, align 1
+  %14 = sext i8 %13 to i16
+  store i16 %14, i16* %3, align 2
+  %15 = load i16, i16* %3, align 2
+  %16 = sext i16 %15 to i32
+  %17 = add nsw i32 %16, 48
+  %18 = call i32 @putchar(i32 %17)
+  %19 = load i16, i16* %3, align 2
+  %20 = sext i16 %19 to i32
+  %21 = load i8, i8* %4, align 1
+  %22 = sext i8 %21 to i32
+  %23 = mul nsw i32 %20, %22
+  %24 = srem i32 %23, 2
+  store i32 %24, i32* %2, align 4
+  %25 = load i32, i32* %2, align 4
+  ret i32 %25
+}
 
-; <label>:13                                      ; preds = %4
-  %14 = call i32 @putchar(i32 10)
+; Function Attrs: nounwind uwtable
+define signext i16 @fl() #0 {
+  ret i16 48
+}
+
+; Function Attrs: nounwind uwtable
+define void @troll(i32 %a) #0 {
+  %1 = alloca i32, align 4
+  store i32 %a, i32* %1, align 4
+  %2 = load i32, i32* %1, align 4
+  %3 = add nsw i32 %2, 48
+  %4 = call i32 @putchar(i32 %3)
+  %5 = load i32, i32* %1, align 4
+  call void @troll(i32 %5)
   ret void
 }
 
 ; Function Attrs: nounwind uwtable
-define void @comma_expressions(i32 %a) #0 {
+define signext i8 @volta(double %a, i32 %b) #0 {
+  %1 = alloca double, align 8
+  %2 = alloca i32, align 4
+  %f = alloca i16, align 2
+  %l = alloca i8, align 1
+  store double %a, double* %1, align 8
+  store i32 %b, i32* %2, align 4
+  store i16 2, i16* %f, align 2
+  %3 = load i32, i32* %2, align 4
+  %4 = trunc i32 %3 to i8
+  store i8 %4, i8* %l, align 1
+  %5 = load i16, i16* %f, align 2
+  %6 = sitofp i16 %5 to double
+  store double %6, double* %1, align 8
+  %7 = call signext i16 @fl()
+  %8 = sext i16 %7 to i32
+  %9 = load i32, i32* %2, align 4
+  %10 = trunc i32 %9 to i8
+  store i8 %10, i8* %l, align 1
+  %11 = call signext i16 @fl()
+  %12 = trunc i16 %11 to i8
+  %13 = call signext i8 @teste(double 2.000000e+00, double 2.000000e+00, i8 signext %12)
+  %14 = sext i8 %13 to i32
+  %15 = add nsw i32 %8, %14
+  store i32 %15, i32* %2, align 4
+  %16 = call i32 @putchar(i32 %15)
+  %17 = call signext i16 @fl()
+  %18 = sext i16 %17 to i32
+  %19 = load i32, i32* %2, align 4
+  %20 = trunc i32 %19 to i8
+  store i8 %20, i8* %l, align 1
+  %21 = call signext i16 @fl()
+  %22 = trunc i16 %21 to i8
+  %23 = call signext i8 @teste(double 2.000000e+00, double 2.000000e+00, i8 signext %22)
+  %24 = sext i8 %23 to i32
+  %25 = add nsw i32 %18, %24
+  store i32 %25, i32* %2, align 4
+  %26 = trunc i32 %25 to i8
+  ret i8 %26
+}
+
+; Function Attrs: nounwind uwtable
+define i32 @volta3(i32 %a) #0 {
   %1 = alloca i32, align 4
   store i32 %a, i32* %1, align 4
+  %2 = load i32, i32* %1, align 4
+  %3 = add nsw i32 %2, 3
+  store i32 %3, i32* %1, align 4
+  %4 = load i32, i32* %1, align 4
+  ret i32 %4
+}
+
+; Function Attrs: nounwind uwtable
+define i32 @volta2(i32 %a) #0 {
+  %1 = alloca i32, align 4
+  %f = alloca i32, align 4
+  store i32 %a, i32* %1, align 4
+  %2 = load i32, i32* %1, align 4
+  %3 = add nsw i32 %2, 2
+  store i32 %3, i32* %1, align 4
+  %4 = load i32, i32* %1, align 4
+  %5 = call i32 @volta3(i32 %4)
+  store i32 %5, i32* %f, align 4
+  %6 = load i32, i32* %f, align 4
+  ret i32 %6
+}
+
+; Function Attrs: nounwind uwtable
+define i32 @volta1(i32 %a) #0 {
+  %1 = alloca i32, align 4
+  %b = alloca i32, align 4
+  store i32 %a, i32* %1, align 4
+  store i32 2, i32* %b, align 4
   %2 = load i32, i32* %1, align 4
   %3 = add nsw i32 %2, 1
   store i32 %3, i32* %1, align 4
   %4 = load i32, i32* %1, align 4
-  %5 = add nsw i32 %4, 2
-  store i32 %5, i32* %1, align 4
-  %6 = call i32 @putchar(i32 51)
-  ret void
+  %5 = call i32 @volta2(i32 %4)
+  ret i32 %5
 }
 
 ; Function Attrs: nounwind uwtable
-define signext i8 @call(i32 %a, i16 signext %b, i8 signext %c, double %d) #0 {
+define i32 @func(i32 %a, i16 signext %b, i8 signext %c, double %d) #0 {
   %1 = alloca i32, align 4
   %2 = alloca i16, align 2
   %3 = alloca i8, align 1
@@ -105,2093 +192,104 @@ define signext i8 @call(i32 %a, i16 signext %b, i8 signext %c, double %d) #0 {
   store i8 %c, i8* %3, align 1
   store double %d, double* %4, align 8
   %5 = load i32, i32* %1, align 4
-  %6 = icmp sge i32 %5, 9
-  br i1 %6, label %18, label %7
-
-; <label>:7                                       ; preds = %0
-  %8 = load i32, i32* %1, align 4
-  %9 = add nsw i32 %8, 1
-  %10 = load i32, i32* %1, align 4
-  %11 = trunc i32 %10 to i16
+  %6 = add nsw i32 %5, 48
+  %7 = call i32 @putchar(i32 %6)
+  %8 = load i16, i16* %2, align 2
+  %9 = sext i16 %8 to i32
+  %10 = add nsw i32 %9, 48
+  %11 = call i32 @putchar(i32 %10)
   %12 = load i8, i8* %3, align 1
-  %13 = load double, double* %4, align 8
-  %14 = call signext i8 @call(i32 %9, i16 signext %11, i8 signext %12, double %13)
-  %15 = sext i8 %14 to i16
-  store i16 %15, i16* %2, align 2
-  %16 = sext i16 %15 to i32
-  %17 = icmp ne i32 %16, 0
-  br label %18
-
-; <label>:18                                      ; preds = %7, %0
-  %19 = phi i1 [ true, %0 ], [ %17, %7 ]
-  %20 = zext i1 %19 to i32
-  %21 = load i32, i32* %1, align 4
-  %22 = add nsw i32 48, %21
-  %23 = call i32 @putchar(i32 %22)
-  %24 = load i16, i16* %2, align 2
-  %25 = sext i16 %24 to i32
-  %26 = add nsw i32 48, %25
-  %27 = call i32 @putchar(i32 %26)
-  %28 = call i32 @putchar(i32 10)
-  %29 = load i16, i16* %2, align 2
-  %30 = trunc i16 %29 to i8
-  ret i8 %30
+  %13 = sext i8 %12 to i32
+  %14 = add nsw i32 %13, 48
+  %15 = call i32 @putchar(i32 %14)
+  %16 = load double, double* %4, align 8
+  %17 = fcmp oeq double %16, 1.000000e+02
+  %18 = zext i1 %17 to i32
+  %19 = add nsw i32 %18, 48
+  %20 = call i32 @putchar(i32 %19)
+  ret i32 0
 }
 
 ; Function Attrs: nounwind uwtable
 define i32 @main() #0 {
-  %1 = alloca i32, align 4
-  store i32 0, i32* %1, align 4
-  call void @condition_if(i32 0)
-  call void @condition_if(i32 1)
-  call void @condition_while(i32 48, i32 57)
-  call void @condition_while(i32 97, i32 122)
-  call void @condition_while(i32 65, i32 90)
-  call void @comma_expressions(i32 0)
-  %2 = load i32, i32* @a, align 4
-  %3 = load i32, i32* @a, align 4
-  %4 = add nsw i32 %2, %3
-  %5 = add nsw i32 %4, 48
-  %6 = call i32 @putchar(i32 %5)
-  %7 = load i32, i32* @a, align 4
-  %8 = load i16, i16* @b, align 2
-  %9 = sext i16 %8 to i32
-  %10 = add nsw i32 %7, %9
-  %11 = add nsw i32 %10, 48
-  %12 = call i32 @putchar(i32 %11)
-  %13 = load i32, i32* @a, align 4
-  %14 = load i8, i8* @c, align 1
-  %15 = sext i8 %14 to i32
-  %16 = add nsw i32 %13, %15
-  %17 = add nsw i32 %16, 48
-  %18 = call i32 @putchar(i32 %17)
-  %19 = load i32, i32* @a, align 4
-  %20 = load i32, i32* @d, align 4
-  %21 = add nsw i32 %19, %20
-  %22 = add nsw i32 %21, 48
-  %23 = call i32 @putchar(i32 %22)
-  %24 = load i16, i16* @b, align 2
-  %25 = sext i16 %24 to i32
-  %26 = load i16, i16* @b, align 2
-  %27 = sext i16 %26 to i32
-  %28 = add nsw i32 %25, %27
-  %29 = add nsw i32 %28, 48
-  %30 = call i32 @putchar(i32 %29)
-  %31 = load i16, i16* @b, align 2
-  %32 = sext i16 %31 to i32
-  %33 = load i8, i8* @c, align 1
-  %34 = sext i8 %33 to i32
-  %35 = add nsw i32 %32, %34
-  %36 = add nsw i32 %35, 48
-  %37 = call i32 @putchar(i32 %36)
-  %38 = load i16, i16* @b, align 2
+  %p = alloca i32, align 4
+  %g = alloca i32, align 4
+  %a = alloca i32, align 4
+  %b = alloca i16, align 2
+  %c = alloca i8, align 1
+  %d = alloca double, align 8
+  store i32 0, i32* %p, align 4
+  %1 = load i32, i32* %p, align 4
+  %2 = icmp ne i32 %1, 0
+  %3 = xor i1 %2, true
+  %4 = zext i1 %3 to i32
+  %5 = load i32, i32* %p, align 4
+  %6 = icmp ne i32 %5, 0
+  %7 = xor i1 %6, true
+  %8 = zext i1 %7 to i32
+  %9 = add nsw i32 %4, %8
+  %10 = add nsw i32 %9, 48
+  %11 = call i32 @putchar(i32 %10)
+  %12 = call i32 @volta1(i32 1)
+  %13 = add nsw i32 %12, 48
+  %14 = call i32 @putchar(i32 %13)
+  store i32 5, i32* %g, align 4
+  %15 = load i32, i32* %g, align 4
+  %16 = load i32, i32* %g, align 4
+  %17 = icmp eq i32 %15, %16
+  %18 = zext i1 %17 to i32
+  %19 = load i32, i32* %g, align 4
+  %20 = load i32, i32* %g, align 4
+  %21 = icmp ne i32 %19, %20
+  %22 = zext i1 %21 to i32
+  %23 = add nsw i32 %22, 48
+  %24 = add nsw i32 %18, %23
+  %25 = call i32 @putchar(i32 %24)
+  %26 = call i32 @cao(double 1.000000e+00, i32 2, i16 signext 3, i8 signext 4)
+  %27 = call i32 @putchar(i32 %26)
+  store i32 97, i32* %a, align 4
+  store i16 98, i16* %b, align 2
+  store i8 99, i8* %c, align 1
+  store double 1.000000e+02, double* %d, align 8
+  %28 = call i32 @func(i32 1, i16 signext 1, i8 signext 1, double 1.000000e+00)
+  call void @troll(i32 0)
+  %29 = load i32, i32* %a, align 4
+  %30 = load i32, i32* %a, align 4
+  %31 = trunc i32 %30 to i16
+  %32 = load i32, i32* %a, align 4
+  %33 = trunc i32 %32 to i8
+  %34 = load i32, i32* %a, align 4
+  %35 = sitofp i32 %34 to double
+  %36 = call i32 @func(i32 %29, i16 signext %31, i8 signext %33, double %35)
+  %37 = load i32, i32* %a, align 4
+  call void @troll(i32 %37)
+  %38 = load i16, i16* %b, align 2
   %39 = sext i16 %38 to i32
-  %40 = load i32, i32* @d, align 4
-  %41 = add nsw i32 %39, %40
-  %42 = add nsw i32 %41, 48
-  %43 = call i32 @putchar(i32 %42)
-  %44 = load i8, i8* @c, align 1
-  %45 = sext i8 %44 to i32
-  %46 = load i8, i8* @c, align 1
-  %47 = sext i8 %46 to i32
-  %48 = add nsw i32 %45, %47
-  %49 = add nsw i32 %48, 48
-  %50 = call i32 @putchar(i32 %49)
-  %51 = load i8, i8* @c, align 1
-  %52 = sext i8 %51 to i32
-  %53 = load i32, i32* @d, align 4
-  %54 = add nsw i32 %52, %53
-  %55 = add nsw i32 %54, 48
-  %56 = call i32 @putchar(i32 %55)
-  %57 = load i32, i32* @d, align 4
-  %58 = load i32, i32* @d, align 4
-  %59 = add nsw i32 %57, %58
-  %60 = add nsw i32 %59, 48
-  %61 = call i32 @putchar(i32 %60)
-  %62 = load i32, i32* @a, align 4
-  %63 = load i32, i32* @a, align 4
-  %64 = add nsw i32 %62, %63
-  %65 = add nsw i32 %64, 48
-  %66 = call i32 @putchar(i32 %65)
-  %67 = load i16, i16* @b, align 2
-  %68 = sext i16 %67 to i32
-  %69 = load i32, i32* @a, align 4
-  %70 = add nsw i32 %68, %69
-  %71 = add nsw i32 %70, 48
-  %72 = call i32 @putchar(i32 %71)
-  %73 = load i8, i8* @c, align 1
-  %74 = sext i8 %73 to i32
-  %75 = load i32, i32* @a, align 4
-  %76 = add nsw i32 %74, %75
-  %77 = add nsw i32 %76, 48
-  %78 = call i32 @putchar(i32 %77)
-  %79 = load i32, i32* @d, align 4
-  %80 = load i32, i32* @a, align 4
-  %81 = add nsw i32 %79, %80
-  %82 = add nsw i32 %81, 48
-  %83 = call i32 @putchar(i32 %82)
-  %84 = load i16, i16* @b, align 2
-  %85 = sext i16 %84 to i32
-  %86 = load i16, i16* @b, align 2
-  %87 = sext i16 %86 to i32
-  %88 = add nsw i32 %85, %87
-  %89 = add nsw i32 %88, 48
-  %90 = call i32 @putchar(i32 %89)
-  %91 = load i8, i8* @c, align 1
-  %92 = sext i8 %91 to i32
-  %93 = load i16, i16* @b, align 2
-  %94 = sext i16 %93 to i32
-  %95 = add nsw i32 %92, %94
-  %96 = add nsw i32 %95, 48
-  %97 = call i32 @putchar(i32 %96)
-  %98 = load i32, i32* @d, align 4
-  %99 = load i16, i16* @b, align 2
-  %100 = sext i16 %99 to i32
-  %101 = add nsw i32 %98, %100
-  %102 = add nsw i32 %101, 48
-  %103 = call i32 @putchar(i32 %102)
-  %104 = load i8, i8* @c, align 1
-  %105 = sext i8 %104 to i32
-  %106 = load i8, i8* @c, align 1
-  %107 = sext i8 %106 to i32
-  %108 = add nsw i32 %105, %107
-  %109 = add nsw i32 %108, 48
-  %110 = call i32 @putchar(i32 %109)
-  %111 = load i32, i32* @a, align 4
-  %112 = load i32, i32* @a, align 4
-  %113 = sub nsw i32 %111, %112
-  %114 = add nsw i32 %113, 48
-  %115 = call i32 @putchar(i32 %114)
-  %116 = load i32, i32* @a, align 4
-  %117 = load i16, i16* @b, align 2
-  %118 = sext i16 %117 to i32
-  %119 = sub nsw i32 %116, %118
-  %120 = add nsw i32 %119, 48
-  %121 = call i32 @putchar(i32 %120)
-  %122 = load i32, i32* @a, align 4
-  %123 = load i8, i8* @c, align 1
-  %124 = sext i8 %123 to i32
-  %125 = sub nsw i32 %122, %124
-  %126 = add nsw i32 %125, 48
-  %127 = call i32 @putchar(i32 %126)
-  %128 = load i32, i32* @a, align 4
-  %129 = load i32, i32* @d, align 4
-  %130 = sub nsw i32 %128, %129
-  %131 = add nsw i32 %130, 48
-  %132 = call i32 @putchar(i32 %131)
-  %133 = load i16, i16* @b, align 2
-  %134 = sext i16 %133 to i32
-  %135 = load i16, i16* @b, align 2
-  %136 = sext i16 %135 to i32
-  %137 = sub nsw i32 %134, %136
-  %138 = add nsw i32 %137, 48
-  %139 = call i32 @putchar(i32 %138)
-  %140 = load i16, i16* @b, align 2
-  %141 = sext i16 %140 to i32
-  %142 = load i8, i8* @c, align 1
-  %143 = sext i8 %142 to i32
-  %144 = sub nsw i32 %141, %143
-  %145 = add nsw i32 %144, 48
-  %146 = call i32 @putchar(i32 %145)
-  %147 = load i16, i16* @b, align 2
-  %148 = sext i16 %147 to i32
-  %149 = load i32, i32* @d, align 4
-  %150 = sub nsw i32 %148, %149
-  %151 = add nsw i32 %150, 48
-  %152 = call i32 @putchar(i32 %151)
-  %153 = load i8, i8* @c, align 1
-  %154 = sext i8 %153 to i32
-  %155 = load i8, i8* @c, align 1
-  %156 = sext i8 %155 to i32
-  %157 = sub nsw i32 %154, %156
-  %158 = add nsw i32 %157, 48
-  %159 = call i32 @putchar(i32 %158)
-  %160 = load i8, i8* @c, align 1
-  %161 = sext i8 %160 to i32
-  %162 = load i32, i32* @d, align 4
-  %163 = sub nsw i32 %161, %162
-  %164 = add nsw i32 %163, 48
-  %165 = call i32 @putchar(i32 %164)
-  %166 = load i32, i32* @d, align 4
-  %167 = load i32, i32* @d, align 4
-  %168 = sub nsw i32 %166, %167
-  %169 = add nsw i32 %168, 48
-  %170 = call i32 @putchar(i32 %169)
-  %171 = load i32, i32* @a, align 4
-  %172 = load i32, i32* @a, align 4
-  %173 = sub nsw i32 %171, %172
-  %174 = add nsw i32 %173, 48
-  %175 = call i32 @putchar(i32 %174)
-  %176 = load i16, i16* @b, align 2
-  %177 = sext i16 %176 to i32
-  %178 = load i32, i32* @a, align 4
-  %179 = sub nsw i32 %177, %178
-  %180 = add nsw i32 %179, 48
-  %181 = call i32 @putchar(i32 %180)
-  %182 = load i8, i8* @c, align 1
-  %183 = sext i8 %182 to i32
-  %184 = load i32, i32* @a, align 4
-  %185 = sub nsw i32 %183, %184
-  %186 = add nsw i32 %185, 48
-  %187 = call i32 @putchar(i32 %186)
-  %188 = load i32, i32* @d, align 4
-  %189 = load i32, i32* @a, align 4
-  %190 = sub nsw i32 %188, %189
-  %191 = add nsw i32 %190, 48
-  %192 = call i32 @putchar(i32 %191)
-  %193 = load i16, i16* @b, align 2
-  %194 = sext i16 %193 to i32
-  %195 = load i16, i16* @b, align 2
-  %196 = sext i16 %195 to i32
-  %197 = sub nsw i32 %194, %196
-  %198 = add nsw i32 %197, 48
-  %199 = call i32 @putchar(i32 %198)
-  %200 = load i8, i8* @c, align 1
-  %201 = sext i8 %200 to i32
-  %202 = load i16, i16* @b, align 2
-  %203 = sext i16 %202 to i32
-  %204 = sub nsw i32 %201, %203
-  %205 = add nsw i32 %204, 48
-  %206 = call i32 @putchar(i32 %205)
-  %207 = load i32, i32* @d, align 4
-  %208 = load i16, i16* @b, align 2
-  %209 = sext i16 %208 to i32
-  %210 = sub nsw i32 %207, %209
-  %211 = add nsw i32 %210, 48
-  %212 = call i32 @putchar(i32 %211)
-  %213 = load i8, i8* @c, align 1
-  %214 = sext i8 %213 to i32
-  %215 = load i8, i8* @c, align 1
-  %216 = sext i8 %215 to i32
-  %217 = sub nsw i32 %214, %216
-  %218 = add nsw i32 %217, 48
-  %219 = call i32 @putchar(i32 %218)
-  %220 = load i32, i32* @a, align 4
-  %221 = load i32, i32* @a, align 4
-  %222 = mul nsw i32 %220, %221
-  %223 = add nsw i32 %222, 48
-  %224 = call i32 @putchar(i32 %223)
-  %225 = load i32, i32* @a, align 4
-  %226 = load i16, i16* @b, align 2
-  %227 = sext i16 %226 to i32
-  %228 = mul nsw i32 %225, %227
-  %229 = add nsw i32 %228, 48
-  %230 = call i32 @putchar(i32 %229)
-  %231 = load i32, i32* @a, align 4
-  %232 = load i8, i8* @c, align 1
-  %233 = sext i8 %232 to i32
-  %234 = mul nsw i32 %231, %233
-  %235 = add nsw i32 %234, 48
-  %236 = call i32 @putchar(i32 %235)
-  %237 = load i32, i32* @a, align 4
-  %238 = load i32, i32* @d, align 4
-  %239 = mul nsw i32 %237, %238
-  %240 = add nsw i32 %239, 48
-  %241 = call i32 @putchar(i32 %240)
-  %242 = load i16, i16* @b, align 2
-  %243 = sext i16 %242 to i32
-  %244 = load i16, i16* @b, align 2
-  %245 = sext i16 %244 to i32
-  %246 = mul nsw i32 %243, %245
-  %247 = add nsw i32 %246, 48
-  %248 = call i32 @putchar(i32 %247)
-  %249 = load i16, i16* @b, align 2
-  %250 = sext i16 %249 to i32
-  %251 = load i8, i8* @c, align 1
-  %252 = sext i8 %251 to i32
-  %253 = mul nsw i32 %250, %252
-  %254 = add nsw i32 %253, 48
-  %255 = call i32 @putchar(i32 %254)
-  %256 = load i16, i16* @b, align 2
-  %257 = sext i16 %256 to i32
-  %258 = load i32, i32* @d, align 4
-  %259 = mul nsw i32 %257, %258
-  %260 = add nsw i32 %259, 48
-  %261 = call i32 @putchar(i32 %260)
-  %262 = load i8, i8* @c, align 1
-  %263 = sext i8 %262 to i32
-  %264 = load i8, i8* @c, align 1
-  %265 = sext i8 %264 to i32
-  %266 = mul nsw i32 %263, %265
-  %267 = add nsw i32 %266, 48
-  %268 = call i32 @putchar(i32 %267)
-  %269 = load i8, i8* @c, align 1
-  %270 = sext i8 %269 to i32
-  %271 = load i32, i32* @d, align 4
-  %272 = mul nsw i32 %270, %271
-  %273 = add nsw i32 %272, 48
-  %274 = call i32 @putchar(i32 %273)
-  %275 = load i32, i32* @d, align 4
-  %276 = load i32, i32* @d, align 4
-  %277 = mul nsw i32 %275, %276
-  %278 = add nsw i32 %277, 48
-  %279 = call i32 @putchar(i32 %278)
-  %280 = load i32, i32* @a, align 4
-  %281 = load i32, i32* @a, align 4
-  %282 = mul nsw i32 %280, %281
-  %283 = add nsw i32 %282, 48
-  %284 = call i32 @putchar(i32 %283)
-  %285 = load i16, i16* @b, align 2
-  %286 = sext i16 %285 to i32
-  %287 = load i32, i32* @a, align 4
-  %288 = mul nsw i32 %286, %287
-  %289 = add nsw i32 %288, 48
-  %290 = call i32 @putchar(i32 %289)
-  %291 = load i8, i8* @c, align 1
-  %292 = sext i8 %291 to i32
-  %293 = load i32, i32* @a, align 4
-  %294 = mul nsw i32 %292, %293
-  %295 = add nsw i32 %294, 48
-  %296 = call i32 @putchar(i32 %295)
-  %297 = load i32, i32* @d, align 4
-  %298 = load i32, i32* @a, align 4
-  %299 = mul nsw i32 %297, %298
-  %300 = add nsw i32 %299, 48
-  %301 = call i32 @putchar(i32 %300)
-  %302 = load i16, i16* @b, align 2
-  %303 = sext i16 %302 to i32
-  %304 = load i16, i16* @b, align 2
-  %305 = sext i16 %304 to i32
-  %306 = mul nsw i32 %303, %305
-  %307 = add nsw i32 %306, 48
-  %308 = call i32 @putchar(i32 %307)
-  %309 = load i8, i8* @c, align 1
-  %310 = sext i8 %309 to i32
-  %311 = load i16, i16* @b, align 2
-  %312 = sext i16 %311 to i32
-  %313 = mul nsw i32 %310, %312
-  %314 = add nsw i32 %313, 48
-  %315 = call i32 @putchar(i32 %314)
-  %316 = load i32, i32* @d, align 4
-  %317 = load i16, i16* @b, align 2
-  %318 = sext i16 %317 to i32
-  %319 = mul nsw i32 %316, %318
-  %320 = add nsw i32 %319, 48
-  %321 = call i32 @putchar(i32 %320)
-  %322 = load i8, i8* @c, align 1
-  %323 = sext i8 %322 to i32
-  %324 = load i8, i8* @c, align 1
-  %325 = sext i8 %324 to i32
-  %326 = mul nsw i32 %323, %325
-  %327 = add nsw i32 %326, 48
-  %328 = call i32 @putchar(i32 %327)
-  %329 = load i32, i32* @a, align 4
-  %330 = load i32, i32* @a, align 4
-  %331 = sdiv i32 %329, %330
-  %332 = add nsw i32 %331, 48
-  %333 = call i32 @putchar(i32 %332)
-  %334 = load i32, i32* @a, align 4
-  %335 = load i16, i16* @b, align 2
-  %336 = sext i16 %335 to i32
-  %337 = sdiv i32 %334, %336
-  %338 = add nsw i32 %337, 48
-  %339 = call i32 @putchar(i32 %338)
-  %340 = load i32, i32* @a, align 4
-  %341 = load i8, i8* @c, align 1
-  %342 = sext i8 %341 to i32
-  %343 = sdiv i32 %340, %342
-  %344 = add nsw i32 %343, 48
-  %345 = call i32 @putchar(i32 %344)
-  %346 = load i32, i32* @a, align 4
-  %347 = load i32, i32* @d, align 4
-  %348 = sdiv i32 %346, %347
-  %349 = add nsw i32 %348, 48
-  %350 = call i32 @putchar(i32 %349)
-  %351 = load i16, i16* @b, align 2
-  %352 = sext i16 %351 to i32
-  %353 = load i16, i16* @b, align 2
-  %354 = sext i16 %353 to i32
-  %355 = sdiv i32 %352, %354
-  %356 = add nsw i32 %355, 48
-  %357 = call i32 @putchar(i32 %356)
-  %358 = load i16, i16* @b, align 2
-  %359 = sext i16 %358 to i32
-  %360 = load i8, i8* @c, align 1
-  %361 = sext i8 %360 to i32
-  %362 = sdiv i32 %359, %361
-  %363 = add nsw i32 %362, 48
-  %364 = call i32 @putchar(i32 %363)
-  %365 = load i16, i16* @b, align 2
-  %366 = sext i16 %365 to i32
-  %367 = load i32, i32* @d, align 4
-  %368 = sdiv i32 %366, %367
-  %369 = add nsw i32 %368, 48
-  %370 = call i32 @putchar(i32 %369)
-  %371 = load i8, i8* @c, align 1
-  %372 = sext i8 %371 to i32
-  %373 = load i8, i8* @c, align 1
-  %374 = sext i8 %373 to i32
-  %375 = sdiv i32 %372, %374
-  %376 = add nsw i32 %375, 48
-  %377 = call i32 @putchar(i32 %376)
-  %378 = load i8, i8* @c, align 1
-  %379 = sext i8 %378 to i32
-  %380 = load i32, i32* @d, align 4
-  %381 = sdiv i32 %379, %380
-  %382 = add nsw i32 %381, 48
-  %383 = call i32 @putchar(i32 %382)
-  %384 = load i32, i32* @d, align 4
-  %385 = load i32, i32* @d, align 4
-  %386 = sdiv i32 %384, %385
-  %387 = add nsw i32 %386, 48
-  %388 = call i32 @putchar(i32 %387)
-  %389 = load i32, i32* @a, align 4
-  %390 = load i32, i32* @a, align 4
-  %391 = sdiv i32 %389, %390
-  %392 = add nsw i32 %391, 48
-  %393 = call i32 @putchar(i32 %392)
-  %394 = load i16, i16* @b, align 2
-  %395 = sext i16 %394 to i32
-  %396 = load i32, i32* @a, align 4
-  %397 = sdiv i32 %395, %396
-  %398 = add nsw i32 %397, 48
-  %399 = call i32 @putchar(i32 %398)
-  %400 = load i8, i8* @c, align 1
-  %401 = sext i8 %400 to i32
-  %402 = load i32, i32* @a, align 4
-  %403 = sdiv i32 %401, %402
-  %404 = add nsw i32 %403, 48
-  %405 = call i32 @putchar(i32 %404)
-  %406 = load i32, i32* @d, align 4
-  %407 = load i32, i32* @a, align 4
-  %408 = sdiv i32 %406, %407
-  %409 = add nsw i32 %408, 48
-  %410 = call i32 @putchar(i32 %409)
-  %411 = load i16, i16* @b, align 2
-  %412 = sext i16 %411 to i32
-  %413 = load i16, i16* @b, align 2
-  %414 = sext i16 %413 to i32
-  %415 = sdiv i32 %412, %414
-  %416 = add nsw i32 %415, 48
-  %417 = call i32 @putchar(i32 %416)
-  %418 = load i8, i8* @c, align 1
-  %419 = sext i8 %418 to i32
-  %420 = load i16, i16* @b, align 2
-  %421 = sext i16 %420 to i32
-  %422 = sdiv i32 %419, %421
-  %423 = add nsw i32 %422, 48
-  %424 = call i32 @putchar(i32 %423)
-  %425 = load i32, i32* @d, align 4
-  %426 = load i16, i16* @b, align 2
-  %427 = sext i16 %426 to i32
-  %428 = sdiv i32 %425, %427
-  %429 = add nsw i32 %428, 48
-  %430 = call i32 @putchar(i32 %429)
-  %431 = load i8, i8* @c, align 1
-  %432 = sext i8 %431 to i32
-  %433 = load i8, i8* @c, align 1
-  %434 = sext i8 %433 to i32
-  %435 = sdiv i32 %432, %434
-  %436 = add nsw i32 %435, 48
-  %437 = call i32 @putchar(i32 %436)
-  %438 = load i32, i32* @a, align 4
-  %439 = load i32, i32* @a, align 4
-  %440 = srem i32 %438, %439
-  %441 = add nsw i32 %440, 48
-  %442 = call i32 @putchar(i32 %441)
-  %443 = load i32, i32* @a, align 4
-  %444 = load i16, i16* @b, align 2
-  %445 = sext i16 %444 to i32
-  %446 = srem i32 %443, %445
-  %447 = add nsw i32 %446, 48
-  %448 = call i32 @putchar(i32 %447)
-  %449 = load i32, i32* @a, align 4
-  %450 = load i8, i8* @c, align 1
-  %451 = sext i8 %450 to i32
-  %452 = srem i32 %449, %451
-  %453 = add nsw i32 %452, 48
-  %454 = call i32 @putchar(i32 %453)
-  %455 = load i16, i16* @b, align 2
-  %456 = sext i16 %455 to i32
-  %457 = load i16, i16* @b, align 2
-  %458 = sext i16 %457 to i32
-  %459 = srem i32 %456, %458
-  %460 = add nsw i32 %459, 48
-  %461 = call i32 @putchar(i32 %460)
-  %462 = load i16, i16* @b, align 2
-  %463 = sext i16 %462 to i32
-  %464 = load i8, i8* @c, align 1
-  %465 = sext i8 %464 to i32
-  %466 = srem i32 %463, %465
-  %467 = add nsw i32 %466, 48
-  %468 = call i32 @putchar(i32 %467)
-  %469 = load i8, i8* @c, align 1
-  %470 = sext i8 %469 to i32
-  %471 = load i8, i8* @c, align 1
-  %472 = sext i8 %471 to i32
-  %473 = srem i32 %470, %472
-  %474 = add nsw i32 %473, 48
-  %475 = call i32 @putchar(i32 %474)
-  %476 = load i32, i32* @a, align 4
-  %477 = load i32, i32* @a, align 4
-  %478 = srem i32 %476, %477
-  %479 = add nsw i32 %478, 48
-  %480 = call i32 @putchar(i32 %479)
-  %481 = load i16, i16* @b, align 2
-  %482 = sext i16 %481 to i32
-  %483 = load i32, i32* @a, align 4
-  %484 = srem i32 %482, %483
-  %485 = add nsw i32 %484, 48
-  %486 = call i32 @putchar(i32 %485)
-  %487 = load i8, i8* @c, align 1
-  %488 = sext i8 %487 to i32
-  %489 = load i32, i32* @a, align 4
-  %490 = srem i32 %488, %489
-  %491 = add nsw i32 %490, 48
-  %492 = call i32 @putchar(i32 %491)
-  %493 = load i16, i16* @b, align 2
-  %494 = sext i16 %493 to i32
-  %495 = load i16, i16* @b, align 2
-  %496 = sext i16 %495 to i32
-  %497 = srem i32 %494, %496
-  %498 = add nsw i32 %497, 48
-  %499 = call i32 @putchar(i32 %498)
-  %500 = load i8, i8* @c, align 1
-  %501 = sext i8 %500 to i32
-  %502 = load i16, i16* @b, align 2
-  %503 = sext i16 %502 to i32
-  %504 = srem i32 %501, %503
-  %505 = add nsw i32 %504, 48
-  %506 = call i32 @putchar(i32 %505)
-  %507 = load i8, i8* @c, align 1
-  %508 = sext i8 %507 to i32
-  %509 = load i8, i8* @c, align 1
-  %510 = sext i8 %509 to i32
-  %511 = srem i32 %508, %510
-  %512 = add nsw i32 %511, 48
-  %513 = call i32 @putchar(i32 %512)
-  %514 = load i32, i32* @a, align 4
-  %515 = load i32, i32* @a, align 4
-  %516 = and i32 %514, %515
-  %517 = add nsw i32 %516, 48
-  %518 = call i32 @putchar(i32 %517)
-  %519 = load i32, i32* @a, align 4
-  %520 = load i16, i16* @b, align 2
-  %521 = sext i16 %520 to i32
-  %522 = and i32 %519, %521
-  %523 = add nsw i32 %522, 48
-  %524 = call i32 @putchar(i32 %523)
-  %525 = load i32, i32* @a, align 4
-  %526 = load i8, i8* @c, align 1
-  %527 = sext i8 %526 to i32
-  %528 = and i32 %525, %527
-  %529 = add nsw i32 %528, 48
-  %530 = call i32 @putchar(i32 %529)
-  %531 = load i16, i16* @b, align 2
-  %532 = sext i16 %531 to i32
-  %533 = load i16, i16* @b, align 2
-  %534 = sext i16 %533 to i32
-  %535 = and i32 %532, %534
-  %536 = add nsw i32 %535, 48
-  %537 = call i32 @putchar(i32 %536)
-  %538 = load i16, i16* @b, align 2
-  %539 = sext i16 %538 to i32
-  %540 = load i8, i8* @c, align 1
-  %541 = sext i8 %540 to i32
-  %542 = and i32 %539, %541
-  %543 = add nsw i32 %542, 48
-  %544 = call i32 @putchar(i32 %543)
-  %545 = load i8, i8* @c, align 1
-  %546 = sext i8 %545 to i32
-  %547 = load i8, i8* @c, align 1
-  %548 = sext i8 %547 to i32
-  %549 = and i32 %546, %548
-  %550 = add nsw i32 %549, 48
-  %551 = call i32 @putchar(i32 %550)
-  %552 = load i32, i32* @a, align 4
-  %553 = load i32, i32* @a, align 4
-  %554 = and i32 %552, %553
-  %555 = add nsw i32 %554, 48
-  %556 = call i32 @putchar(i32 %555)
-  %557 = load i16, i16* @b, align 2
-  %558 = sext i16 %557 to i32
-  %559 = load i32, i32* @a, align 4
-  %560 = and i32 %558, %559
-  %561 = add nsw i32 %560, 48
-  %562 = call i32 @putchar(i32 %561)
-  %563 = load i8, i8* @c, align 1
-  %564 = sext i8 %563 to i32
-  %565 = load i32, i32* @a, align 4
-  %566 = and i32 %564, %565
-  %567 = add nsw i32 %566, 48
-  %568 = call i32 @putchar(i32 %567)
-  %569 = load i16, i16* @b, align 2
-  %570 = sext i16 %569 to i32
-  %571 = load i16, i16* @b, align 2
-  %572 = sext i16 %571 to i32
-  %573 = and i32 %570, %572
-  %574 = add nsw i32 %573, 48
-  %575 = call i32 @putchar(i32 %574)
-  %576 = load i8, i8* @c, align 1
-  %577 = sext i8 %576 to i32
-  %578 = load i16, i16* @b, align 2
-  %579 = sext i16 %578 to i32
-  %580 = and i32 %577, %579
-  %581 = add nsw i32 %580, 48
-  %582 = call i32 @putchar(i32 %581)
-  %583 = load i8, i8* @c, align 1
-  %584 = sext i8 %583 to i32
-  %585 = load i8, i8* @c, align 1
-  %586 = sext i8 %585 to i32
-  %587 = and i32 %584, %586
-  %588 = add nsw i32 %587, 48
-  %589 = call i32 @putchar(i32 %588)
-  %590 = load i32, i32* @a, align 4
-  %591 = load i32, i32* @a, align 4
-  %592 = or i32 %590, %591
-  %593 = add nsw i32 %592, 48
-  %594 = call i32 @putchar(i32 %593)
-  %595 = load i32, i32* @a, align 4
-  %596 = load i16, i16* @b, align 2
-  %597 = sext i16 %596 to i32
-  %598 = or i32 %595, %597
-  %599 = add nsw i32 %598, 48
-  %600 = call i32 @putchar(i32 %599)
-  %601 = load i32, i32* @a, align 4
-  %602 = load i8, i8* @c, align 1
-  %603 = sext i8 %602 to i32
-  %604 = or i32 %601, %603
-  %605 = add nsw i32 %604, 48
-  %606 = call i32 @putchar(i32 %605)
-  %607 = load i16, i16* @b, align 2
-  %608 = sext i16 %607 to i32
-  %609 = load i16, i16* @b, align 2
-  %610 = sext i16 %609 to i32
-  %611 = or i32 %608, %610
-  %612 = add nsw i32 %611, 48
-  %613 = call i32 @putchar(i32 %612)
-  %614 = load i16, i16* @b, align 2
-  %615 = sext i16 %614 to i32
-  %616 = load i8, i8* @c, align 1
-  %617 = sext i8 %616 to i32
-  %618 = or i32 %615, %617
-  %619 = add nsw i32 %618, 48
-  %620 = call i32 @putchar(i32 %619)
-  %621 = load i8, i8* @c, align 1
-  %622 = sext i8 %621 to i32
-  %623 = load i8, i8* @c, align 1
-  %624 = sext i8 %623 to i32
-  %625 = or i32 %622, %624
-  %626 = add nsw i32 %625, 48
-  %627 = call i32 @putchar(i32 %626)
-  %628 = load i32, i32* @a, align 4
-  %629 = load i32, i32* @a, align 4
-  %630 = or i32 %628, %629
-  %631 = add nsw i32 %630, 48
-  %632 = call i32 @putchar(i32 %631)
-  %633 = load i16, i16* @b, align 2
-  %634 = sext i16 %633 to i32
-  %635 = load i32, i32* @a, align 4
-  %636 = or i32 %634, %635
-  %637 = add nsw i32 %636, 48
-  %638 = call i32 @putchar(i32 %637)
-  %639 = load i8, i8* @c, align 1
-  %640 = sext i8 %639 to i32
-  %641 = load i32, i32* @a, align 4
-  %642 = or i32 %640, %641
-  %643 = add nsw i32 %642, 48
-  %644 = call i32 @putchar(i32 %643)
-  %645 = load i16, i16* @b, align 2
-  %646 = sext i16 %645 to i32
-  %647 = load i16, i16* @b, align 2
-  %648 = sext i16 %647 to i32
-  %649 = or i32 %646, %648
-  %650 = add nsw i32 %649, 48
-  %651 = call i32 @putchar(i32 %650)
-  %652 = load i8, i8* @c, align 1
-  %653 = sext i8 %652 to i32
-  %654 = load i16, i16* @b, align 2
-  %655 = sext i16 %654 to i32
-  %656 = or i32 %653, %655
-  %657 = add nsw i32 %656, 48
-  %658 = call i32 @putchar(i32 %657)
-  %659 = load i8, i8* @c, align 1
-  %660 = sext i8 %659 to i32
-  %661 = load i8, i8* @c, align 1
-  %662 = sext i8 %661 to i32
-  %663 = or i32 %660, %662
-  %664 = add nsw i32 %663, 48
-  %665 = call i32 @putchar(i32 %664)
-  %666 = load i32, i32* @a, align 4
-  %667 = load i32, i32* @a, align 4
-  %668 = xor i32 %666, %667
-  %669 = add nsw i32 %668, 48
-  %670 = call i32 @putchar(i32 %669)
-  %671 = load i32, i32* @a, align 4
-  %672 = load i16, i16* @b, align 2
-  %673 = sext i16 %672 to i32
-  %674 = xor i32 %671, %673
-  %675 = add nsw i32 %674, 48
-  %676 = call i32 @putchar(i32 %675)
-  %677 = load i32, i32* @a, align 4
-  %678 = load i8, i8* @c, align 1
-  %679 = sext i8 %678 to i32
-  %680 = xor i32 %677, %679
-  %681 = add nsw i32 %680, 48
-  %682 = call i32 @putchar(i32 %681)
-  %683 = load i16, i16* @b, align 2
-  %684 = sext i16 %683 to i32
-  %685 = load i16, i16* @b, align 2
-  %686 = sext i16 %685 to i32
-  %687 = xor i32 %684, %686
-  %688 = add nsw i32 %687, 48
-  %689 = call i32 @putchar(i32 %688)
-  %690 = load i16, i16* @b, align 2
-  %691 = sext i16 %690 to i32
-  %692 = load i8, i8* @c, align 1
-  %693 = sext i8 %692 to i32
-  %694 = xor i32 %691, %693
-  %695 = add nsw i32 %694, 48
-  %696 = call i32 @putchar(i32 %695)
-  %697 = load i8, i8* @c, align 1
-  %698 = sext i8 %697 to i32
-  %699 = load i8, i8* @c, align 1
-  %700 = sext i8 %699 to i32
-  %701 = xor i32 %698, %700
-  %702 = add nsw i32 %701, 48
-  %703 = call i32 @putchar(i32 %702)
-  %704 = load i32, i32* @a, align 4
-  %705 = load i32, i32* @a, align 4
-  %706 = xor i32 %704, %705
-  %707 = add nsw i32 %706, 48
-  %708 = call i32 @putchar(i32 %707)
-  %709 = load i16, i16* @b, align 2
-  %710 = sext i16 %709 to i32
-  %711 = load i32, i32* @a, align 4
-  %712 = xor i32 %710, %711
-  %713 = add nsw i32 %712, 48
-  %714 = call i32 @putchar(i32 %713)
-  %715 = load i8, i8* @c, align 1
-  %716 = sext i8 %715 to i32
-  %717 = load i32, i32* @a, align 4
-  %718 = xor i32 %716, %717
-  %719 = add nsw i32 %718, 48
-  %720 = call i32 @putchar(i32 %719)
-  %721 = load i16, i16* @b, align 2
-  %722 = sext i16 %721 to i32
-  %723 = load i16, i16* @b, align 2
-  %724 = sext i16 %723 to i32
-  %725 = xor i32 %722, %724
-  %726 = add nsw i32 %725, 48
-  %727 = call i32 @putchar(i32 %726)
-  %728 = load i8, i8* @c, align 1
-  %729 = sext i8 %728 to i32
-  %730 = load i16, i16* @b, align 2
-  %731 = sext i16 %730 to i32
-  %732 = xor i32 %729, %731
-  %733 = add nsw i32 %732, 48
-  %734 = call i32 @putchar(i32 %733)
-  %735 = load i8, i8* @c, align 1
-  %736 = sext i8 %735 to i32
-  %737 = load i8, i8* @c, align 1
-  %738 = sext i8 %737 to i32
-  %739 = xor i32 %736, %738
-  %740 = add nsw i32 %739, 48
-  %741 = call i32 @putchar(i32 %740)
-  %742 = load i32, i32* @a, align 4
-  %743 = load i32, i32* @a, align 4
-  %744 = icmp slt i32 %742, %743
-  %745 = zext i1 %744 to i32
-  %746 = add nsw i32 %745, 48
-  %747 = call i32 @putchar(i32 %746)
-  %748 = load i32, i32* @a, align 4
-  %749 = load i16, i16* @b, align 2
-  %750 = sext i16 %749 to i32
-  %751 = icmp slt i32 %748, %750
-  %752 = zext i1 %751 to i32
-  %753 = add nsw i32 %752, 48
-  %754 = call i32 @putchar(i32 %753)
-  %755 = load i32, i32* @a, align 4
-  %756 = load i8, i8* @c, align 1
-  %757 = sext i8 %756 to i32
-  %758 = icmp slt i32 %755, %757
-  %759 = zext i1 %758 to i32
-  %760 = add nsw i32 %759, 48
-  %761 = call i32 @putchar(i32 %760)
-  %762 = load i32, i32* @a, align 4
-  %763 = load i32, i32* @d, align 4
-  %764 = icmp slt i32 %762, %763
-  %765 = zext i1 %764 to i32
-  %766 = add nsw i32 %765, 48
-  %767 = call i32 @putchar(i32 %766)
-  %768 = load i16, i16* @b, align 2
-  %769 = sext i16 %768 to i32
-  %770 = load i16, i16* @b, align 2
-  %771 = sext i16 %770 to i32
-  %772 = icmp slt i32 %769, %771
-  %773 = zext i1 %772 to i32
-  %774 = add nsw i32 %773, 48
-  %775 = call i32 @putchar(i32 %774)
-  %776 = load i16, i16* @b, align 2
-  %777 = sext i16 %776 to i32
-  %778 = load i8, i8* @c, align 1
-  %779 = sext i8 %778 to i32
-  %780 = icmp slt i32 %777, %779
-  %781 = zext i1 %780 to i32
-  %782 = add nsw i32 %781, 48
-  %783 = call i32 @putchar(i32 %782)
-  %784 = load i16, i16* @b, align 2
-  %785 = sext i16 %784 to i32
-  %786 = load i32, i32* @d, align 4
-  %787 = icmp slt i32 %785, %786
-  %788 = zext i1 %787 to i32
-  %789 = add nsw i32 %788, 48
-  %790 = call i32 @putchar(i32 %789)
-  %791 = load i8, i8* @c, align 1
-  %792 = sext i8 %791 to i32
-  %793 = load i8, i8* @c, align 1
-  %794 = sext i8 %793 to i32
-  %795 = icmp slt i32 %792, %794
-  %796 = zext i1 %795 to i32
-  %797 = add nsw i32 %796, 48
-  %798 = call i32 @putchar(i32 %797)
-  %799 = load i8, i8* @c, align 1
-  %800 = sext i8 %799 to i32
-  %801 = load i32, i32* @d, align 4
-  %802 = icmp slt i32 %800, %801
-  %803 = zext i1 %802 to i32
-  %804 = add nsw i32 %803, 48
-  %805 = call i32 @putchar(i32 %804)
-  %806 = load i32, i32* @d, align 4
-  %807 = load i32, i32* @d, align 4
-  %808 = icmp slt i32 %806, %807
-  %809 = zext i1 %808 to i32
-  %810 = add nsw i32 %809, 48
-  %811 = call i32 @putchar(i32 %810)
-  %812 = load i32, i32* @a, align 4
-  %813 = load i32, i32* @a, align 4
-  %814 = icmp slt i32 %812, %813
-  %815 = zext i1 %814 to i32
-  %816 = add nsw i32 %815, 48
-  %817 = call i32 @putchar(i32 %816)
-  %818 = load i16, i16* @b, align 2
-  %819 = sext i16 %818 to i32
-  %820 = load i32, i32* @a, align 4
-  %821 = icmp slt i32 %819, %820
-  %822 = zext i1 %821 to i32
-  %823 = add nsw i32 %822, 48
-  %824 = call i32 @putchar(i32 %823)
-  %825 = load i8, i8* @c, align 1
-  %826 = sext i8 %825 to i32
-  %827 = load i32, i32* @a, align 4
-  %828 = icmp slt i32 %826, %827
-  %829 = zext i1 %828 to i32
-  %830 = add nsw i32 %829, 48
-  %831 = call i32 @putchar(i32 %830)
-  %832 = load i32, i32* @d, align 4
-  %833 = load i32, i32* @a, align 4
-  %834 = icmp slt i32 %832, %833
-  %835 = zext i1 %834 to i32
-  %836 = add nsw i32 %835, 48
-  %837 = call i32 @putchar(i32 %836)
-  %838 = load i16, i16* @b, align 2
-  %839 = sext i16 %838 to i32
-  %840 = load i16, i16* @b, align 2
-  %841 = sext i16 %840 to i32
-  %842 = icmp slt i32 %839, %841
-  %843 = zext i1 %842 to i32
-  %844 = add nsw i32 %843, 48
-  %845 = call i32 @putchar(i32 %844)
-  %846 = load i8, i8* @c, align 1
-  %847 = sext i8 %846 to i32
-  %848 = load i16, i16* @b, align 2
-  %849 = sext i16 %848 to i32
-  %850 = icmp slt i32 %847, %849
-  %851 = zext i1 %850 to i32
-  %852 = add nsw i32 %851, 48
-  %853 = call i32 @putchar(i32 %852)
-  %854 = load i32, i32* @d, align 4
-  %855 = load i16, i16* @b, align 2
-  %856 = sext i16 %855 to i32
-  %857 = icmp slt i32 %854, %856
-  %858 = zext i1 %857 to i32
-  %859 = add nsw i32 %858, 48
-  %860 = call i32 @putchar(i32 %859)
-  %861 = load i8, i8* @c, align 1
-  %862 = sext i8 %861 to i32
-  %863 = load i8, i8* @c, align 1
-  %864 = sext i8 %863 to i32
-  %865 = icmp slt i32 %862, %864
-  %866 = zext i1 %865 to i32
-  %867 = add nsw i32 %866, 48
-  %868 = call i32 @putchar(i32 %867)
-  %869 = load i32, i32* @a, align 4
-  %870 = load i32, i32* @a, align 4
-  %871 = icmp sgt i32 %869, %870
-  %872 = zext i1 %871 to i32
-  %873 = add nsw i32 %872, 48
-  %874 = call i32 @putchar(i32 %873)
-  %875 = load i32, i32* @a, align 4
-  %876 = load i16, i16* @b, align 2
-  %877 = sext i16 %876 to i32
-  %878 = icmp sgt i32 %875, %877
-  %879 = zext i1 %878 to i32
-  %880 = add nsw i32 %879, 48
-  %881 = call i32 @putchar(i32 %880)
-  %882 = load i32, i32* @a, align 4
-  %883 = load i8, i8* @c, align 1
-  %884 = sext i8 %883 to i32
-  %885 = icmp sgt i32 %882, %884
-  %886 = zext i1 %885 to i32
-  %887 = add nsw i32 %886, 48
-  %888 = call i32 @putchar(i32 %887)
-  %889 = load i32, i32* @a, align 4
-  %890 = load i32, i32* @d, align 4
-  %891 = icmp sgt i32 %889, %890
-  %892 = zext i1 %891 to i32
-  %893 = add nsw i32 %892, 48
-  %894 = call i32 @putchar(i32 %893)
-  %895 = load i16, i16* @b, align 2
-  %896 = sext i16 %895 to i32
-  %897 = load i16, i16* @b, align 2
-  %898 = sext i16 %897 to i32
-  %899 = icmp sgt i32 %896, %898
-  %900 = zext i1 %899 to i32
-  %901 = add nsw i32 %900, 48
-  %902 = call i32 @putchar(i32 %901)
-  %903 = load i16, i16* @b, align 2
-  %904 = sext i16 %903 to i32
-  %905 = load i8, i8* @c, align 1
-  %906 = sext i8 %905 to i32
-  %907 = icmp sgt i32 %904, %906
-  %908 = zext i1 %907 to i32
-  %909 = add nsw i32 %908, 48
-  %910 = call i32 @putchar(i32 %909)
-  %911 = load i16, i16* @b, align 2
-  %912 = sext i16 %911 to i32
-  %913 = load i32, i32* @d, align 4
-  %914 = icmp sgt i32 %912, %913
-  %915 = zext i1 %914 to i32
-  %916 = add nsw i32 %915, 48
-  %917 = call i32 @putchar(i32 %916)
-  %918 = load i8, i8* @c, align 1
-  %919 = sext i8 %918 to i32
-  %920 = load i8, i8* @c, align 1
-  %921 = sext i8 %920 to i32
-  %922 = icmp sgt i32 %919, %921
-  %923 = zext i1 %922 to i32
-  %924 = add nsw i32 %923, 48
-  %925 = call i32 @putchar(i32 %924)
-  %926 = load i8, i8* @c, align 1
-  %927 = sext i8 %926 to i32
-  %928 = load i32, i32* @d, align 4
-  %929 = icmp sgt i32 %927, %928
-  %930 = zext i1 %929 to i32
-  %931 = add nsw i32 %930, 48
-  %932 = call i32 @putchar(i32 %931)
-  %933 = load i32, i32* @d, align 4
-  %934 = load i32, i32* @d, align 4
-  %935 = icmp sgt i32 %933, %934
-  %936 = zext i1 %935 to i32
-  %937 = add nsw i32 %936, 48
-  %938 = call i32 @putchar(i32 %937)
-  %939 = load i32, i32* @a, align 4
-  %940 = load i32, i32* @a, align 4
-  %941 = icmp sgt i32 %939, %940
-  %942 = zext i1 %941 to i32
-  %943 = add nsw i32 %942, 48
-  %944 = call i32 @putchar(i32 %943)
-  %945 = load i16, i16* @b, align 2
-  %946 = sext i16 %945 to i32
-  %947 = load i32, i32* @a, align 4
-  %948 = icmp sgt i32 %946, %947
-  %949 = zext i1 %948 to i32
-  %950 = add nsw i32 %949, 48
-  %951 = call i32 @putchar(i32 %950)
-  %952 = load i8, i8* @c, align 1
-  %953 = sext i8 %952 to i32
-  %954 = load i32, i32* @a, align 4
-  %955 = icmp sgt i32 %953, %954
-  %956 = zext i1 %955 to i32
-  %957 = add nsw i32 %956, 48
-  %958 = call i32 @putchar(i32 %957)
-  %959 = load i32, i32* @d, align 4
-  %960 = load i32, i32* @a, align 4
-  %961 = icmp sgt i32 %959, %960
-  %962 = zext i1 %961 to i32
-  %963 = add nsw i32 %962, 48
-  %964 = call i32 @putchar(i32 %963)
-  %965 = load i16, i16* @b, align 2
-  %966 = sext i16 %965 to i32
-  %967 = load i16, i16* @b, align 2
-  %968 = sext i16 %967 to i32
-  %969 = icmp sgt i32 %966, %968
-  %970 = zext i1 %969 to i32
-  %971 = add nsw i32 %970, 48
-  %972 = call i32 @putchar(i32 %971)
-  %973 = load i8, i8* @c, align 1
-  %974 = sext i8 %973 to i32
-  %975 = load i16, i16* @b, align 2
-  %976 = sext i16 %975 to i32
-  %977 = icmp sgt i32 %974, %976
-  %978 = zext i1 %977 to i32
-  %979 = add nsw i32 %978, 48
-  %980 = call i32 @putchar(i32 %979)
-  %981 = load i32, i32* @d, align 4
-  %982 = load i16, i16* @b, align 2
-  %983 = sext i16 %982 to i32
-  %984 = icmp sgt i32 %981, %983
-  %985 = zext i1 %984 to i32
-  %986 = add nsw i32 %985, 48
-  %987 = call i32 @putchar(i32 %986)
-  %988 = load i8, i8* @c, align 1
-  %989 = sext i8 %988 to i32
-  %990 = load i8, i8* @c, align 1
-  %991 = sext i8 %990 to i32
-  %992 = icmp sgt i32 %989, %991
-  %993 = zext i1 %992 to i32
-  %994 = add nsw i32 %993, 48
-  %995 = call i32 @putchar(i32 %994)
-  %996 = load i32, i32* @a, align 4
-  %997 = load i32, i32* @a, align 4
-  %998 = icmp sle i32 %996, %997
-  %999 = zext i1 %998 to i32
-  %1000 = add nsw i32 %999, 48
-  %1001 = call i32 @putchar(i32 %1000)
-  %1002 = load i32, i32* @a, align 4
-  %1003 = load i16, i16* @b, align 2
-  %1004 = sext i16 %1003 to i32
-  %1005 = icmp sle i32 %1002, %1004
-  %1006 = zext i1 %1005 to i32
-  %1007 = add nsw i32 %1006, 48
-  %1008 = call i32 @putchar(i32 %1007)
-  %1009 = load i32, i32* @a, align 4
-  %1010 = load i8, i8* @c, align 1
-  %1011 = sext i8 %1010 to i32
-  %1012 = icmp sle i32 %1009, %1011
-  %1013 = zext i1 %1012 to i32
-  %1014 = add nsw i32 %1013, 48
-  %1015 = call i32 @putchar(i32 %1014)
-  %1016 = load i32, i32* @a, align 4
-  %1017 = load i32, i32* @d, align 4
-  %1018 = icmp sle i32 %1016, %1017
-  %1019 = zext i1 %1018 to i32
-  %1020 = add nsw i32 %1019, 48
-  %1021 = call i32 @putchar(i32 %1020)
-  %1022 = load i16, i16* @b, align 2
-  %1023 = sext i16 %1022 to i32
-  %1024 = load i16, i16* @b, align 2
-  %1025 = sext i16 %1024 to i32
-  %1026 = icmp sle i32 %1023, %1025
-  %1027 = zext i1 %1026 to i32
-  %1028 = add nsw i32 %1027, 48
-  %1029 = call i32 @putchar(i32 %1028)
-  %1030 = load i16, i16* @b, align 2
-  %1031 = sext i16 %1030 to i32
-  %1032 = load i8, i8* @c, align 1
-  %1033 = sext i8 %1032 to i32
-  %1034 = icmp sle i32 %1031, %1033
-  %1035 = zext i1 %1034 to i32
-  %1036 = add nsw i32 %1035, 48
-  %1037 = call i32 @putchar(i32 %1036)
-  %1038 = load i16, i16* @b, align 2
-  %1039 = sext i16 %1038 to i32
-  %1040 = load i32, i32* @d, align 4
-  %1041 = icmp sle i32 %1039, %1040
-  %1042 = zext i1 %1041 to i32
-  %1043 = add nsw i32 %1042, 48
-  %1044 = call i32 @putchar(i32 %1043)
-  %1045 = load i8, i8* @c, align 1
-  %1046 = sext i8 %1045 to i32
-  %1047 = load i8, i8* @c, align 1
-  %1048 = sext i8 %1047 to i32
-  %1049 = icmp sle i32 %1046, %1048
-  %1050 = zext i1 %1049 to i32
-  %1051 = add nsw i32 %1050, 48
-  %1052 = call i32 @putchar(i32 %1051)
-  %1053 = load i8, i8* @c, align 1
-  %1054 = sext i8 %1053 to i32
-  %1055 = load i32, i32* @d, align 4
-  %1056 = icmp sle i32 %1054, %1055
-  %1057 = zext i1 %1056 to i32
-  %1058 = add nsw i32 %1057, 48
-  %1059 = call i32 @putchar(i32 %1058)
-  %1060 = load i32, i32* @d, align 4
-  %1061 = load i32, i32* @d, align 4
-  %1062 = icmp sle i32 %1060, %1061
-  %1063 = zext i1 %1062 to i32
-  %1064 = add nsw i32 %1063, 48
-  %1065 = call i32 @putchar(i32 %1064)
-  %1066 = load i32, i32* @a, align 4
-  %1067 = load i32, i32* @a, align 4
-  %1068 = icmp sle i32 %1066, %1067
-  %1069 = zext i1 %1068 to i32
-  %1070 = add nsw i32 %1069, 48
-  %1071 = call i32 @putchar(i32 %1070)
-  %1072 = load i16, i16* @b, align 2
-  %1073 = sext i16 %1072 to i32
-  %1074 = load i32, i32* @a, align 4
-  %1075 = icmp sle i32 %1073, %1074
-  %1076 = zext i1 %1075 to i32
-  %1077 = add nsw i32 %1076, 48
-  %1078 = call i32 @putchar(i32 %1077)
-  %1079 = load i8, i8* @c, align 1
-  %1080 = sext i8 %1079 to i32
-  %1081 = load i32, i32* @a, align 4
-  %1082 = icmp sle i32 %1080, %1081
-  %1083 = zext i1 %1082 to i32
-  %1084 = add nsw i32 %1083, 48
-  %1085 = call i32 @putchar(i32 %1084)
-  %1086 = load i32, i32* @d, align 4
-  %1087 = load i32, i32* @a, align 4
-  %1088 = icmp sle i32 %1086, %1087
-  %1089 = zext i1 %1088 to i32
-  %1090 = add nsw i32 %1089, 48
-  %1091 = call i32 @putchar(i32 %1090)
-  %1092 = load i16, i16* @b, align 2
-  %1093 = sext i16 %1092 to i32
-  %1094 = load i16, i16* @b, align 2
-  %1095 = sext i16 %1094 to i32
-  %1096 = icmp sle i32 %1093, %1095
-  %1097 = zext i1 %1096 to i32
-  %1098 = add nsw i32 %1097, 48
-  %1099 = call i32 @putchar(i32 %1098)
-  %1100 = load i8, i8* @c, align 1
-  %1101 = sext i8 %1100 to i32
-  %1102 = load i16, i16* @b, align 2
-  %1103 = sext i16 %1102 to i32
-  %1104 = icmp sle i32 %1101, %1103
-  %1105 = zext i1 %1104 to i32
-  %1106 = add nsw i32 %1105, 48
-  %1107 = call i32 @putchar(i32 %1106)
-  %1108 = load i32, i32* @d, align 4
-  %1109 = load i16, i16* @b, align 2
-  %1110 = sext i16 %1109 to i32
-  %1111 = icmp sle i32 %1108, %1110
-  %1112 = zext i1 %1111 to i32
-  %1113 = add nsw i32 %1112, 48
-  %1114 = call i32 @putchar(i32 %1113)
-  %1115 = load i8, i8* @c, align 1
-  %1116 = sext i8 %1115 to i32
-  %1117 = load i8, i8* @c, align 1
-  %1118 = sext i8 %1117 to i32
-  %1119 = icmp sle i32 %1116, %1118
-  %1120 = zext i1 %1119 to i32
-  %1121 = add nsw i32 %1120, 48
-  %1122 = call i32 @putchar(i32 %1121)
-  %1123 = load i32, i32* @a, align 4
-  %1124 = load i32, i32* @a, align 4
-  %1125 = icmp sge i32 %1123, %1124
-  %1126 = zext i1 %1125 to i32
-  %1127 = add nsw i32 %1126, 48
-  %1128 = call i32 @putchar(i32 %1127)
-  %1129 = load i32, i32* @a, align 4
-  %1130 = load i16, i16* @b, align 2
-  %1131 = sext i16 %1130 to i32
-  %1132 = icmp sge i32 %1129, %1131
-  %1133 = zext i1 %1132 to i32
-  %1134 = add nsw i32 %1133, 48
-  %1135 = call i32 @putchar(i32 %1134)
-  %1136 = load i32, i32* @a, align 4
-  %1137 = load i8, i8* @c, align 1
-  %1138 = sext i8 %1137 to i32
-  %1139 = icmp sge i32 %1136, %1138
-  %1140 = zext i1 %1139 to i32
-  %1141 = add nsw i32 %1140, 48
-  %1142 = call i32 @putchar(i32 %1141)
-  %1143 = load i32, i32* @a, align 4
-  %1144 = load i32, i32* @d, align 4
-  %1145 = icmp sge i32 %1143, %1144
-  %1146 = zext i1 %1145 to i32
-  %1147 = add nsw i32 %1146, 48
-  %1148 = call i32 @putchar(i32 %1147)
-  %1149 = load i16, i16* @b, align 2
-  %1150 = sext i16 %1149 to i32
-  %1151 = load i16, i16* @b, align 2
-  %1152 = sext i16 %1151 to i32
-  %1153 = icmp sge i32 %1150, %1152
-  %1154 = zext i1 %1153 to i32
-  %1155 = add nsw i32 %1154, 48
-  %1156 = call i32 @putchar(i32 %1155)
-  %1157 = load i16, i16* @b, align 2
-  %1158 = sext i16 %1157 to i32
-  %1159 = load i8, i8* @c, align 1
-  %1160 = sext i8 %1159 to i32
-  %1161 = icmp sge i32 %1158, %1160
-  %1162 = zext i1 %1161 to i32
-  %1163 = add nsw i32 %1162, 48
-  %1164 = call i32 @putchar(i32 %1163)
-  %1165 = load i16, i16* @b, align 2
-  %1166 = sext i16 %1165 to i32
-  %1167 = load i32, i32* @d, align 4
-  %1168 = icmp sge i32 %1166, %1167
-  %1169 = zext i1 %1168 to i32
-  %1170 = add nsw i32 %1169, 48
-  %1171 = call i32 @putchar(i32 %1170)
-  %1172 = load i8, i8* @c, align 1
-  %1173 = sext i8 %1172 to i32
-  %1174 = load i8, i8* @c, align 1
-  %1175 = sext i8 %1174 to i32
-  %1176 = icmp sge i32 %1173, %1175
-  %1177 = zext i1 %1176 to i32
-  %1178 = add nsw i32 %1177, 48
-  %1179 = call i32 @putchar(i32 %1178)
-  %1180 = load i8, i8* @c, align 1
-  %1181 = sext i8 %1180 to i32
-  %1182 = load i32, i32* @d, align 4
-  %1183 = icmp sge i32 %1181, %1182
-  %1184 = zext i1 %1183 to i32
-  %1185 = add nsw i32 %1184, 48
-  %1186 = call i32 @putchar(i32 %1185)
-  %1187 = load i32, i32* @d, align 4
-  %1188 = load i32, i32* @d, align 4
-  %1189 = icmp sge i32 %1187, %1188
-  %1190 = zext i1 %1189 to i32
-  %1191 = add nsw i32 %1190, 48
-  %1192 = call i32 @putchar(i32 %1191)
-  %1193 = load i32, i32* @a, align 4
-  %1194 = load i32, i32* @a, align 4
-  %1195 = icmp sge i32 %1193, %1194
-  %1196 = zext i1 %1195 to i32
-  %1197 = add nsw i32 %1196, 48
-  %1198 = call i32 @putchar(i32 %1197)
-  %1199 = load i16, i16* @b, align 2
-  %1200 = sext i16 %1199 to i32
-  %1201 = load i32, i32* @a, align 4
-  %1202 = icmp sge i32 %1200, %1201
-  %1203 = zext i1 %1202 to i32
-  %1204 = add nsw i32 %1203, 48
-  %1205 = call i32 @putchar(i32 %1204)
-  %1206 = load i8, i8* @c, align 1
-  %1207 = sext i8 %1206 to i32
-  %1208 = load i32, i32* @a, align 4
-  %1209 = icmp sge i32 %1207, %1208
-  %1210 = zext i1 %1209 to i32
-  %1211 = add nsw i32 %1210, 48
-  %1212 = call i32 @putchar(i32 %1211)
-  %1213 = load i32, i32* @d, align 4
-  %1214 = load i32, i32* @a, align 4
-  %1215 = icmp sge i32 %1213, %1214
-  %1216 = zext i1 %1215 to i32
-  %1217 = add nsw i32 %1216, 48
-  %1218 = call i32 @putchar(i32 %1217)
-  %1219 = load i16, i16* @b, align 2
-  %1220 = sext i16 %1219 to i32
-  %1221 = load i16, i16* @b, align 2
-  %1222 = sext i16 %1221 to i32
-  %1223 = icmp sge i32 %1220, %1222
-  %1224 = zext i1 %1223 to i32
-  %1225 = add nsw i32 %1224, 48
-  %1226 = call i32 @putchar(i32 %1225)
-  %1227 = load i8, i8* @c, align 1
-  %1228 = sext i8 %1227 to i32
-  %1229 = load i16, i16* @b, align 2
-  %1230 = sext i16 %1229 to i32
-  %1231 = icmp sge i32 %1228, %1230
-  %1232 = zext i1 %1231 to i32
-  %1233 = add nsw i32 %1232, 48
-  %1234 = call i32 @putchar(i32 %1233)
-  %1235 = load i32, i32* @d, align 4
-  %1236 = load i16, i16* @b, align 2
-  %1237 = sext i16 %1236 to i32
-  %1238 = icmp sge i32 %1235, %1237
-  %1239 = zext i1 %1238 to i32
-  %1240 = add nsw i32 %1239, 48
-  %1241 = call i32 @putchar(i32 %1240)
-  %1242 = load i8, i8* @c, align 1
-  %1243 = sext i8 %1242 to i32
-  %1244 = load i8, i8* @c, align 1
-  %1245 = sext i8 %1244 to i32
-  %1246 = icmp sge i32 %1243, %1245
-  %1247 = zext i1 %1246 to i32
-  %1248 = add nsw i32 %1247, 48
-  %1249 = call i32 @putchar(i32 %1248)
-  %1250 = load i32, i32* @a, align 4
-  %1251 = load i32, i32* @a, align 4
-  %1252 = icmp ne i32 %1250, %1251
-  %1253 = zext i1 %1252 to i32
-  %1254 = add nsw i32 %1253, 48
-  %1255 = call i32 @putchar(i32 %1254)
-  %1256 = load i32, i32* @a, align 4
-  %1257 = load i16, i16* @b, align 2
-  %1258 = sext i16 %1257 to i32
-  %1259 = icmp ne i32 %1256, %1258
-  %1260 = zext i1 %1259 to i32
-  %1261 = add nsw i32 %1260, 48
-  %1262 = call i32 @putchar(i32 %1261)
-  %1263 = load i32, i32* @a, align 4
-  %1264 = load i8, i8* @c, align 1
-  %1265 = sext i8 %1264 to i32
-  %1266 = icmp ne i32 %1263, %1265
-  %1267 = zext i1 %1266 to i32
-  %1268 = add nsw i32 %1267, 48
-  %1269 = call i32 @putchar(i32 %1268)
-  %1270 = load i32, i32* @a, align 4
-  %1271 = load i32, i32* @d, align 4
-  %1272 = icmp ne i32 %1270, %1271
-  %1273 = zext i1 %1272 to i32
-  %1274 = add nsw i32 %1273, 48
-  %1275 = call i32 @putchar(i32 %1274)
-  %1276 = load i16, i16* @b, align 2
-  %1277 = sext i16 %1276 to i32
-  %1278 = load i16, i16* @b, align 2
-  %1279 = sext i16 %1278 to i32
-  %1280 = icmp ne i32 %1277, %1279
-  %1281 = zext i1 %1280 to i32
-  %1282 = add nsw i32 %1281, 48
-  %1283 = call i32 @putchar(i32 %1282)
-  %1284 = load i16, i16* @b, align 2
-  %1285 = sext i16 %1284 to i32
-  %1286 = load i8, i8* @c, align 1
-  %1287 = sext i8 %1286 to i32
-  %1288 = icmp ne i32 %1285, %1287
-  %1289 = zext i1 %1288 to i32
-  %1290 = add nsw i32 %1289, 48
-  %1291 = call i32 @putchar(i32 %1290)
-  %1292 = load i16, i16* @b, align 2
-  %1293 = sext i16 %1292 to i32
-  %1294 = load i32, i32* @d, align 4
-  %1295 = icmp ne i32 %1293, %1294
-  %1296 = zext i1 %1295 to i32
-  %1297 = add nsw i32 %1296, 48
-  %1298 = call i32 @putchar(i32 %1297)
-  %1299 = load i8, i8* @c, align 1
-  %1300 = sext i8 %1299 to i32
-  %1301 = load i8, i8* @c, align 1
-  %1302 = sext i8 %1301 to i32
-  %1303 = icmp ne i32 %1300, %1302
-  %1304 = zext i1 %1303 to i32
-  %1305 = add nsw i32 %1304, 48
-  %1306 = call i32 @putchar(i32 %1305)
-  %1307 = load i8, i8* @c, align 1
-  %1308 = sext i8 %1307 to i32
-  %1309 = load i32, i32* @d, align 4
-  %1310 = icmp ne i32 %1308, %1309
-  %1311 = zext i1 %1310 to i32
-  %1312 = add nsw i32 %1311, 48
-  %1313 = call i32 @putchar(i32 %1312)
-  %1314 = load i32, i32* @d, align 4
-  %1315 = load i32, i32* @d, align 4
-  %1316 = icmp ne i32 %1314, %1315
-  %1317 = zext i1 %1316 to i32
-  %1318 = add nsw i32 %1317, 48
-  %1319 = call i32 @putchar(i32 %1318)
-  %1320 = load i32, i32* @a, align 4
-  %1321 = load i32, i32* @a, align 4
-  %1322 = icmp ne i32 %1320, %1321
-  %1323 = zext i1 %1322 to i32
-  %1324 = add nsw i32 %1323, 48
-  %1325 = call i32 @putchar(i32 %1324)
-  %1326 = load i16, i16* @b, align 2
-  %1327 = sext i16 %1326 to i32
-  %1328 = load i32, i32* @a, align 4
-  %1329 = icmp ne i32 %1327, %1328
-  %1330 = zext i1 %1329 to i32
-  %1331 = add nsw i32 %1330, 48
-  %1332 = call i32 @putchar(i32 %1331)
-  %1333 = load i8, i8* @c, align 1
-  %1334 = sext i8 %1333 to i32
-  %1335 = load i32, i32* @a, align 4
-  %1336 = icmp ne i32 %1334, %1335
-  %1337 = zext i1 %1336 to i32
-  %1338 = add nsw i32 %1337, 48
-  %1339 = call i32 @putchar(i32 %1338)
-  %1340 = load i32, i32* @d, align 4
-  %1341 = load i32, i32* @a, align 4
-  %1342 = icmp ne i32 %1340, %1341
-  %1343 = zext i1 %1342 to i32
-  %1344 = add nsw i32 %1343, 48
-  %1345 = call i32 @putchar(i32 %1344)
-  %1346 = load i16, i16* @b, align 2
-  %1347 = sext i16 %1346 to i32
-  %1348 = load i16, i16* @b, align 2
-  %1349 = sext i16 %1348 to i32
-  %1350 = icmp ne i32 %1347, %1349
-  %1351 = zext i1 %1350 to i32
-  %1352 = add nsw i32 %1351, 48
-  %1353 = call i32 @putchar(i32 %1352)
-  %1354 = load i8, i8* @c, align 1
-  %1355 = sext i8 %1354 to i32
-  %1356 = load i16, i16* @b, align 2
-  %1357 = sext i16 %1356 to i32
-  %1358 = icmp ne i32 %1355, %1357
-  %1359 = zext i1 %1358 to i32
-  %1360 = add nsw i32 %1359, 48
-  %1361 = call i32 @putchar(i32 %1360)
-  %1362 = load i32, i32* @d, align 4
-  %1363 = load i16, i16* @b, align 2
-  %1364 = sext i16 %1363 to i32
-  %1365 = icmp ne i32 %1362, %1364
-  %1366 = zext i1 %1365 to i32
-  %1367 = add nsw i32 %1366, 48
-  %1368 = call i32 @putchar(i32 %1367)
-  %1369 = load i8, i8* @c, align 1
-  %1370 = sext i8 %1369 to i32
-  %1371 = load i8, i8* @c, align 1
-  %1372 = sext i8 %1371 to i32
-  %1373 = icmp ne i32 %1370, %1372
-  %1374 = zext i1 %1373 to i32
-  %1375 = add nsw i32 %1374, 48
-  %1376 = call i32 @putchar(i32 %1375)
-  %1377 = load i32, i32* @a, align 4
-  %1378 = load i32, i32* @a, align 4
-  %1379 = icmp eq i32 %1377, %1378
-  %1380 = zext i1 %1379 to i32
-  %1381 = add nsw i32 %1380, 48
-  %1382 = call i32 @putchar(i32 %1381)
-  %1383 = load i32, i32* @a, align 4
-  %1384 = load i16, i16* @b, align 2
-  %1385 = sext i16 %1384 to i32
-  %1386 = icmp eq i32 %1383, %1385
-  %1387 = zext i1 %1386 to i32
-  %1388 = add nsw i32 %1387, 48
-  %1389 = call i32 @putchar(i32 %1388)
-  %1390 = load i32, i32* @a, align 4
-  %1391 = load i8, i8* @c, align 1
-  %1392 = sext i8 %1391 to i32
-  %1393 = icmp eq i32 %1390, %1392
-  %1394 = zext i1 %1393 to i32
-  %1395 = add nsw i32 %1394, 48
-  %1396 = call i32 @putchar(i32 %1395)
-  %1397 = load i32, i32* @a, align 4
-  %1398 = load i32, i32* @d, align 4
-  %1399 = icmp eq i32 %1397, %1398
-  %1400 = zext i1 %1399 to i32
-  %1401 = add nsw i32 %1400, 48
-  %1402 = call i32 @putchar(i32 %1401)
-  %1403 = load i16, i16* @b, align 2
-  %1404 = sext i16 %1403 to i32
-  %1405 = load i16, i16* @b, align 2
-  %1406 = sext i16 %1405 to i32
-  %1407 = icmp eq i32 %1404, %1406
-  %1408 = zext i1 %1407 to i32
-  %1409 = add nsw i32 %1408, 48
-  %1410 = call i32 @putchar(i32 %1409)
-  %1411 = load i16, i16* @b, align 2
-  %1412 = sext i16 %1411 to i32
-  %1413 = load i8, i8* @c, align 1
-  %1414 = sext i8 %1413 to i32
-  %1415 = icmp eq i32 %1412, %1414
-  %1416 = zext i1 %1415 to i32
-  %1417 = add nsw i32 %1416, 48
-  %1418 = call i32 @putchar(i32 %1417)
-  %1419 = load i16, i16* @b, align 2
-  %1420 = sext i16 %1419 to i32
-  %1421 = load i32, i32* @d, align 4
-  %1422 = icmp eq i32 %1420, %1421
-  %1423 = zext i1 %1422 to i32
-  %1424 = add nsw i32 %1423, 48
-  %1425 = call i32 @putchar(i32 %1424)
-  %1426 = load i8, i8* @c, align 1
-  %1427 = sext i8 %1426 to i32
-  %1428 = load i8, i8* @c, align 1
-  %1429 = sext i8 %1428 to i32
-  %1430 = icmp eq i32 %1427, %1429
-  %1431 = zext i1 %1430 to i32
-  %1432 = add nsw i32 %1431, 48
-  %1433 = call i32 @putchar(i32 %1432)
-  %1434 = load i8, i8* @c, align 1
-  %1435 = sext i8 %1434 to i32
-  %1436 = load i32, i32* @d, align 4
-  %1437 = icmp eq i32 %1435, %1436
-  %1438 = zext i1 %1437 to i32
-  %1439 = add nsw i32 %1438, 48
-  %1440 = call i32 @putchar(i32 %1439)
-  %1441 = load i32, i32* @d, align 4
-  %1442 = load i32, i32* @d, align 4
-  %1443 = icmp eq i32 %1441, %1442
-  %1444 = zext i1 %1443 to i32
-  %1445 = add nsw i32 %1444, 48
-  %1446 = call i32 @putchar(i32 %1445)
-  %1447 = load i32, i32* @a, align 4
-  %1448 = load i32, i32* @a, align 4
-  %1449 = icmp eq i32 %1447, %1448
-  %1450 = zext i1 %1449 to i32
-  %1451 = add nsw i32 %1450, 48
-  %1452 = call i32 @putchar(i32 %1451)
-  %1453 = load i16, i16* @b, align 2
-  %1454 = sext i16 %1453 to i32
-  %1455 = load i32, i32* @a, align 4
-  %1456 = icmp eq i32 %1454, %1455
-  %1457 = zext i1 %1456 to i32
-  %1458 = add nsw i32 %1457, 48
-  %1459 = call i32 @putchar(i32 %1458)
-  %1460 = load i8, i8* @c, align 1
-  %1461 = sext i8 %1460 to i32
-  %1462 = load i32, i32* @a, align 4
-  %1463 = icmp eq i32 %1461, %1462
-  %1464 = zext i1 %1463 to i32
-  %1465 = add nsw i32 %1464, 48
-  %1466 = call i32 @putchar(i32 %1465)
-  %1467 = load i32, i32* @d, align 4
-  %1468 = load i32, i32* @a, align 4
-  %1469 = icmp eq i32 %1467, %1468
-  %1470 = zext i1 %1469 to i32
-  %1471 = add nsw i32 %1470, 48
-  %1472 = call i32 @putchar(i32 %1471)
-  %1473 = load i16, i16* @b, align 2
-  %1474 = sext i16 %1473 to i32
-  %1475 = load i16, i16* @b, align 2
-  %1476 = sext i16 %1475 to i32
-  %1477 = icmp eq i32 %1474, %1476
-  %1478 = zext i1 %1477 to i32
-  %1479 = add nsw i32 %1478, 48
-  %1480 = call i32 @putchar(i32 %1479)
-  %1481 = load i8, i8* @c, align 1
-  %1482 = sext i8 %1481 to i32
-  %1483 = load i16, i16* @b, align 2
-  %1484 = sext i16 %1483 to i32
-  %1485 = icmp eq i32 %1482, %1484
-  %1486 = zext i1 %1485 to i32
-  %1487 = add nsw i32 %1486, 48
-  %1488 = call i32 @putchar(i32 %1487)
-  %1489 = load i32, i32* @d, align 4
-  %1490 = load i16, i16* @b, align 2
-  %1491 = sext i16 %1490 to i32
-  %1492 = icmp eq i32 %1489, %1491
-  %1493 = zext i1 %1492 to i32
-  %1494 = add nsw i32 %1493, 48
-  %1495 = call i32 @putchar(i32 %1494)
-  %1496 = load i8, i8* @c, align 1
-  %1497 = sext i8 %1496 to i32
-  %1498 = load i8, i8* @c, align 1
-  %1499 = sext i8 %1498 to i32
-  %1500 = icmp eq i32 %1497, %1499
-  %1501 = zext i1 %1500 to i32
-  %1502 = add nsw i32 %1501, 48
-  %1503 = call i32 @putchar(i32 %1502)
-  %1504 = load i32, i32* @a, align 4
-  %1505 = icmp ne i32 %1504, 0
-  br i1 %1505, label %1506, label %1509
-
-; <label>:1506                                    ; preds = %0
-  %1507 = load i32, i32* @a, align 4
-  %1508 = icmp ne i32 %1507, 0
-  br label %1509
-
-; <label>:1509                                    ; preds = %1506, %0
-  %1510 = phi i1 [ false, %0 ], [ %1508, %1506 ]
-  %1511 = zext i1 %1510 to i32
-  %1512 = add nsw i32 %1511, 48
-  %1513 = call i32 @putchar(i32 %1512)
-  %1514 = load i32, i32* @a, align 4
-  %1515 = icmp ne i32 %1514, 0
-  br i1 %1515, label %1516, label %1520
-
-; <label>:1516                                    ; preds = %1509
-  %1517 = load i16, i16* @b, align 2
-  %1518 = sext i16 %1517 to i32
-  %1519 = icmp ne i32 %1518, 0
-  br label %1520
-
-; <label>:1520                                    ; preds = %1516, %1509
-  %1521 = phi i1 [ false, %1509 ], [ %1519, %1516 ]
-  %1522 = zext i1 %1521 to i32
-  %1523 = add nsw i32 %1522, 48
-  %1524 = call i32 @putchar(i32 %1523)
-  %1525 = load i32, i32* @a, align 4
-  %1526 = icmp ne i32 %1525, 0
-  br i1 %1526, label %1527, label %1531
-
-; <label>:1527                                    ; preds = %1520
-  %1528 = load i8, i8* @c, align 1
-  %1529 = sext i8 %1528 to i32
-  %1530 = icmp ne i32 %1529, 0
-  br label %1531
-
-; <label>:1531                                    ; preds = %1527, %1520
-  %1532 = phi i1 [ false, %1520 ], [ %1530, %1527 ]
-  %1533 = zext i1 %1532 to i32
-  %1534 = add nsw i32 %1533, 48
-  %1535 = call i32 @putchar(i32 %1534)
-  %1536 = load i32, i32* @a, align 4
-  %1537 = icmp ne i32 %1536, 0
-  br i1 %1537, label %1538, label %1541
-
-; <label>:1538                                    ; preds = %1531
-  %1539 = load i32, i32* @d, align 4
-  %1540 = icmp ne i32 %1539, 0
-  br label %1541
-
-; <label>:1541                                    ; preds = %1538, %1531
-  %1542 = phi i1 [ false, %1531 ], [ %1540, %1538 ]
-  %1543 = zext i1 %1542 to i32
-  %1544 = add nsw i32 %1543, 48
-  %1545 = call i32 @putchar(i32 %1544)
-  %1546 = load i16, i16* @b, align 2
-  %1547 = sext i16 %1546 to i32
-  %1548 = icmp ne i32 %1547, 0
-  br i1 %1548, label %1549, label %1553
-
-; <label>:1549                                    ; preds = %1541
-  %1550 = load i16, i16* @b, align 2
-  %1551 = sext i16 %1550 to i32
-  %1552 = icmp ne i32 %1551, 0
-  br label %1553
-
-; <label>:1553                                    ; preds = %1549, %1541
-  %1554 = phi i1 [ false, %1541 ], [ %1552, %1549 ]
-  %1555 = zext i1 %1554 to i32
-  %1556 = add nsw i32 %1555, 48
-  %1557 = call i32 @putchar(i32 %1556)
-  %1558 = load i16, i16* @b, align 2
-  %1559 = sext i16 %1558 to i32
-  %1560 = icmp ne i32 %1559, 0
-  br i1 %1560, label %1561, label %1565
-
-; <label>:1561                                    ; preds = %1553
-  %1562 = load i8, i8* @c, align 1
-  %1563 = sext i8 %1562 to i32
-  %1564 = icmp ne i32 %1563, 0
-  br label %1565
-
-; <label>:1565                                    ; preds = %1561, %1553
-  %1566 = phi i1 [ false, %1553 ], [ %1564, %1561 ]
-  %1567 = zext i1 %1566 to i32
-  %1568 = add nsw i32 %1567, 48
-  %1569 = call i32 @putchar(i32 %1568)
-  %1570 = load i16, i16* @b, align 2
-  %1571 = sext i16 %1570 to i32
-  %1572 = icmp ne i32 %1571, 0
-  br i1 %1572, label %1573, label %1576
-
-; <label>:1573                                    ; preds = %1565
-  %1574 = load i32, i32* @d, align 4
-  %1575 = icmp ne i32 %1574, 0
-  br label %1576
-
-; <label>:1576                                    ; preds = %1573, %1565
-  %1577 = phi i1 [ false, %1565 ], [ %1575, %1573 ]
-  %1578 = zext i1 %1577 to i32
-  %1579 = add nsw i32 %1578, 48
-  %1580 = call i32 @putchar(i32 %1579)
-  %1581 = load i8, i8* @c, align 1
-  %1582 = sext i8 %1581 to i32
-  %1583 = icmp ne i32 %1582, 0
-  br i1 %1583, label %1584, label %1588
-
-; <label>:1584                                    ; preds = %1576
-  %1585 = load i8, i8* @c, align 1
-  %1586 = sext i8 %1585 to i32
-  %1587 = icmp ne i32 %1586, 0
-  br label %1588
-
-; <label>:1588                                    ; preds = %1584, %1576
-  %1589 = phi i1 [ false, %1576 ], [ %1587, %1584 ]
-  %1590 = zext i1 %1589 to i32
-  %1591 = add nsw i32 %1590, 48
-  %1592 = call i32 @putchar(i32 %1591)
-  %1593 = load i8, i8* @c, align 1
-  %1594 = sext i8 %1593 to i32
-  %1595 = icmp ne i32 %1594, 0
-  br i1 %1595, label %1596, label %1599
-
-; <label>:1596                                    ; preds = %1588
-  %1597 = load i32, i32* @d, align 4
-  %1598 = icmp ne i32 %1597, 0
-  br label %1599
-
-; <label>:1599                                    ; preds = %1596, %1588
-  %1600 = phi i1 [ false, %1588 ], [ %1598, %1596 ]
-  %1601 = zext i1 %1600 to i32
-  %1602 = add nsw i32 %1601, 48
-  %1603 = call i32 @putchar(i32 %1602)
-  %1604 = load i32, i32* @d, align 4
-  %1605 = icmp ne i32 %1604, 0
-  br i1 %1605, label %1606, label %1609
-
-; <label>:1606                                    ; preds = %1599
-  %1607 = load i32, i32* @d, align 4
-  %1608 = icmp ne i32 %1607, 0
-  br label %1609
-
-; <label>:1609                                    ; preds = %1606, %1599
-  %1610 = phi i1 [ false, %1599 ], [ %1608, %1606 ]
-  %1611 = zext i1 %1610 to i32
-  %1612 = add nsw i32 %1611, 48
-  %1613 = call i32 @putchar(i32 %1612)
-  %1614 = load i32, i32* @a, align 4
-  %1615 = icmp ne i32 %1614, 0
-  br i1 %1615, label %1616, label %1619
-
-; <label>:1616                                    ; preds = %1609
-  %1617 = load i32, i32* @a, align 4
-  %1618 = icmp ne i32 %1617, 0
-  br label %1619
-
-; <label>:1619                                    ; preds = %1616, %1609
-  %1620 = phi i1 [ false, %1609 ], [ %1618, %1616 ]
-  %1621 = zext i1 %1620 to i32
-  %1622 = add nsw i32 %1621, 48
-  %1623 = call i32 @putchar(i32 %1622)
-  %1624 = load i16, i16* @b, align 2
-  %1625 = sext i16 %1624 to i32
-  %1626 = icmp ne i32 %1625, 0
-  br i1 %1626, label %1627, label %1630
-
-; <label>:1627                                    ; preds = %1619
-  %1628 = load i32, i32* @a, align 4
-  %1629 = icmp ne i32 %1628, 0
-  br label %1630
-
-; <label>:1630                                    ; preds = %1627, %1619
-  %1631 = phi i1 [ false, %1619 ], [ %1629, %1627 ]
-  %1632 = zext i1 %1631 to i32
-  %1633 = add nsw i32 %1632, 48
-  %1634 = call i32 @putchar(i32 %1633)
-  %1635 = load i8, i8* @c, align 1
-  %1636 = sext i8 %1635 to i32
-  %1637 = icmp ne i32 %1636, 0
-  br i1 %1637, label %1638, label %1641
-
-; <label>:1638                                    ; preds = %1630
-  %1639 = load i32, i32* @a, align 4
-  %1640 = icmp ne i32 %1639, 0
-  br label %1641
-
-; <label>:1641                                    ; preds = %1638, %1630
-  %1642 = phi i1 [ false, %1630 ], [ %1640, %1638 ]
-  %1643 = zext i1 %1642 to i32
-  %1644 = add nsw i32 %1643, 48
-  %1645 = call i32 @putchar(i32 %1644)
-  %1646 = load i32, i32* @d, align 4
-  %1647 = icmp ne i32 %1646, 0
-  br i1 %1647, label %1648, label %1651
-
-; <label>:1648                                    ; preds = %1641
-  %1649 = load i32, i32* @a, align 4
-  %1650 = icmp ne i32 %1649, 0
-  br label %1651
-
-; <label>:1651                                    ; preds = %1648, %1641
-  %1652 = phi i1 [ false, %1641 ], [ %1650, %1648 ]
-  %1653 = zext i1 %1652 to i32
-  %1654 = add nsw i32 %1653, 48
-  %1655 = call i32 @putchar(i32 %1654)
-  %1656 = load i16, i16* @b, align 2
-  %1657 = sext i16 %1656 to i32
-  %1658 = icmp ne i32 %1657, 0
-  br i1 %1658, label %1659, label %1663
-
-; <label>:1659                                    ; preds = %1651
-  %1660 = load i16, i16* @b, align 2
-  %1661 = sext i16 %1660 to i32
-  %1662 = icmp ne i32 %1661, 0
-  br label %1663
-
-; <label>:1663                                    ; preds = %1659, %1651
-  %1664 = phi i1 [ false, %1651 ], [ %1662, %1659 ]
-  %1665 = zext i1 %1664 to i32
-  %1666 = add nsw i32 %1665, 48
-  %1667 = call i32 @putchar(i32 %1666)
-  %1668 = load i8, i8* @c, align 1
-  %1669 = sext i8 %1668 to i32
-  %1670 = icmp ne i32 %1669, 0
-  br i1 %1670, label %1671, label %1675
-
-; <label>:1671                                    ; preds = %1663
-  %1672 = load i16, i16* @b, align 2
-  %1673 = sext i16 %1672 to i32
-  %1674 = icmp ne i32 %1673, 0
-  br label %1675
-
-; <label>:1675                                    ; preds = %1671, %1663
-  %1676 = phi i1 [ false, %1663 ], [ %1674, %1671 ]
-  %1677 = zext i1 %1676 to i32
-  %1678 = add nsw i32 %1677, 48
-  %1679 = call i32 @putchar(i32 %1678)
-  %1680 = load i32, i32* @d, align 4
-  %1681 = icmp ne i32 %1680, 0
-  br i1 %1681, label %1682, label %1686
-
-; <label>:1682                                    ; preds = %1675
-  %1683 = load i16, i16* @b, align 2
-  %1684 = sext i16 %1683 to i32
-  %1685 = icmp ne i32 %1684, 0
-  br label %1686
-
-; <label>:1686                                    ; preds = %1682, %1675
-  %1687 = phi i1 [ false, %1675 ], [ %1685, %1682 ]
-  %1688 = zext i1 %1687 to i32
-  %1689 = add nsw i32 %1688, 48
-  %1690 = call i32 @putchar(i32 %1689)
-  %1691 = load i8, i8* @c, align 1
-  %1692 = sext i8 %1691 to i32
-  %1693 = icmp ne i32 %1692, 0
-  br i1 %1693, label %1694, label %1698
-
-; <label>:1694                                    ; preds = %1686
-  %1695 = load i8, i8* @c, align 1
-  %1696 = sext i8 %1695 to i32
-  %1697 = icmp ne i32 %1696, 0
-  br label %1698
-
-; <label>:1698                                    ; preds = %1694, %1686
-  %1699 = phi i1 [ false, %1686 ], [ %1697, %1694 ]
-  %1700 = zext i1 %1699 to i32
-  %1701 = add nsw i32 %1700, 48
-  %1702 = call i32 @putchar(i32 %1701)
-  %1703 = load i32, i32* @a, align 4
-  %1704 = icmp ne i32 %1703, 0
-  br i1 %1704, label %1708, label %1705
-
-; <label>:1705                                    ; preds = %1698
-  %1706 = load i32, i32* @a, align 4
-  %1707 = icmp ne i32 %1706, 0
-  br label %1708
-
-; <label>:1708                                    ; preds = %1705, %1698
-  %1709 = phi i1 [ true, %1698 ], [ %1707, %1705 ]
-  %1710 = zext i1 %1709 to i32
-  %1711 = add nsw i32 %1710, 48
-  %1712 = call i32 @putchar(i32 %1711)
-  %1713 = load i32, i32* @a, align 4
-  %1714 = icmp ne i32 %1713, 0
-  br i1 %1714, label %1719, label %1715
-
-; <label>:1715                                    ; preds = %1708
-  %1716 = load i16, i16* @b, align 2
-  %1717 = sext i16 %1716 to i32
-  %1718 = icmp ne i32 %1717, 0
-  br label %1719
-
-; <label>:1719                                    ; preds = %1715, %1708
-  %1720 = phi i1 [ true, %1708 ], [ %1718, %1715 ]
-  %1721 = zext i1 %1720 to i32
-  %1722 = add nsw i32 %1721, 48
-  %1723 = call i32 @putchar(i32 %1722)
-  %1724 = load i32, i32* @a, align 4
-  %1725 = icmp ne i32 %1724, 0
-  br i1 %1725, label %1730, label %1726
-
-; <label>:1726                                    ; preds = %1719
-  %1727 = load i8, i8* @c, align 1
-  %1728 = sext i8 %1727 to i32
-  %1729 = icmp ne i32 %1728, 0
-  br label %1730
-
-; <label>:1730                                    ; preds = %1726, %1719
-  %1731 = phi i1 [ true, %1719 ], [ %1729, %1726 ]
-  %1732 = zext i1 %1731 to i32
-  %1733 = add nsw i32 %1732, 48
-  %1734 = call i32 @putchar(i32 %1733)
-  %1735 = load i32, i32* @a, align 4
-  %1736 = icmp ne i32 %1735, 0
-  br i1 %1736, label %1740, label %1737
-
-; <label>:1737                                    ; preds = %1730
-  %1738 = load i32, i32* @d, align 4
-  %1739 = icmp ne i32 %1738, 0
-  br label %1740
-
-; <label>:1740                                    ; preds = %1737, %1730
-  %1741 = phi i1 [ true, %1730 ], [ %1739, %1737 ]
-  %1742 = zext i1 %1741 to i32
-  %1743 = add nsw i32 %1742, 48
-  %1744 = call i32 @putchar(i32 %1743)
-  %1745 = load i16, i16* @b, align 2
-  %1746 = sext i16 %1745 to i32
-  %1747 = icmp ne i32 %1746, 0
-  br i1 %1747, label %1752, label %1748
-
-; <label>:1748                                    ; preds = %1740
-  %1749 = load i16, i16* @b, align 2
-  %1750 = sext i16 %1749 to i32
-  %1751 = icmp ne i32 %1750, 0
-  br label %1752
-
-; <label>:1752                                    ; preds = %1748, %1740
-  %1753 = phi i1 [ true, %1740 ], [ %1751, %1748 ]
-  %1754 = zext i1 %1753 to i32
-  %1755 = add nsw i32 %1754, 48
-  %1756 = call i32 @putchar(i32 %1755)
-  %1757 = load i16, i16* @b, align 2
-  %1758 = sext i16 %1757 to i32
-  %1759 = icmp ne i32 %1758, 0
-  br i1 %1759, label %1764, label %1760
-
-; <label>:1760                                    ; preds = %1752
-  %1761 = load i8, i8* @c, align 1
-  %1762 = sext i8 %1761 to i32
-  %1763 = icmp ne i32 %1762, 0
-  br label %1764
-
-; <label>:1764                                    ; preds = %1760, %1752
-  %1765 = phi i1 [ true, %1752 ], [ %1763, %1760 ]
-  %1766 = zext i1 %1765 to i32
-  %1767 = add nsw i32 %1766, 48
-  %1768 = call i32 @putchar(i32 %1767)
-  %1769 = load i16, i16* @b, align 2
-  %1770 = sext i16 %1769 to i32
-  %1771 = icmp ne i32 %1770, 0
-  br i1 %1771, label %1775, label %1772
-
-; <label>:1772                                    ; preds = %1764
-  %1773 = load i32, i32* @d, align 4
-  %1774 = icmp ne i32 %1773, 0
-  br label %1775
-
-; <label>:1775                                    ; preds = %1772, %1764
-  %1776 = phi i1 [ true, %1764 ], [ %1774, %1772 ]
-  %1777 = zext i1 %1776 to i32
-  %1778 = add nsw i32 %1777, 48
-  %1779 = call i32 @putchar(i32 %1778)
-  %1780 = load i8, i8* @c, align 1
-  %1781 = sext i8 %1780 to i32
-  %1782 = icmp ne i32 %1781, 0
-  br i1 %1782, label %1787, label %1783
-
-; <label>:1783                                    ; preds = %1775
-  %1784 = load i8, i8* @c, align 1
-  %1785 = sext i8 %1784 to i32
-  %1786 = icmp ne i32 %1785, 0
-  br label %1787
-
-; <label>:1787                                    ; preds = %1783, %1775
-  %1788 = phi i1 [ true, %1775 ], [ %1786, %1783 ]
-  %1789 = zext i1 %1788 to i32
-  %1790 = add nsw i32 %1789, 48
-  %1791 = call i32 @putchar(i32 %1790)
-  %1792 = load i8, i8* @c, align 1
-  %1793 = sext i8 %1792 to i32
-  %1794 = icmp ne i32 %1793, 0
-  br i1 %1794, label %1798, label %1795
-
-; <label>:1795                                    ; preds = %1787
-  %1796 = load i32, i32* @d, align 4
-  %1797 = icmp ne i32 %1796, 0
-  br label %1798
-
-; <label>:1798                                    ; preds = %1795, %1787
-  %1799 = phi i1 [ true, %1787 ], [ %1797, %1795 ]
-  %1800 = zext i1 %1799 to i32
-  %1801 = add nsw i32 %1800, 48
-  %1802 = call i32 @putchar(i32 %1801)
-  %1803 = load i32, i32* @d, align 4
-  %1804 = icmp ne i32 %1803, 0
-  br i1 %1804, label %1808, label %1805
-
-; <label>:1805                                    ; preds = %1798
-  %1806 = load i32, i32* @d, align 4
-  %1807 = icmp ne i32 %1806, 0
-  br label %1808
-
-; <label>:1808                                    ; preds = %1805, %1798
-  %1809 = phi i1 [ true, %1798 ], [ %1807, %1805 ]
-  %1810 = zext i1 %1809 to i32
-  %1811 = add nsw i32 %1810, 48
-  %1812 = call i32 @putchar(i32 %1811)
-  %1813 = load i32, i32* @a, align 4
-  %1814 = icmp ne i32 %1813, 0
-  br i1 %1814, label %1818, label %1815
-
-; <label>:1815                                    ; preds = %1808
-  %1816 = load i32, i32* @a, align 4
-  %1817 = icmp ne i32 %1816, 0
-  br label %1818
-
-; <label>:1818                                    ; preds = %1815, %1808
-  %1819 = phi i1 [ true, %1808 ], [ %1817, %1815 ]
-  %1820 = zext i1 %1819 to i32
-  %1821 = add nsw i32 %1820, 48
-  %1822 = call i32 @putchar(i32 %1821)
-  %1823 = load i16, i16* @b, align 2
-  %1824 = sext i16 %1823 to i32
-  %1825 = icmp ne i32 %1824, 0
-  br i1 %1825, label %1829, label %1826
-
-; <label>:1826                                    ; preds = %1818
-  %1827 = load i32, i32* @a, align 4
-  %1828 = icmp ne i32 %1827, 0
-  br label %1829
-
-; <label>:1829                                    ; preds = %1826, %1818
-  %1830 = phi i1 [ true, %1818 ], [ %1828, %1826 ]
-  %1831 = zext i1 %1830 to i32
-  %1832 = add nsw i32 %1831, 48
-  %1833 = call i32 @putchar(i32 %1832)
-  %1834 = load i8, i8* @c, align 1
-  %1835 = sext i8 %1834 to i32
-  %1836 = icmp ne i32 %1835, 0
-  br i1 %1836, label %1840, label %1837
-
-; <label>:1837                                    ; preds = %1829
-  %1838 = load i32, i32* @a, align 4
-  %1839 = icmp ne i32 %1838, 0
-  br label %1840
-
-; <label>:1840                                    ; preds = %1837, %1829
-  %1841 = phi i1 [ true, %1829 ], [ %1839, %1837 ]
-  %1842 = zext i1 %1841 to i32
-  %1843 = add nsw i32 %1842, 48
-  %1844 = call i32 @putchar(i32 %1843)
-  %1845 = load i32, i32* @d, align 4
-  %1846 = icmp ne i32 %1845, 0
-  br i1 %1846, label %1850, label %1847
-
-; <label>:1847                                    ; preds = %1840
-  %1848 = load i32, i32* @a, align 4
-  %1849 = icmp ne i32 %1848, 0
-  br label %1850
-
-; <label>:1850                                    ; preds = %1847, %1840
-  %1851 = phi i1 [ true, %1840 ], [ %1849, %1847 ]
-  %1852 = zext i1 %1851 to i32
-  %1853 = add nsw i32 %1852, 48
-  %1854 = call i32 @putchar(i32 %1853)
-  %1855 = load i16, i16* @b, align 2
-  %1856 = sext i16 %1855 to i32
-  %1857 = icmp ne i32 %1856, 0
-  br i1 %1857, label %1862, label %1858
-
-; <label>:1858                                    ; preds = %1850
-  %1859 = load i16, i16* @b, align 2
-  %1860 = sext i16 %1859 to i32
-  %1861 = icmp ne i32 %1860, 0
-  br label %1862
-
-; <label>:1862                                    ; preds = %1858, %1850
-  %1863 = phi i1 [ true, %1850 ], [ %1861, %1858 ]
-  %1864 = zext i1 %1863 to i32
-  %1865 = add nsw i32 %1864, 48
-  %1866 = call i32 @putchar(i32 %1865)
-  %1867 = load i8, i8* @c, align 1
-  %1868 = sext i8 %1867 to i32
-  %1869 = icmp ne i32 %1868, 0
-  br i1 %1869, label %1874, label %1870
-
-; <label>:1870                                    ; preds = %1862
-  %1871 = load i16, i16* @b, align 2
-  %1872 = sext i16 %1871 to i32
-  %1873 = icmp ne i32 %1872, 0
-  br label %1874
-
-; <label>:1874                                    ; preds = %1870, %1862
-  %1875 = phi i1 [ true, %1862 ], [ %1873, %1870 ]
-  %1876 = zext i1 %1875 to i32
-  %1877 = add nsw i32 %1876, 48
-  %1878 = call i32 @putchar(i32 %1877)
-  %1879 = load i32, i32* @d, align 4
-  %1880 = icmp ne i32 %1879, 0
-  br i1 %1880, label %1885, label %1881
-
-; <label>:1881                                    ; preds = %1874
-  %1882 = load i16, i16* @b, align 2
-  %1883 = sext i16 %1882 to i32
-  %1884 = icmp ne i32 %1883, 0
-  br label %1885
-
-; <label>:1885                                    ; preds = %1881, %1874
-  %1886 = phi i1 [ true, %1874 ], [ %1884, %1881 ]
-  %1887 = zext i1 %1886 to i32
-  %1888 = add nsw i32 %1887, 48
-  %1889 = call i32 @putchar(i32 %1888)
-  %1890 = load i8, i8* @c, align 1
-  %1891 = sext i8 %1890 to i32
-  %1892 = icmp ne i32 %1891, 0
-  br i1 %1892, label %1897, label %1893
-
-; <label>:1893                                    ; preds = %1885
-  %1894 = load i8, i8* @c, align 1
-  %1895 = sext i8 %1894 to i32
-  %1896 = icmp ne i32 %1895, 0
-  br label %1897
-
-; <label>:1897                                    ; preds = %1893, %1885
-  %1898 = phi i1 [ true, %1885 ], [ %1896, %1893 ]
-  %1899 = zext i1 %1898 to i32
-  %1900 = add nsw i32 %1899, 48
-  %1901 = call i32 @putchar(i32 %1900)
+  %40 = load i16, i16* %b, align 2
+  %41 = load i16, i16* %b, align 2
+  %42 = trunc i16 %41 to i8
+  %43 = load i16, i16* %b, align 2
+  %44 = sitofp i16 %43 to double
+  %45 = call i32 @func(i32 %39, i16 signext %40, i8 signext %42, double %44)
+  %46 = load i16, i16* %b, align 2
+  %47 = sext i16 %46 to i32
+  call void @troll(i32 %47)
+  %48 = load i8, i8* %c, align 1
+  %49 = sext i8 %48 to i32
+  call void @troll(i32 %49)
+  %50 = load i8, i8* %c, align 1
+  %51 = sext i8 %50 to i32
+  %52 = load i8, i8* %c, align 1
+  %53 = sext i8 %52 to i16
+  %54 = load i8, i8* %c, align 1
+  %55 = load i8, i8* %c, align 1
+  %56 = sitofp i8 %55 to double
+  %57 = call i32 @func(i32 %51, i16 signext %53, i8 signext %54, double %56)
+  %58 = load i32, i32* %a, align 4
+  %59 = load i16, i16* %b, align 2
+  %60 = load i8, i8* %c, align 1
+  %61 = load double, double* %d, align 8
+  %62 = call i32 @func(i32 %58, i16 signext %59, i8 signext %60, double %61)
   ret i32 0
 }
 

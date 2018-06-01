@@ -29,7 +29,7 @@ char call(int a, short b, char c, double d) {
 int a = 1;
 short b = 2;
 char c = 3;
-int d = 4;
+double d = 4;
 // 20 pontos
 int main(void){
 	condition_if(0);

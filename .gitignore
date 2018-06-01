@@ -5,3 +5,5 @@ uccompiler.zip
 y.tab.h
 y.tab.c
 y.output
+result.s
+result

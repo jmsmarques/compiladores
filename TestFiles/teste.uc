@@ -1,6 +1,5 @@
 int readint (void) {
     int read = 0 ,sign = 1;
-    //read = 1, sign = 0, read = 1;
     char c = getchar();
     if(c == '-')
         sign = -1;
@@ -11,7 +10,7 @@ int readint (void) {
     }
     return sign * read;
 }
-void printint (int n) {
+void printint (char n) {
     if(n < 0) {
         putchar('-');
         n = -n;
@@ -23,8 +22,10 @@ void printint (int n) {
 }
 int main (void) {
     int i = 1;
+    //double l;
     while (i != 0) {
         i = readint();
+        //l = i;
         printint(i);
         putchar('\n');
     }

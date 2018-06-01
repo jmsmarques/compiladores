@@ -114,15 +114,17 @@ int genFuncBody(node root, paramsInfo paramList, int tabs, int variable, char* f
                 }
             }
             else {
-                if(root->sibling) {
-                    doTabs(tabs);
-                    printf("ret void\n");
-                }
+                doTabs(tabs);
+                printf("ret void\n");
             }
         }
         else {
             if(!checkIfLiteral(root->child) && strcmp(root->child->tag, "Null") != 0) {
                 variable = genExpr(root->child, variable, tabs, getLlvmType(funcType), paramList);
+            }
+            else {
+                doTabs(tabs);
+                printf("ret void\n");
             }
         }
         
@@ -169,6 +171,7 @@ void genFuncDef(node root) {
         //genParams(params, root->child->sibling->sibling->child, variable, 1);
     }
     variable = genFuncBody(root->child->sibling->sibling->sibling->child, params, 1, variable, getLlvmType(root->child->tag), 1);
+    
     if(variable > 0) {
         if(strcmp(root->child->tag, "Void") == 0) {
             doTabs(1);
@@ -499,11 +502,18 @@ int checkIfUnary(node root) {
 
 int genCall(node root, int variable, int tabs, paramsInfo paramList) {
     node params = root->child->sibling;
+    char* saveptr;
     char* token;
     char* aux = strdup("");
     char* paramsType = extractParamType(root->child->type);
-    token = strtok(paramsType, ",");
+    //printf("tag = %s\n", root->tag);
+    
+    //printf("begin-->%s = %s\n", root->child->type, root->child->tag);
+    //printf("before-->%s\n", paramsType);
+    token = strtok_r(paramsType, ",", &saveptr);
+    //printf("after-->%s\n", paramsType);
     while(params && token) {
+        //printf("type->%s->%s\n", paramsType, root->child->tag);
         if(checkIfLiteral(params)){
             aux = (char*)realloc(aux, (10 + strlen(aux) + strlen(params->type) + strlen(params->tag)) * sizeof(char));
             if(strcmp(getLlvmType(token), "i8") == 0 || strcmp(getLlvmType(token), "i16") == 0 ) {
@@ -524,12 +534,19 @@ int genCall(node root, int variable, int tabs, paramsInfo paramList) {
             }
             variable++;
         }
-        
+        //printf("token1--->%s\n", token);
+        //printf("%s\n", params->tag);
+        //printf("1=%s\n", paramsType);
+        //printf("type->%s->%s\n", paramsType, root->child->tag);
         if(params->sibling)
             sprintf(aux, "%s,", aux);
         params = params->sibling;
-        token = strtok(NULL, ",");
+        token = strtok_r(NULL, ",", &saveptr);
+        //printf("token2--->%s\n", token);
+        //printf("2=%s\n", paramsType);
+        //printf("--->%s\n", token);
     }
+    
     doTabs(tabs);
     if(strcmp(root->type, "void") != 0) {
         printf("%%%d = call %s @%s(%s)\n", variable, getLlvmType(root->type), removeId(root->child->tag), aux);
@@ -877,7 +894,8 @@ int generateIf(node root, paramsInfo paramList, int variable, int tabs, char* fu
             variable = genFuncBody(root->child->sibling, paramList, tabs, variable, funcType, 0);
         }
         else {
-            variable = genFuncBody(root->child->sibling->sibling, paramList, tabs, variable, funcType, 0);
+            if(root->child->sibling->sibling)
+                variable = genFuncBody(root->child->sibling->sibling, paramList, tabs, variable, funcType, 0);
         }
         free(aux);
         return variable;
@@ -968,9 +986,12 @@ int generateWhile(node root, paramsInfo paramList, int variable, int tabs, char*
         aux = genVariable(root->child, root->child->type);
         if(strcmp(aux, "0") != 0) {
             variable = genFuncBody(root->child->sibling, paramList, tabs, variable, funcType, 0);
-            if(!(variable < 0)) {
+            if(variable >= 0) {
                 doTabs(tabs);
                 printf("br label %%label%d\n\n", auxLabel);
+                
+            }
+            else {
                 variable *= -1;
             }
         }

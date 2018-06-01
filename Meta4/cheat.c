@@ -1,96 +1,43 @@
 #include <stdio.h>
-double a = 1;
-
-short fl(void);
-
-char teste(double a, double c, char d) {
-    a = 'b';
-    a = 3.0e1 + (d = 4);
-    c = a + c;
-    char g = 48;
-    double k = 3;
-    double j = (k == k) + (a != -a);
-
-    if(1) {
-        putchar('f');
-        putchar(10);
+int readint (void) {
+    int read = 0 ,sign = 1;
+    char c = getchar();
+    if(c == '-')
+        sign = -1;
+    while(c != '\n') {
+        if(c != '-')
+            read = read * 10 + c - '0';
+        c = getchar();
     }
-    return d;
+    return sign * read;
+}
+void printint (int n) {
+    if(n < 0) {
+        putchar('-');
+        n = -n;
+    }
+    if(n / 10) {
+        printint (n / 10);
+    }
+    putchar (n % 10 + '0');
+}
+int sum1(short a, int b) {
+    return a + b;
 }
 
-int cao(double a, int b, short c, char d) {
-    d = b;
-    putchar(d + '0');
-    a = c;
-    c = d;
-    putchar(c + '0');
-    b = c * d % 2;
-    return b;
+char sum(int a, char b) {
+    return a + b;
 }
+int main (void) {
+    int i = 1;
+    //double l;
+    while (i != 0) {
+        i = readint();
+        //l = i;
+        printint(i);
+        printint(sum(sum1(i,1), sum(4, sum1(2, 3 + 4))));
+        putchar('\n');
+    }
 
-short fl(void) {
-    return 48;
-}
-
-void troll(int a) {
-    putchar(a + '0');
-    return troll(a);
-}
-
-char volta(double a, int b) {
-    short f = 2;
-    char l = b;
-    a = f;
-    putchar(b = fl() + teste(2, (l = b,2.), fl()));
-    return b = fl() + teste(2, (l = b,2.), fl());
-}
-
-int volta3(int a) {
-    a = a + 3;
-    return a;
-}
-
-int volta2(int a) {
-    a = a + 2;
-    int f = volta3(a);
-    return f;
-}
-
-int volta1(int a) {
-    int b = 2;
-    a = a + 1;
-    return volta2(a);
-}
-
-
-int func(int a, short b, char c, double d) {
-	putchar(a + '0');
-	putchar(b + '0');
-	putchar(c + '0');
-	putchar((d == 'd') + '0');
-	return 0;
-}
-
-int main(void) {
-    int p = 0;
-    putchar(!p +!p + '0');
-
-    putchar(volta1(1) + 48);
-    int g = 5;
-    putchar((g == g) + ((g != g) + '0'));
-    putchar(cao(1,2,3,4));
-
-	int a = 'a';
-	short b = 'b';
-	char c = 'c';
-	double d = 'd';
-    
-	func(1, 1, 1, 1);
-    troll(0);
-	func(a, a, a, a);
-    troll(a);
-	func(b, b, b, b);
-    troll(b);troll(c);
-	func(c, c, c, c);
-	func(a, b, c, d);
+    return sum(1, sum(sum1(i,1), sum(4, sum1(2, 3 + 4))));
 }
